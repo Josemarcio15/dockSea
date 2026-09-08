@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { Button, ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     deployPath = $bindable(),
@@ -26,7 +26,7 @@
 </script>
 
 <section
-  class="space-y-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0b0f19] p-6 shadow-sm"
+  class="space-y-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0b1d2e] p-6 shadow-sm"
 >
   <div class="flex items-center justify-between gap-3">
     <div>
@@ -41,13 +41,13 @@
         disabled={deployPath === "$HOME/.docksea"}
         onclick={onGoParent}>Voltar</Button
       >
-      <ButtonRed
+      <Button variant="danger"
         size="sm"
         disabled={!selectedDeployPaths.length}
         onclick={onRequestDelete}
       >
         Remover selecionados
-      </ButtonRed>
+      </Button>
     </div>
   </div>
 

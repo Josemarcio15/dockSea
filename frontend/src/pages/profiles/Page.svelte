@@ -1,8 +1,10 @@
 <script lang="ts">
   import StatusBanner from "$shared/components/StatusBanner.svelte";
+  import PageTitle from "$shared/components/PageTitle.svelte";
+
   import { t } from "$shared/stores/locale.svelte";
   import ConfirmDialog from "$shared/components/ConfirmDialog.svelte";
-  import { ButtonBlue } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import ProfileCard from "./components/ProfileCard.svelte";
   import ProfileForm from "./components/ProfileForm.svelte";
   import { createProfilesStore } from "./store.svelte";
@@ -14,19 +16,11 @@
 <div class="space-y-6">
   <!-- Top Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <div
-      class="inline-flex items-center px-5 py-2.5 rounded-2xl bg-linear-to-br from-violet-100 to-fuchsia-100 dark:from-violet-950/40 dark:to-fuchsia-950/40 border border-violet-200/50 dark:border-violet-800/50 self-start shadow-sm"
-    >
-      <h1
-        class="text-2xl font-bold bg-linear-to-r from-violet-600 to-fuchsia-500 bg-clip-text text-transparent m-0 flex items-center gap-2"
-      >
-        {t("profiles.title")}
-      </h1>
-    </div>
+    <PageTitle title={t("profiles.title")} />
 
-    <ButtonBlue size="sm" onclick={store.openCreate}>
+    <Button variant="primary" size="sm" onclick={store.openCreate}>
       {t("profiles.new_profile")}
-    </ButtonBlue>
+    </Button>
   </div>
 
   <!-- Status Alerts -->

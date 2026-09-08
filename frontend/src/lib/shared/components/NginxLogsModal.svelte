@@ -1,6 +1,6 @@
 <script lang="ts">
   import { untrack } from "svelte";
-  import { ButtonPink } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import { useRefreshKey } from "$shared/stores/refresh.svelte";
   import * as ExtraService from "$bindings/extras/extraservice.js";
 
@@ -43,16 +43,16 @@
 
 {#if show}
   <div class="fixed inset-0 z-60 flex items-center justify-center bg-black/70 p-4">
-    <div class="flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-slate-700 bg-[#080d16] shadow-2xl">
+    <div class="flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-slate-700 bg-[#081826] shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 px-5 py-4">
         <div>
           <h2 class="text-lg font-bold text-slate-100">Logs do Nginx</h2>
           <p class="text-xs text-slate-400">/var/log/nginx/ — selecione um arquivo</p>
         </div>
         <div class="flex items-center gap-2">
-          <ButtonPink size="xs" onclick={refresh} loading={loading}>
+          <Button variant="neutral" size="xs" onclick={refresh} loading={loading}>
             Atualizar
-          </ButtonPink>
+          </Button>
           <button type="button" class="px-2 text-xl text-slate-400 hover:text-white cursor-pointer" onclick={() => (show = false)}>×</button>
         </div>
       </div>

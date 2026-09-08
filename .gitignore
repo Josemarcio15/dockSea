@@ -13,6 +13,11 @@ go-walis
 .task/
 build/linux/appimage/build
 build/windows/nsis/MicrosoftEdgeWebview2Setup.exe
+frontend/.bindings-tmp-*/
+
+# Binários empacotados (AppImage / bundle Linux)
+build/linux/appimage/DockSea
+*.AppImage
 
 # Mobile (gerados automaticamente com paths absolutos da máquina)
 build/ios/xcode/overlay.json
@@ -34,6 +39,11 @@ yarn-error.log*
 *.db-journal
 *.sqlite
 *.sqlite3
+
+# Variáveis de ambiente / segredos
+.env
+.env.*
+!.env.example
 # IDEs e Editores
 .vscode/
 .idea/

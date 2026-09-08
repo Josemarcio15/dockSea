@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonOrange, ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     show = $bindable(false),
@@ -22,7 +22,7 @@
     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
     <div
-      class="bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl w-140 max-w-full flex flex-col p-6 shadow-2xl animate-scaleIn text-slate-800 dark:text-slate-200 gap-4"
+      class="bg-white dark:bg-[#0b1d2e] border border-slate-200 dark:border-slate-800 rounded-2xl w-140 max-w-full flex flex-col p-6 shadow-2xl animate-scaleIn text-slate-800 dark:text-slate-200 gap-4"
     >
       <div class="flex justify-between items-center pb-3 border-b border-slate-200 dark:border-slate-800">
         <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -61,12 +61,12 @@
       </div>
 
       <div class="flex gap-2.5 justify-end items-center pt-3 border-t border-slate-200 dark:border-slate-800 shrink-0">
-        <ButtonOrange size="sm" disabled={loading} onclick={() => (show = false)}>
+        <Button variant="neutral" size="sm" disabled={loading} onclick={() => (show = false)}>
           {t("common.cancel")}
-        </ButtonOrange>
-        <ButtonRed size="sm" {loading} disabled={loading} onclick={onConfirm}>
+        </Button>
+        <Button variant="danger" size="sm" {loading} disabled={loading} onclick={onConfirm}>
           {loading ? t("stacks.executing") : "Confirmar Remoção na VPS"}
-        </ButtonRed>
+        </Button>
       </div>
     </div>
   </div>

@@ -28,7 +28,7 @@
       id="site"
       bind:value={site}
       placeholder={t("extras.site_file_placeholder")}
-      class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0c101b] text-slate-900 dark:text-white font-mono focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all"
+      class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0e2536] text-slate-900 dark:text-white font-mono focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all"
     />
     <p class="text-[11px] text-slate-400 font-mono">
       {tab === "available"
@@ -44,7 +44,7 @@
     >
     {#if loading}
       <div
-        class="h-[320px] w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#0c101b]/50 flex flex-col items-center justify-center gap-3 text-slate-400"
+        class="h-[320px] w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#0e2536]/50 flex flex-col items-center justify-center gap-3 text-slate-400"
       >
         <div class="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
         <span class="text-xs font-mono">Carregando {site || "arquivo"}...</span>

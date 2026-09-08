@@ -1,12 +1,9 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
+  import PageTitle from "$shared/components/PageTitle.svelte";
+
   import ColumnLayoutSwitcher from "$shared/components/ColumnLayoutSwitcher.svelte";
-  import {
-    ButtonGreen,
-    ButtonYellow,
-    ButtonRed,
-    ButtonPink,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     searchQuery = $bindable(""),
@@ -34,15 +31,7 @@
 <div class="space-y-6">
   <!-- Top Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <div
-      class="inline-flex items-center px-5 py-2.5 rounded-2xl bg-linear-to-br from-violet-100 to-fuchsia-100 dark:from-violet-950/40 dark:to-fuchsia-950/40 border border-violet-200/50 dark:border-violet-800/50 self-start shadow-sm"
-    >
-      <h1
-        class="text-2xl font-bold bg-linear-to-r from-violet-600 to-fuchsia-500 bg-clip-text text-transparent m-0 flex items-center gap-2"
-      >
-        {t("networks.title")}
-      </h1>
-    </div>
+    <PageTitle title={t("networks.title")} />
 
     <div class="flex items-center gap-2">
       <!-- 1, 2, 3 Colunas Switcher -->
@@ -51,36 +40,36 @@
       <input
         type="text"
         placeholder={t("networks.search_placeholder")}
-        class="px-4 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b0f19] text-slate-855 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all w-60"
+        class="px-4 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b1d2e] text-slate-855 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all w-60"
         bind:value={searchQuery}
       />
-      <ButtonPink
+      <Button variant="neutral"
         size="sm"
         title={t("common.refresh")}
         onclick={onRefresh}
       >
         {t("common.refresh")}
-      </ButtonPink>
-      <ButtonGreen
+      </Button>
+      <Button variant="success"
         size="sm"
         onclick={onNewNetwork}
       >
         {t("networks.new_network")}
-      </ButtonGreen>
+      </Button>
     </div>
   </div>
 
   <!-- Action Bar -->
   <div
-    class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-[#0b0f19] border border-slate-200/80 dark:border-slate-800/80 p-3.5 rounded-2xl shadow-sm"
+    class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-[#0b1d2e] border border-slate-200/80 dark:border-slate-800/80 p-3.5 rounded-2xl shadow-sm"
   >
     <div class="flex items-center gap-2">
-      <ButtonGreen
+      <Button variant="success"
         size="sm"
         onclick={onToggleAll}
       >
         {allSelected ? t("common.deselect_all") : t("common.select_all")}
-      </ButtonGreen>
+      </Button>
 
       {#if selectedCount > 0}
         <span
@@ -102,19 +91,19 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <ButtonYellow
+      <Button variant="warning"
         size="sm"
         onclick={onPrune}
       >
         {t("networks.prune_btn")}
-      </ButtonYellow>
-      <ButtonRed
+      </Button>
+      <Button variant="danger"
         size="sm"
         disabled={selectedCount === 0}
         onclick={onDeleteSelected}
       >
         {t("networks.delete_selected")}
-      </ButtonRed>
+      </Button>
     </div>
   </div>
 </div>

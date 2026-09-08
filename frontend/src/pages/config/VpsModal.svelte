@@ -1,7 +1,7 @@
 <script lang="ts">
   import FormModal from "$shared/components/FormModal.svelte";
   import Input from "$shared/components/Input.svelte";
-  import { ButtonYellow, ButtonPink } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import { t } from "$shared/stores/locale.svelte";
   import {
     notifySuccess,
@@ -271,9 +271,9 @@
           bind:value={form.sshKeyPath}
         >
           {#snippet trailing()}
-            <ButtonYellow size="sm" onclick={pickSshKey}>
+            <Button variant="warning" size="sm" onclick={pickSshKey}>
               {t("config.select_btn")}
-            </ButtonYellow>
+            </Button>
             <input
               id="modal-file-ssh-key"
               type="file"
@@ -337,7 +337,7 @@
         </p>
       </div>
 
-      <ButtonPink
+      <Button variant="neutral"
         size="sm"
         loading={isDetecting}
         disabled={form.connectionType === "ssh" && !form.host.trim()}
@@ -358,7 +358,7 @@
           />
         </svg>
         {t("config.docker_autodetect_btn")}
-      </ButtonPink>
+      </Button>
     </div>
 
     <!-- Socket Selector -->
@@ -385,7 +385,7 @@
                 type="button"
                 class="w-full px-3 py-2 text-left rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-2 {isSelected
                   ? 'bg-violet-500/15 border-violet-500 text-violet-700 dark:text-violet-300 font-bold shadow-xs'
-                  : 'bg-white dark:bg-[#0c1220] border-slate-200 dark:border-slate-800 hover:border-violet-300 text-slate-700 dark:text-slate-300'}"
+                  : 'bg-white dark:bg-[#0e2536] border-slate-200 dark:border-slate-800 hover:border-violet-300 text-slate-700 dark:text-slate-300'}"
                 onclick={() => (form.dockerSocketPath = sock)}
               >
                 <div class="flex items-center gap-2 min-w-0 flex-1">
@@ -452,7 +452,7 @@
                 type="button"
                 class="w-full px-3 py-2 text-left rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-2 {isSelected
                   ? 'bg-violet-500/15 border-violet-500 text-violet-700 dark:text-violet-300 font-bold shadow-xs'
-                  : 'bg-white dark:bg-[#0c1220] border-slate-200 dark:border-slate-800 hover:border-violet-300 text-slate-700 dark:text-slate-300'}"
+                  : 'bg-white dark:bg-[#0e2536] border-slate-200 dark:border-slate-800 hover:border-violet-300 text-slate-700 dark:text-slate-300'}"
                 onclick={() => (form.dockerPath = bin)}
               >
                 <div class="flex items-center gap-2 min-w-0 flex-1">
@@ -519,7 +519,7 @@
                 type="button"
                 class="w-full px-3 py-2 text-left rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-2 {isSelected
                   ? 'bg-violet-500/15 border-violet-500 text-violet-700 dark:text-violet-300 font-bold shadow-xs'
-                  : 'bg-white dark:bg-[#0c1220] border-slate-200 dark:border-slate-800 hover:border-violet-300 text-slate-700 dark:text-slate-300'}"
+                  : 'bg-white dark:bg-[#0e2536] border-slate-200 dark:border-slate-800 hover:border-violet-300 text-slate-700 dark:text-slate-300'}"
                 onclick={() => (form.dockerComposePath = comp)}
               >
                 <div class="flex items-center gap-2 min-w-0 flex-1">

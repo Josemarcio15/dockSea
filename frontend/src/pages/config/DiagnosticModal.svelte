@@ -87,7 +87,7 @@
               </span>
             </div>
             <p
-              class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap font-mono bg-white dark:bg-[#0c1220] p-3 rounded-lg border border-slate-200/60 dark:border-slate-800/80"
+              class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap font-mono bg-white dark:bg-[#0e2536] p-3 rounded-lg border border-slate-200/60 dark:border-slate-800/80"
             >
               {step.message}
             </p>
