@@ -3,7 +3,7 @@
 </script>
 
 <div
-  class="inline-flex rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b0f19] p-1 shadow-2xs gap-0.5"
+  class="inline-flex rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b1d2e] p-1 shadow-2xs gap-0.5"
 >
   <!-- 1 per row (List) -->
   <button

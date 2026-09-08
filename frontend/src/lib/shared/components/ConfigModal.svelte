@@ -1,16 +1,7 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import CodeEditor from "$shared/components/CodeEditor.svelte";
-  import {
-    ButtonBlue,
-    ButtonGreen,
-    ButtonYellow,
-    ButtonPurple,
-    ButtonCyan,
-    ButtonRed,
-    ButtonPink,
-    ButtonOrange,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import * as VolumeService from "$bindings/volumes/volumeservice.js";
   import * as NetworkService from "$bindings/networks/networkservice.js";
   import type { VpsServer } from "$bindings/core/db/models.js";
@@ -560,7 +551,7 @@ Opção B{#if show}
     class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
     <div
-      class="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-[90vw] h-[90vh] max-w-none max-h-none flex flex-col text-slate-800 dark:text-slate-100 overflow-hidden"
+      class="bg-white dark:bg-[#0b1d2e] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-[90vw] h-[90vh] max-w-none max-h-none flex flex-col text-slate-800 dark:text-slate-100 overflow-hidden"
     >
       <!-- Header -->
       <div
@@ -590,9 +581,8 @@ Opção B{#if show}
                 class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider"
                 >{t("images.config_saved_profiles")}</span
               >
-              <ButtonBlue size="xs" onclick={createNewProfile}
-                >+ Novo perfil</ButtonBlue
-              >
+              <Button variant="primary" size="xs" onclick={createNewProfile}
+                >+ Novo perfil</Button>
             </div>
             <div
               class="flex flex-col gap-2 max-h-[calc(92vh-180px)] overflow-y-auto pr-1"
@@ -623,12 +613,12 @@ Opção B{#if show}
                       </div>
                     {/if}
                   </div>
-                  <ButtonPurple size="xs" onclick={() => loadProfile(cfg)}>
+                  <Button variant="primary" size="xs" onclick={() => loadProfile(cfg)}>
                     {t("images.config_load")}
-                  </ButtonPurple>
-                  <ButtonRed size="xs" onclick={() => ondeleteprofile(cfg.id)}>
+                  </Button>
+                  <Button variant="danger" size="xs" onclick={() => ondeleteprofile(cfg.id)}>
                     ✕
-                  </ButtonRed>
+                  </Button>
                 </div>
               {/each}
             </div>
@@ -643,9 +633,8 @@ Opção B{#if show}
               class="text-[10px] font-bold uppercase tracking-wider text-slate-400"
               >Perfis salvos</span
             >
-            <ButtonBlue size="xs" onclick={createNewProfile}
-              >+ Novo perfil</ButtonBlue
-            >
+            <Button variant="primary" size="xs" onclick={createNewProfile}
+              >+ Novo perfil</Button>
           </div>
         {/if}
 
@@ -690,15 +679,13 @@ Opção B{#if show}
                   </p>
                 </div>
                 <div class="flex gap-2 shrink-0">
-                  <ButtonCyan size="xs" onclick={loadExample}
-                    >Exemplo</ButtonCyan
-                  >
-                  <ButtonBlue size="xs" onclick={copyJson}>Copiar</ButtonBlue>
-                  <ButtonGreen
+                  <Button variant="primary" size="xs" onclick={loadExample}
+                    >Exemplo</Button>
+                  <Button variant="primary" size="xs" onclick={copyJson}>Copiar</Button>
+                  <Button variant="success"
                     size="xs"
                     disabled={!jsonIsValid || saveDisabled}
-                    onclick={saveJsonProfile}>Salvar</ButtonGreen
-                  >
+                    onclick={saveJsonProfile}>Salvar</Button>
                 </div>
               </div>
               <CodeEditor
@@ -729,7 +716,7 @@ Opção B{#if show}
               <input
                 id="config-image"
                 type="text"
-                class="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-100 dark:bg-[#0c101b] text-slate-400 dark:text-slate-500 cursor-not-allowed font-mono"
+                class="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-100 dark:bg-[#0e2536] text-slate-400 dark:text-slate-500 cursor-not-allowed font-mono"
                 value={image}
                 readonly
               />
@@ -745,7 +732,7 @@ Opção B{#if show}
               <input
                 id="config-container-name"
                 type="text"
-                class="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
+                class="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
                 bind:value={containerName}
                 oninput={() => (isModified = true)}
                 placeholder={t("images.config_placeholder_container")}
@@ -762,7 +749,7 @@ Opção B{#if show}
               <input
                 id="config-project-name"
                 type="text"
-                class="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
+                class="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
                 bind:value={projectName}
                 oninput={() => (isModified = true)}
                 placeholder={t("images.config_placeholder_project")}
@@ -776,15 +763,15 @@ Opção B{#if show}
                   class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider"
                   >{t("images.config_ports")}</span
                 >
-                <ButtonBlue size="xs" onclick={addPort}>
+                <Button variant="primary" size="xs" onclick={addPort}>
                   {t("images.config_add_port")}
-                </ButtonBlue>
+                </Button>
               </div>
               {#each ports as port, i}
                 <div class="flex gap-2 items-center">
                   <input
                     type="text"
-                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
+                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
                     placeholder={t("images.config_placeholder_port_ext")}
                     bind:value={port.external}
                     oninput={() => (isModified = true)}
@@ -792,14 +779,14 @@ Opção B{#if show}
                   <span class="text-slate-400">:</span>
                   <input
                     type="text"
-                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
+                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
                     placeholder={t("images.config_placeholder_port_int")}
                     bind:value={port.internal}
                     oninput={() => (isModified = true)}
                   />
-                  <ButtonRed size="xs" onclick={() => removePort(i)}>
+                  <Button variant="danger" size="xs" onclick={() => removePort(i)}>
                     ✕
-                  </ButtonRed>
+                  </Button>
                 </div>
               {/each}
             </div>
@@ -811,15 +798,15 @@ Opção B{#if show}
                   class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider"
                   >{t("images.config_envs")}</span
                 >
-                <ButtonBlue size="xs" onclick={addEnv}>
+                <Button variant="primary" size="xs" onclick={addEnv}>
                   {t("images.config_add_env")}
-                </ButtonBlue>
+                </Button>
               </div>
               {#each envs as env, i}
                 <div class="flex gap-2 items-center">
                   <input
                     type="text"
-                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
+                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
                     placeholder={t("images.config_placeholder_env_name")}
                     bind:value={env.name}
                     oninput={() => (isModified = true)}
@@ -827,14 +814,14 @@ Opção B{#if show}
                   <span class="text-slate-400">=</span>
                   <input
                     type="text"
-                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
+                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
                     placeholder={t("images.config_placeholder_env_value")}
                     bind:value={env.value}
                     oninput={() => (isModified = true)}
                   />
-                  <ButtonRed size="xs" onclick={() => removeEnv(i)}>
+                  <Button variant="danger" size="xs" onclick={() => removeEnv(i)}>
                     ✕
-                  </ButtonRed>
+                  </Button>
                 </div>
               {/each}
             </div>
@@ -846,15 +833,15 @@ Opção B{#if show}
                   class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider"
                   >{t("images.config_volumes")}</span
                 >
-                <ButtonBlue size="xs" onclick={addVolume}>
+                <Button variant="primary" size="xs" onclick={addVolume}>
                   {t("images.config_add_volume")}
-                </ButtonBlue>
+                </Button>
               </div>
               {#each volumes as vol, i}
                 <div class="flex gap-2 items-center">
                   <input
                     type="text"
-                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
+                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
                     placeholder={t("images.config_placeholder_vol_host")}
                     bind:value={vol.host}
                     oninput={() => (isModified = true)}
@@ -863,16 +850,16 @@ Opção B{#if show}
                   <span class="text-slate-400">:</span>
                   <input
                     type="text"
-                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
+                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
                     placeholder={vol.host
                       ? getDefaultContainerPath(image)
                       : t("images.config_placeholder_vol_container")}
                     bind:value={vol.container}
                     oninput={() => (isModified = true)}
                   />
-                  <ButtonRed size="xs" onclick={() => removeVolume(i)}>
+                  <Button variant="danger" size="xs" onclick={() => removeVolume(i)}>
                     ✕
-                  </ButtonRed>
+                  </Button>
                 </div>
               {/each}
               <datalist id="volumes-datalist">
@@ -896,7 +883,7 @@ Opção B{#if show}
               >
               <select
                 id="config-network"
-                class="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
+                class="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
                 bind:value={network}
                 onchange={() => (isModified = true)}
               >
@@ -915,7 +902,7 @@ Opção B{#if show}
               >
               <select
                 id="config-restart"
-                class="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
+                class="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
                 bind:value={restartPolicy}
                 onchange={() => (isModified = true)}
               >
@@ -939,23 +926,23 @@ Opção B{#if show}
                   class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider"
                   >{t("images.config_command")}</span
                 >
-                <ButtonBlue size="xs" onclick={addCommand}>
+                <Button variant="primary" size="xs" onclick={addCommand}>
                   {t("images.config_add_command")}
-                </ButtonBlue>
+                </Button>
               </div>
 
               {#each commands as cmd, i}
                 <div class="flex gap-2 items-center">
                   <input
                     type="text"
-                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors font-mono"
+                    class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors font-mono"
                     placeholder={t("images.config_placeholder_command")}
                     bind:value={commands[i]}
                     oninput={() => (isModified = true)}
                   />
-                  <ButtonRed size="xs" onclick={() => removeCommand(i)}>
+                  <Button variant="danger" size="xs" onclick={() => removeCommand(i)}>
                     ✕
-                  </ButtonRed>
+                  </Button>
                 </div>
               {/each}
               <span
@@ -974,7 +961,7 @@ Opção B{#if show}
               >
               <textarea
                 id="config-description"
-                class="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors resize-y min-h-15"
+                class="w-full px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors resize-y min-h-15"
                 placeholder={t("images.config_placeholder_desc")}
                 bind:value={description}
                 oninput={() => (isModified = true)}
@@ -994,12 +981,12 @@ Opção B{#if show}
                 <input
                   id="config-profile-name"
                   type="text"
-                  class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
+                  class="flex-1 px-3.5 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:border-violet-500 focus:outline-none transition-colors"
                   placeholder={t("images.config_placeholder_profile")}
                   bind:value={profileName}
                 />
                 {#if profileName.trim()}
-                  <ButtonGreen
+                  <Button variant="success"
                     size="sm"
                     disabled={saveDisabled}
                     onclick={triggerSave}
@@ -1007,7 +994,7 @@ Opção B{#if show}
                     {loadedProfileId && !isNameChanged
                       ? t("images.config_btn_update")
                       : t("images.config_btn_create_profile")}
-                  </ButtonGreen>
+                  </Button>
                 {/if}
               </div>
               {#if nameAlreadyExists}
@@ -1024,12 +1011,12 @@ Opção B{#if show}
       <div
         class="flex justify-end gap-3 px-6 py-4 border-t border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900/50"
       >
-        <ButtonOrange onclick={() => (show = false)}>
+        <Button variant="neutral" onclick={() => (show = false)}>
           {t("common.cancel")}
-        </ButtonOrange>
-        <ButtonGreen disabled={hasEmptyVolume} onclick={validateAndSubmit}>
+        </Button>
+        <Button variant="success" disabled={hasEmptyVolume} onclick={validateAndSubmit}>
           {t("images.config_create_container")}
-        </ButtonGreen>
+        </Button>
       </div>
     </div>
   </div>
@@ -1050,12 +1037,12 @@ Opção B{#if show}
         {t("images.config_persistence_warning")}
       </p>
       <div class="flex gap-3 justify-end">
-        <ButtonOrange size="sm" onclick={() => (showConfirmNoVolume = false)}>
+        <Button variant="neutral" size="sm" onclick={() => (showConfirmNoVolume = false)}>
           {t("images.config_no")}
-        </ButtonOrange>
-        <ButtonGreen size="sm" onclick={submitForm}>
+        </Button>
+        <Button variant="success" size="sm" onclick={submitForm}>
           {t("images.config_yes")}
-        </ButtonGreen>
+        </Button>
       </div>
     </div>
   </div>

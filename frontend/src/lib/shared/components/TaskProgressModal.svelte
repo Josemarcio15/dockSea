@@ -2,7 +2,7 @@
   import { onDestroy } from "svelte";
   import { t } from "$shared/stores/locale.svelte";
   import { Events } from "@wailsio/runtime";
-  import { ButtonOrange } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import TerminalLogsView from "$shared/components/TerminalLogsView.svelte";
 
   let {
@@ -215,7 +215,7 @@
     class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn"
   >
     <div
-      class="bg-[#0b101d] border border-slate-800/90 rounded-3xl w-[720px] max-w-full h-[580px] max-h-[92vh] p-6 shadow-2xl flex flex-col text-slate-200 gap-4 overflow-hidden"
+      class="bg-[#0b1d2e] border border-slate-800/90 rounded-3xl w-[720px] max-w-full h-[580px] max-h-[92vh] p-6 shadow-2xl flex flex-col text-slate-200 gap-4 overflow-hidden"
     >
       <!-- Top Title -->
       <div
@@ -259,7 +259,7 @@
 
       <!-- General Progress Bar 0-100% -->
       <div
-        class="border border-slate-800 rounded-2xl p-4 bg-[#070b14]/80 space-y-2.5 shadow-inner shrink-0"
+        class="border border-slate-800 rounded-2xl p-4 bg-[#081826]/80 space-y-2.5 shadow-inner shrink-0"
       >
         <div class="flex items-center justify-between text-xs font-bold">
           <span class="text-white">Progresso Geral</span>
@@ -313,7 +313,7 @@
           {/if}
         </div>
 
-        <ButtonOrange
+        <Button variant="neutral"
           disabled={isRunning}
           onclick={() => {
             closeListeners();
@@ -321,7 +321,7 @@
           }}
         >
           {t("common.close")}
-        </ButtonOrange>
+        </Button>
       </div>
     </div>
   </div>

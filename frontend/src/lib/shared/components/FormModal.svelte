@@ -1,14 +1,7 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import type { Snippet } from "svelte";
-  import {
-    ButtonOrange,
-    ButtonGreen,
-    ButtonRed,
-    ButtonYellow,
-    ButtonBlue,
-    Button,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   export interface ModalButton {
     label: string;
@@ -38,7 +31,7 @@
     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
     <div
-      class="bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl w-125 max-w-full max-h-[90vh] flex flex-col p-6 shadow-2xl animate-scaleIn text-slate-800 dark:text-slate-200"
+      class="bg-white dark:bg-[#0b1d2e] border border-slate-200 dark:border-slate-800 rounded-2xl w-125 max-w-full max-h-[90vh] flex flex-col p-6 shadow-2xl animate-scaleIn text-slate-800 dark:text-slate-200"
     >
       <!-- Header -->
       <div
@@ -68,43 +61,43 @@
         class="flex gap-3 justify-end pt-4 border-t border-slate-200 dark:border-slate-800 shrink-0"
       >
         <!-- Cancel/Close Button -->
-        <ButtonOrange onclick={() => (show = false)}>
+        <Button variant="neutral" onclick={() => (show = false)}>
           {cancelLabel || t("common.cancel")}
-        </ButtonOrange>
+        </Button>
 
         {#each buttons as btn}
           {#if btn.variant === "danger"}
-            <ButtonRed
+            <Button variant="danger"
               type={btn.type || "button"}
               disabled={btn.disabled}
               onclick={btn.onclick}
             >
               {btn.label}
-            </ButtonRed>
+            </Button>
           {:else if btn.variant === "warning"}
-            <ButtonYellow
+            <Button variant="warning"
               type={btn.type || "button"}
               disabled={btn.disabled}
               onclick={btn.onclick}
             >
               {btn.label}
-            </ButtonYellow>
+            </Button>
           {:else if btn.variant === "success" || btn.variant === "primary"}
-            <ButtonGreen
+            <Button variant="success"
               type={btn.type || "button"}
               disabled={btn.disabled}
               onclick={btn.onclick}
             >
               {btn.label}
-            </ButtonGreen>
+            </Button>
           {:else}
-            <ButtonBlue
+            <Button variant="primary"
               type={btn.type || "button"}
               disabled={btn.disabled}
               onclick={btn.onclick}
             >
               {btn.label}
-            </ButtonBlue>
+            </Button>
           {/if}
         {/each}
       </div>

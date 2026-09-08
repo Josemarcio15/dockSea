@@ -1,5 +1,7 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
+  import PageTitle from "$shared/components/PageTitle.svelte";
+
   import { useRefreshKey, triggerRefresh } from "$shared/stores/refresh.svelte";
   import { notifySuccess, notifyError } from "$shared/stores/notification.svelte";
   import * as ContainerService from "../../../bindings/go-walis/internal/containers/containerservice.js";
@@ -13,16 +15,7 @@
   import ImageToolbar from "./components/ImageToolbar.svelte";
   import ImageCard from "./components/ImageCard.svelte";
   import ConfirmDialog from "$shared/components/ConfirmDialog.svelte";
-  import {
-    ButtonBlue,
-    ButtonGreen,
-    ButtonYellow,
-    ButtonPurple,
-    ButtonCyan,
-    ButtonRed,
-    ButtonPink,
-    ButtonOrange,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import { createImagesStore } from "./store.svelte";
   import { viewModeStore } from "$shared/stores/viewMode.svelte";
 
@@ -104,19 +97,11 @@
     <div
       class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
     >
-      <div
-        class="inline-flex items-center px-5 py-2.5 rounded-2xl bg-linear-to-br from-violet-100 to-fuchsia-100 dark:from-violet-950/40 dark:to-fuchsia-950/40 border border-violet-200/50 dark:border-violet-800/50 self-start shadow-sm"
-      >
-        <h1
-          class="text-2xl font-bold bg-linear-to-r from-violet-600 to-fuchsia-500 bg-clip-text text-transparent m-0 flex items-center gap-2"
-        >
-          {t("images.title")}
-        </h1>
-      </div>
+      <PageTitle title={t("images.title")} />
 
       <!-- Tabs Switcher -->
       <div
-        class="inline-flex rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b0f19] p-1 shadow-xs"
+        class="inline-flex rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b1d2e] p-1 shadow-xs"
       >
         <button
           type="button"
@@ -210,7 +195,7 @@
       {#if imgState.activeTab === "download"}
         <div class="space-y-6">
           <div
-            class="bg-white dark:bg-[#0b0f19] border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm flex flex-col gap-4"
+            class="bg-white dark:bg-[#0b1d2e] border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm flex flex-col gap-4"
           >
             <label
               for="pull-image-input"
@@ -222,36 +207,36 @@
                 id="pull-image-input"
                 type="text"
                 placeholder="nginx:latest"
-                class="flex-1 px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-violet-500 transition-all font-mono"
+                class="flex-1 px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-violet-500 transition-all font-mono"
                 bind:value={imgState.downloadQuery}
                 onkeydown={(e) =>
                   e.key === "Enter" &&
                   imgState.handlePull(imgState.downloadQuery)}
               />
-              <ButtonGreen
+              <Button variant="success"
                 size="md"
                 onclick={() => imgState.handlePull(imgState.downloadQuery)}
               >
                 {t("images.pull_btn")}
-              </ButtonGreen>
+              </Button>
             </div>
           </div>
 
           <!-- History -->
           <div
-            class="bg-white dark:bg-[#0b0f19] border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-4"
+            class="bg-white dark:bg-[#0b1d2e] border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-4"
           >
             <div
               class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-900"
             >
               <div class="flex items-center gap-3">
                 {#if imgState.imageHistory && imgState.imageHistory.length > 0}
-                  <ButtonYellow size="xs" onclick={imgState.toggleAllHistory}>
+                  <Button variant="warning" size="xs" onclick={imgState.toggleAllHistory}>
                     {imgState.selectedHistoryIds.length ===
                     imgState.imageHistory.length
                       ? t("common.deselect_all")
                       : t("common.select_all")}
-                  </ButtonYellow>
+                  </Button>
                   {#if imgState.selectedHistoryIds.length > 0}
                     <span
                       class="text-xs font-semibold text-red-500 px-1 animate-pulse"
@@ -269,17 +254,17 @@
 
               <div class="flex items-center gap-2">
                 {#if imgState.selectedHistoryIds.length > 0}
-                  <ButtonRed
+                  <Button variant="danger"
                     size="xs"
                     onclick={imgState.handleDeleteHistorySelected}
                   >
                     {t("common.delete")}
-                  </ButtonRed>
+                  </Button>
                 {/if}
                 {#if imgState.imageHistory && imgState.imageHistory.length > 0}
-                  <ButtonRed size="xs" onclick={imgState.handleClearHistory}>
+                  <Button variant="danger" size="xs" onclick={imgState.handleClearHistory}>
                     {t("images.clear_history")}
-                  </ButtonRed>
+                  </Button>
                 {/if}
               </div>
             </div>
@@ -326,12 +311,12 @@
                         </span>
                       </div>
                     </div>
-                    <ButtonCyan
+                    <Button variant="primary"
                       size="xs"
                       onclick={() => imgState.handlePull(hist.imageName)}
                     >
                       {t("images.repull_btn")}
-                    </ButtonCyan>
+                    </Button>
                   </div>
                 {/each}
               </div>
@@ -365,7 +350,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Source -->
               <div
-                class="bg-white dark:bg-[#0b0f19] border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-3"
+                class="bg-white dark:bg-[#0b1d2e] border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-3"
               >
                 <label
                   for="transfer-source-select"
@@ -376,7 +361,7 @@
                 </label>
                 <select
                   id="transfer-source-select"
-                  class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:outline-none focus:border-violet-500 transition-all"
+                  class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:outline-none focus:border-violet-500 transition-all"
                   bind:value={imgState.transferSourceId}
                   onchange={imgState.fetchSourceImages}
                 >
@@ -389,7 +374,7 @@
 
               <!-- Destination -->
               <div
-                class="bg-white dark:bg-[#0b0f19] border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-3"
+                class="bg-white dark:bg-[#0b1d2e] border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-3"
               >
                 <label
                   for="transfer-dest-select"
@@ -400,7 +385,7 @@
                 </label>
                 <select
                   id="transfer-dest-select"
-                  class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0c101b] text-slate-800 dark:text-slate-200 focus:outline-none focus:border-violet-500 transition-all"
+                  class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0e2536] text-slate-800 dark:text-slate-200 focus:outline-none focus:border-violet-500 transition-all"
                   bind:value={imgState.transferDestId}
                 >
                   <option value="">{t("images.transfer_select_dest")}</option>
@@ -414,7 +399,7 @@
             <!-- Source Images -->
             {#if imgState.transferSourceId}
               <div
-                class="bg-white dark:bg-[#0b0f19] border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-4"
+                class="bg-white dark:bg-[#0b1d2e] border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-4"
               >
                 <div class="flex items-center justify-between gap-3">
                   <span
@@ -423,7 +408,7 @@
                     {t("images.transfer_select_images")}
                   </span>
                   {#if imgState.sourceImages.length > 0}
-                    <ButtonYellow
+                    <Button variant="warning"
                       size="xs"
                       onclick={imgState.toggleAllTransfer}
                     >
@@ -431,7 +416,7 @@
                       imgState.sourceImages.length
                         ? t("common.deselect_all")
                         : t("common.select_all")}
-                    </ButtonYellow>
+                    </Button>
                   {/if}
                 </div>
 
@@ -493,7 +478,7 @@
                         {imgState.selectedTransferIds.length}
                         {t("images.selected_count")}
                       </span>
-                      <ButtonPurple
+                      <Button variant="primary"
                         size="md"
                         disabled={!imgState.transferDestId ||
                           imgState.transferSourceId ===
@@ -505,7 +490,7 @@
                         {imgState.transferInProgress
                           ? t("images.transferring")
                           : t("images.transfer_action_btn")}
-                      </ButtonPurple>
+                      </Button>
                     </div>
                   {/if}
                 {/if}
@@ -587,7 +572,7 @@
     class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn"
   >
     <div
-      class="bg-[#0b101d] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl max-w-lg w-full flex flex-col items-center text-center gap-5 text-slate-200"
+      class="bg-[#0b1d2e] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl max-w-lg w-full flex flex-col items-center text-center gap-5 text-slate-200"
     >
       <div
         class="w-12 h-12 rounded-2xl bg-linear-to-tr from-violet-600 to-fuchsia-600 flex items-center justify-center text-white text-xl shadow-lg shadow-violet-500/30 animate-pulse"
@@ -606,7 +591,7 @@
 
       <!-- progresso abstrata 0 - 100% Bar -->
       <div
-        class="w-full bg-[#070a12] border border-slate-800 rounded-2xl p-5 space-y-3.5 shadow-inner text-left"
+        class="w-full bg-[#081826] border border-slate-800 rounded-2xl p-5 space-y-3.5 shadow-inner text-left"
       >
         <div class="flex items-center justify-between text-xs font-bold">
           <span class="text-white text-sm">Progresso da Transferência</span>

@@ -1,10 +1,6 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import {
-    ButtonPurple,
-    ButtonBlue,
-    ButtonPink,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     server,
@@ -38,7 +34,7 @@
 </script>
 
 <div
-  class="group relative rounded-2xl bg-white/90 dark:bg-[#0c1220]/90 backdrop-blur-sm border border-slate-200/80 dark:border-slate-800/80 transition-all duration-300 flex flex-col justify-between p-5 gap-5 shadow-sm hover:shadow-md dark:shadow-black/40 hover:-translate-y-0.5"
+  class="group relative rounded-2xl bg-white/90 dark:bg-[#0e2536]/90 backdrop-blur-sm border border-slate-200/80 dark:border-slate-800/80 transition-all duration-300 flex flex-col justify-between p-5 gap-5 shadow-sm hover:shadow-md dark:shadow-black/40 hover:-translate-y-0.5"
 >
   <div class="space-y-4">
     <div class="flex items-start justify-between">
@@ -58,14 +54,14 @@
         </span>
       {/if}
       {#if isActive}
-        <ButtonPink
+        <Button variant="neutral"
           size="xs"
           title="Atualizar estatísticas de hardware"
           loading={isLoading}
           onclick={onRefresh}
         >
           <span aria-hidden="true">↻</span>
-        </ButtonPink>
+        </Button>
       {/if}
     </div>
 
@@ -98,7 +94,7 @@
     {:else if usage}
       <!-- Inner elevated ice-toned container, with RAM, Disk, Swap and Uptime -->
       <div
-        class="p-4 rounded-2xl bg-[#f8fafc] dark:bg-[#0c1220] border border-slate-200/90 dark:border-slate-800 shadow-md divide-y divide-slate-200/60 dark:divide-slate-800/80 space-y-3.5"
+        class="p-4 rounded-2xl bg-[#f8fafc] dark:bg-[#0e2536] border border-slate-200/90 dark:border-slate-800 shadow-md divide-y divide-slate-200/60 dark:divide-slate-800/80 space-y-3.5"
       >
         {#each [{ label: "RAM", used: usage.memUsed, total: usage.memTotal, percent: usage.memUsagePerc, color: usage.memUsagePerc > 85 ? "bg-rose-500" : usage.memUsagePerc > 65 ? "bg-amber-500" : "bg-emerald-500", badge: "bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300" }, { label: "Disco (/)", used: usage.diskUsed, total: usage.diskTotal, percent: usage.diskUsagePerc, color: usage.diskUsagePerc > 85 ? "bg-rose-500" : usage.diskUsagePerc > 70 ? "bg-amber-500" : "bg-sky-500", badge: "bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300" }] as metric, i}
           <div class="space-y-2 {i > 0 ? 'pt-3.5' : ''}">
@@ -177,7 +173,7 @@
     class="flex items-center gap-2.5 border-t border-slate-100 dark:border-slate-800/70 pt-4"
   >
     {#if isActive}
-      <ButtonBlue size="sm" class="flex items-center justify-center gap-2" onclick={onViewContainers}>
+      <Button variant="primary" size="sm" class="flex items-center justify-center gap-2" onclick={onViewContainers}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -195,9 +191,9 @@
           <line x1="12" y1="22.08" x2="12" y2="12" />
         </svg>
         <span>{t("devices.view_containers")}</span>
-      </ButtonBlue>
+      </Button>
     {:else}
-      <ButtonPurple
+      <Button variant="primary"
         class="flex-1 flex items-center justify-center gap-2"
         onclick={onActivate}
       >
@@ -215,7 +211,7 @@
           <line x1="12" y1="2" x2="12" y2="12" />
         </svg>
         <span>{t("devices.activate")}</span>
-      </ButtonPurple>
+      </Button>
     {/if}
   </div>
 </div>

@@ -1,15 +1,7 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { notifyWarning } from "$shared/stores/notification.svelte";
-  import {
-    ButtonBlue,
-    ButtonGreen,
-    ButtonYellow,
-    ButtonRed,
-    ButtonIndigo,
-    ButtonFuchsia,
-    ButtonSky,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import NginxEditor from "./NginxEditor.svelte";
 
   let {
@@ -44,7 +36,7 @@
 </script>
 
 <section
-  class="space-y-6 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0b0f19] p-6 shadow-sm"
+  class="space-y-6 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0b1d2e] p-6 shadow-sm"
 >
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div
@@ -72,24 +64,24 @@
     </div>
 
     <div class="flex flex-wrap items-center gap-2">
-      <ButtonSky
+      <Button variant="primary"
         size="sm"
         loading={busy === "test"}
         onclick={() => onRun("test")}
       >
         {t("extras.test_nginx")}
-      </ButtonSky>
-      <ButtonYellow
+      </Button>
+      <Button variant="warning"
         size="sm"
         loading={busy === "restart"}
         onclick={() => onRun("restart")}
       >
         {t("extras.restart_nginx")}
-      </ButtonYellow>
-      <ButtonFuchsia size="sm" onclick={onViewLogs}>
+      </Button>
+      <Button variant="primary" size="sm" onclick={onViewLogs}>
         {t("extras.view_logs")}
-      </ButtonFuchsia>
-      <ButtonRed
+      </Button>
+      <Button variant="danger"
         size="sm"
         disabled={!site.trim() || !!busy}
         onclick={() =>
@@ -98,10 +90,10 @@
             : notifyWarning(t("extras.select_file_warn"))}
       >
         {t("extras.delete_file")}
-      </ButtonRed>
-      <ButtonBlue size="sm" onclick={onNewSite}>
+      </Button>
+      <Button variant="primary" size="sm" onclick={onNewSite}>
         {t("extras.new_site")}
-      </ButtonBlue>
+      </Button>
     </div>
   </div>
 
@@ -131,19 +123,19 @@
   />
 
   <div class="flex flex-wrap gap-2.5 pt-2">
-    <ButtonIndigo
+    <Button variant="primary"
       size="md"
       loading={busy === "enable"}
       onclick={() => onRun("enable")}
     >
       {t("extras.btn_enable")}
-    </ButtonIndigo>
-    <ButtonGreen
+    </Button>
+    <Button variant="success"
       size="md"
       loading={busy === "save"}
       onclick={() => onRun("save")}
     >
       {t("extras.btn_save")}
-    </ButtonGreen>
+    </Button>
   </div>
 </section>

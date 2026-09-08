@@ -122,7 +122,7 @@
     </div>
   {:else}
     <div
-      class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] shadow-sm"
+      class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0e2536] shadow-sm"
     >
       <table class="w-full text-left text-xs text-slate-700 dark:text-slate-300">
         <thead
