@@ -5,6 +5,7 @@
   import { useRefreshKey, triggerRefresh } from "$shared/stores/refresh.svelte";
   import { notifySuccess, notifyError } from "$shared/stores/notification.svelte";
   import * as ContainerService from "../../../bindings/go-walis/internal/containers/containerservice.js";
+  import { listNetworks, createNetwork, isValidNetworkName } from "$lib/domains/networks";
   import DockerseaLoading from "$shared/components/DockerseaLoading.svelte";
   import StatusBanner from "$shared/components/StatusBanner.svelte";
   import TerminalModal from "$shared/components/TerminalModal.svelte";
@@ -41,6 +42,29 @@
 
   async function handleCreateContainer(config: any) {
     if (!data.activeVps) return notifyError("Nenhum servidor selecionado.");
+
+    const netName = (config?.network || "").trim();
+    if (netName) {
+      if (!isValidNetworkName(netName)) {
+        return notifyError("Nome de rede inválido.");
+      }
+      try {
+        const netListRes = await listNetworks(data.activeVps);
+        const existing = (netListRes?.networks || []).map((n: any) => n.name);
+        if (!existing.includes(netName)) {
+          const createRes = await createNetwork(data.activeVps, {
+            name: netName,
+            driver: "bridge",
+          });
+          if (!createRes?.success) {
+            return notifyError(createRes?.message || `Erro ao criar rede '${netName}'.`);
+          }
+        }
+      } catch (err: any) {
+        return notifyError(err?.message || `Erro ao verificar rede '${netName}'.`);
+      }
+    }
+
     const result = await ContainerService.CreateContainer(data.activeVps, config);
     if (!result?.success) return notifyError(result?.message || "Não foi possível criar o container.");
     notifySuccess(result.message || "Container criado com sucesso!");
