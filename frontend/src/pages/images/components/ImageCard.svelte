@@ -1,7 +1,7 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import type { DockerImage } from "$lib/domains/images";
-  import { Button } from "$shared/components/buttons";
+  import { ButtonBlue } from "$shared/components/buttons";
 
   let {
     img,
@@ -90,11 +90,11 @@
 </script>
 
 <div
-  class="relative rounded-2xl bg-white dark:bg-[#0b1d2e] border border-slate-200 dark:border-slate-800/80 hover:border-violet-500/50 dark:hover:border-violet-500/40 shadow-sm hover:shadow-md dark:shadow-none dark:hover:shadow-violet-950/20 transition-all duration-200 flex flex-col justify-between overflow-hidden self-start w-full text-slate-800 dark:text-slate-200 p-3.5 gap-3 group"
+  class="relative rounded-2xl bg-white dark:bg-[#0b101d] border border-slate-200 dark:border-slate-800/80 hover:border-violet-500/50 dark:hover:border-violet-500/40 shadow-sm hover:shadow-md dark:shadow-none dark:hover:shadow-violet-950/20 transition-all duration-200 flex flex-col justify-between overflow-hidden self-start w-full text-slate-800 dark:text-slate-200 p-3.5 gap-3 group"
 >
   <!-- Card Header Principal Elevado -->
   <div
-    class="flex items-center gap-2.5 min-w-0 p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+    class="flex items-center gap-2.5 min-w-0 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
   >
     <!-- Checkbox Customizado -->
     <button
@@ -181,7 +181,7 @@
       <!-- ID & Tamanho Grid -->
       <div class="grid grid-cols-2 gap-2 text-[11px]">
         <div
-          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
         >
           <span
             class="w-fit px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1"
@@ -194,7 +194,7 @@
         </div>
 
         <div
-          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
         >
           <span
             class="w-fit px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1"
@@ -211,7 +211,7 @@
 
       <!-- Data de Criação -->
       <div
-        class="flex items-center justify-between p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md text-[11px]"
+        class="flex items-center justify-between p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md text-[11px]"
       >
         <span
           class="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
@@ -226,7 +226,7 @@
       <!-- Containers Usando -->
       {#if img.containersUsing && img.containersUsing.length > 0}
         <div
-          class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
         >
           <span
             class="w-fit px-1.5 py-0.2 rounded text-[9px] text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-950/60 font-bold uppercase tracking-wider"
@@ -249,11 +249,11 @@
 
   <!-- Ação Sempre Visível (mesmo recolhido) -->
   <div class="pt-1.5 border-t border-slate-100 dark:border-slate-800/60 flex justify-center">
-    <Button variant="primary"
+    <ButtonBlue
       size="xs"
       onclick={on_build}
     >
       {t("images.btn_build_container")}
-    </Button>
+    </ButtonBlue>
   </div>
 </div>

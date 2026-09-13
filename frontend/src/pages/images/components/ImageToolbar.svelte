@@ -1,7 +1,7 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import ColumnLayoutSwitcher from "$shared/components/ColumnLayoutSwitcher.svelte";
-  import { Button } from "$shared/components/buttons";
+  import { ButtonGreen, ButtonYellow, ButtonRed } from "$shared/components/buttons";
 
   let {
     diskUsage = "0 B",
@@ -33,18 +33,18 @@
 </script>
 
 <div
-  class="flex flex-col gap-3 bg-white dark:bg-[#0b1d2e] border border-slate-200/80 dark:border-slate-800/80 p-3.5 rounded-2xl shadow-sm"
+  class="flex flex-col gap-3 bg-white dark:bg-[#0b0f19] border border-slate-200/80 dark:border-slate-800/80 p-3.5 rounded-2xl shadow-sm"
 >
   <!-- Top Row: Seleção (Esquerda como em Containers) & Ações/Disk stats (Direita) -->
   <div class="flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center gap-2">
       <!-- Botão Marcar Todos (Verde) -->
-      <Button variant="success"
+      <ButtonGreen
         size="sm"
         onclick={onToggleAll}
       >
         {allSelected ? t("common.deselect_all") : t("common.select_all")}
-      </Button>
+      </ButtonGreen>
 
       {#if selectedCount > 0}
         <span
@@ -70,20 +70,20 @@
         <span class="font-mono text-sm">{diskUsage}</span>
       </div>
 
-      <Button variant="warning"
+      <ButtonYellow
         size="sm"
         onclick={onPrune}
       >
         {t("volumes.prune_btn")}
-      </Button>
+      </ButtonYellow>
 
-      <Button variant="danger"
+      <ButtonRed
         size="sm"
         disabled={selectedCount === 0}
         onclick={onDeleteSelected}
       >
         {t("images.delete_selected")}
-      </Button>
+      </ButtonRed>
     </div>
   </div>
 

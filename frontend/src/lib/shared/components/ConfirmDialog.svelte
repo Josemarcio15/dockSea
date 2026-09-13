@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { Button } from "$shared/components/buttons";
+  import { ButtonRed, ButtonYellow, ButtonGreen, ButtonBlue, ButtonOrange } from "$shared/components/buttons";
 
   let {
     show = $bindable(false),
@@ -45,7 +45,7 @@
     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
     <div
-      class="bg-white dark:bg-[#0b1d2e] border border-slate-200 dark:border-slate-800 rounded-2xl w-105 max-w-full flex flex-col p-6 shadow-2xl animate-scaleIn text-slate-800 dark:text-slate-200 gap-4"
+      class="bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl w-105 max-w-full flex flex-col p-6 shadow-2xl animate-scaleIn text-slate-800 dark:text-slate-200 gap-4"
     >
       <!-- Header with Icon -->
       <div class="flex items-start gap-3.5">
@@ -82,30 +82,30 @@
 
       <!-- Footer Buttons -->
       <div class="flex gap-2.5 justify-end pt-3 border-t border-slate-100 dark:border-slate-800/80 items-center">
-        <Button variant="neutral"
+        <ButtonOrange
           size="sm"
           disabled={loading}
           onclick={handleCancel}
         >
           {cancelText || t("common.cancel")}
-        </Button>
+        </ButtonOrange>
 
         {#if type === "danger"}
-          <Button variant="danger" size="sm" {loading} onclick={handleConfirm}>
+          <ButtonRed size="sm" {loading} onclick={handleConfirm}>
             {confirmText}
-          </Button>
+          </ButtonRed>
         {:else if type === "success"}
-          <Button variant="success" size="sm" {loading} onclick={handleConfirm}>
+          <ButtonGreen size="sm" {loading} onclick={handleConfirm}>
             {confirmText}
-          </Button>
+          </ButtonGreen>
         {:else if type === "warning"}
-          <Button variant="warning" size="sm" {loading} onclick={handleConfirm}>
+          <ButtonYellow size="sm" {loading} onclick={handleConfirm}>
             {confirmText}
-          </Button>
+          </ButtonYellow>
         {:else}
-          <Button variant="primary" size="sm" {loading} onclick={handleConfirm}>
+          <ButtonBlue size="sm" {loading} onclick={handleConfirm}>
             {confirmText}
-          </Button>
+          </ButtonBlue>
         {/if}
       </div>
     </div>

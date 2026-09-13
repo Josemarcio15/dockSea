@@ -7,7 +7,7 @@
   import PortsPanel from "$shared/components/PortsPanel.svelte";
   import NginxLogsModal from "$shared/components/NginxLogsModal.svelte";
   import ConfirmDialog from "$shared/components/ConfirmDialog.svelte";
-  import { Button } from "$shared/components/buttons";
+  import { Button, ButtonRed } from "$shared/components/buttons";
 
   import ExtrasHeader from "./components/ExtrasHeader.svelte";
   import NginxSitesPanel from "./components/NginxSitesPanel.svelte";
@@ -103,7 +103,7 @@
 
     {#if mainTab === "ports"}
       <section
-        class="w-full bg-white dark:bg-[#0b1d2e] border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm"
+        class="w-full bg-white dark:bg-[#0b0f19] border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm"
       >
         <PortsPanel activeVps={data.activeVps} />
       </section>
@@ -167,7 +167,7 @@
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
   >
     <div
-      class="w-full max-w-md rounded-2xl bg-white dark:bg-[#0e2536] p-6 space-y-4"
+      class="w-full max-w-md rounded-2xl bg-white dark:bg-[#0c1220] p-6 space-y-4"
     >
       <h2 class="text-base font-bold">{t("extras.delete_confirm_title")}</h2>
       <p class="text-xs">{t("extras.delete_confirm_msg", { site })}</p>
@@ -175,12 +175,12 @@
         <Button size="sm" onclick={() => (showDeleteDialog = false)}>
           {t("common.cancel")}
         </Button>
-        <Button variant="danger" size="sm" onclick={async () => {
+        <ButtonRed size="sm" onclick={async () => {
           showDeleteDialog = false;
           await store.remove();
         }}>
           {t("common.delete")}
-        </Button>
+        </ButtonRed>
       </div>
     </div>
   </div>

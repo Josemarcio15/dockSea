@@ -194,7 +194,7 @@
 <div
   bind:this={container}
   {id}
-  class="bg-slate-100/90 dark:bg-[#081826] text-slate-800 dark:text-slate-200 p-4 rounded-xl text-xs font-mono overflow-auto flex-1 shadow-inner border border-slate-300/80 dark:border-slate-800/80 space-y-1 select-text scrollbar-thin {maxHeight} {customClass}"
+  class="bg-slate-100/90 dark:bg-[#090d16] text-slate-800 dark:text-slate-200 p-4 rounded-xl text-xs font-mono overflow-auto flex-1 shadow-inner border border-slate-300/80 dark:border-slate-800/80 space-y-1 select-text scrollbar-thin {maxHeight} {customClass}"
 >
   {#if logs.length === 0}
     <div class="text-slate-400 dark:text-slate-500 italic py-6 text-center select-none">

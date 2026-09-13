@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { Button } from "$shared/components/buttons";
+  import { ButtonGreen, ButtonRed } from "$shared/components/buttons";
   import type { DockerNetwork } from "$lib/domains/networks";
   import { isDefaultNetwork as checkIsDefault } from "$lib/domains/networks";
 
@@ -60,11 +60,11 @@
 </script>
 
 <div
-  class="relative rounded-2xl bg-white dark:bg-[#0b1d2e] border border-slate-200 dark:border-slate-800/80 hover:border-violet-500/50 dark:hover:border-violet-500/40 shadow-sm hover:shadow-md dark:shadow-none dark:hover:shadow-violet-950/20 transition-all duration-200 flex flex-col justify-between overflow-hidden self-start w-full text-slate-800 dark:text-slate-200 p-3.5 gap-3 group"
+  class="relative rounded-2xl bg-white dark:bg-[#0b101d] border border-slate-200 dark:border-slate-800/80 hover:border-violet-500/50 dark:hover:border-violet-500/40 shadow-sm hover:shadow-md dark:shadow-none dark:hover:shadow-violet-950/20 transition-all duration-200 flex flex-col justify-between overflow-hidden self-start w-full text-slate-800 dark:text-slate-200 p-3.5 gap-3 group"
 >
   <!-- Card Header Compacto Elevado -->
   <div
-    class="flex items-center gap-2.5 min-w-0 p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+    class="flex items-center gap-2.5 min-w-0 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
   >
     <!-- Checkbox -->
     <button
@@ -135,7 +135,7 @@
       <!-- ID & Subnet Grid -->
       <div class="grid grid-cols-2 gap-2 text-[11px]">
         <div
-          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
         >
           <span
             class="w-fit px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1"
@@ -148,7 +148,7 @@
         </div>
 
         <div
-          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
         >
           <span
             class="w-fit px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1"
@@ -164,7 +164,7 @@
 
       <!-- Escopo e Gateway -->
       <div
-        class="flex items-center justify-between p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md text-[11px]"
+        class="flex items-center justify-between p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md text-[11px]"
       >
         <span
           class="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
@@ -178,7 +178,7 @@
 
       {#if network.gateway}
         <div
-          class="flex items-center justify-between p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md text-[11px]"
+          class="flex items-center justify-between p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md text-[11px]"
         >
           <span
             class="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
@@ -195,7 +195,7 @@
 
       <!-- Connected Containers -->
       <div
-        class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+        class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
       >
         <span
           class="w-fit px-1.5 py-0.2 rounded text-[9px] text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-950/60 font-bold uppercase tracking-wider"
@@ -220,12 +220,12 @@
                     </span>
                   {/if}
                 </div>
-                <Button variant="danger"
+                <ButtonRed
                   size="xs"
                   onclick={() => on_disconnect(container.name)}
                 >
                   {t("networks.card_disconnect_btn")}
-                </Button>
+                </ButtonRed>
               </div>
             {/each}
           </div>
@@ -239,7 +239,7 @@
       <!-- Labels -->
       {#if labels.length > 0}
         <div
-          class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
         >
           <span
             class="w-fit px-1.5 py-0.2 rounded text-[9px] text-pink-700 dark:text-pink-300 bg-pink-100 dark:bg-pink-950/60 font-bold uppercase tracking-wider"
@@ -260,20 +260,20 @@
 
       <!-- Actions -->
       <div class="flex gap-2 pt-1">
-        <Button variant="success"
+        <ButtonGreen
           size="xs"
           class="flex-1"
           onclick={on_connect}
         >
           {t("networks.connect_title")}
-        </Button>
+        </ButtonGreen>
         {#if !isDefaultNetwork}
-          <Button variant="danger"
+          <ButtonRed
             size="xs"
             onclick={on_delete}
           >
             {t("common.delete")}
-          </Button>
+          </ButtonRed>
         {/if}
       </div>
     </div>

@@ -2,7 +2,7 @@
   import { t } from "$shared/stores/locale.svelte";
   import type { Container } from "$lib/domains/containers";
   import { statsState } from "$shared/stores/stats.svelte";
-  import { Button } from "$shared/components/buttons";
+  import { ButtonPurple, ButtonCyan, ButtonPink } from "$shared/components/buttons";
   import FormModal from "$shared/components/FormModal.svelte";
 
   let {
@@ -174,11 +174,11 @@
 </script>
 
 <div
-  class="relative rounded-2xl bg-white dark:bg-[#0b1d2e] border border-slate-200 dark:border-slate-800/80 hover:border-violet-500/50 dark:hover:border-violet-500/40 shadow-sm hover:shadow-md dark:shadow-none dark:hover:shadow-violet-950/20 transition-all duration-200 flex flex-col justify-between overflow-hidden self-start w-full text-slate-800 dark:text-slate-200 p-3.5 gap-3 group"
+  class="relative rounded-2xl bg-white dark:bg-[#0b101d] border border-slate-200 dark:border-slate-800/80 hover:border-violet-500/50 dark:hover:border-violet-500/40 shadow-sm hover:shadow-md dark:shadow-none dark:hover:shadow-violet-950/20 transition-all duration-200 flex flex-col justify-between overflow-hidden self-start w-full text-slate-800 dark:text-slate-200 p-3.5 gap-3 group"
 >
   <!-- Card Header Compacto Elevado -->
   <div
-    class="flex items-center gap-2.5 min-w-0 p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+    class="flex items-center gap-2.5 min-w-0 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
   >
     <!-- Checkbox -->
     <button
@@ -251,7 +251,7 @@
       <!-- ID & Criado Em Grid -->
       <div class="grid grid-cols-2 gap-2 text-[11px]">
         <div
-          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
         >
           <span
             class="w-fit px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1"
@@ -263,7 +263,7 @@
         </div>
 
         <div
-          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
         >
           <span
             class="w-fit px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1"
@@ -282,7 +282,7 @@
       {#if myStats}
         <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
           <div
-            class="p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+            class="p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
           >
             <span
               class="px-1.5 py-0.2 rounded text-[9px] uppercase font-bold tracking-wider bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300"
@@ -295,7 +295,7 @@
             </p>
           </div>
           <div
-            class="p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+            class="p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
           >
             <span
               class="px-1.5 py-0.2 rounded text-[9px] uppercase font-bold tracking-wider bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300"
@@ -312,7 +312,7 @@
 
       <!-- Política de Reinício -->
       <div
-        class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md text-[11px]"
+        class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md text-[11px]"
       >
         <span
           class="w-fit px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1"
@@ -327,7 +327,7 @@
       <!-- Redes Conectadas -->
       {#if networkItems.length > 0}
         <div
-          class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
         >
           <span
             class="w-fit px-1.5 py-0.2 rounded text-[9px] text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-950/60 font-bold uppercase tracking-wider"
@@ -350,7 +350,7 @@
       <!-- Portas Mapeadas -->
       {#if portItems.length > 0}
         <div
-          class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
         >
           <span
             class="w-fit px-1.5 py-0.2 rounded text-[9px] text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-950/60 font-bold uppercase tracking-wider"
@@ -373,7 +373,7 @@
 
       <!-- Container Details & Actions Footer -->
       <div class="pt-2 border-t border-slate-300 dark:border-slate-800 grid grid-cols-3 gap-1.5">
-        <Button variant="neutral"
+        <ButtonPink
           size="xs"
           class="w-full"
           onclick={() => (showLabels = true)}
@@ -394,8 +394,8 @@
             </svg>
           {/snippet}
           {t("containers.card_view_labels")}
-        </Button>
-        <Button variant="primary"
+        </ButtonPink>
+        <ButtonCyan
           size="xs"
           class="w-full"
           onclick={() => (showEnv = true)}
@@ -416,8 +416,8 @@
             </svg>
           {/snippet}
           {t("containers.card_view_env")}
-        </Button>
-        <Button variant="primary"
+        </ButtonCyan>
+        <ButtonPurple
           size="xs"
           class="w-full"
           onclick={() => on_open_logs(container.name)}
@@ -438,7 +438,7 @@
             </svg>
           {/snippet}
           {t("containers.card_view_logs")}
-        </Button>
+        </ButtonPurple>
       </div>
     </div>
   {/if}

@@ -6,7 +6,7 @@
   class="flex flex-col items-center justify-center min-h-[65vh] p-6 text-center animate-fadeIn"
 >
   <div
-    class="max-w-md w-full bg-white dark:bg-[#0e2536] border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl flex flex-col items-center space-y-5"
+    class="max-w-md w-full bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl flex flex-col items-center space-y-5"
   >
     <!-- Icon Container -->
     <div

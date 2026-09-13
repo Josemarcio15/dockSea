@@ -1,11 +1,11 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { Button } from "$shared/components/buttons";
+  import { ButtonPurple, ButtonRed } from "$shared/components/buttons";
   let { profile, active, canDelete, onSelect, onEdit, onDelete } = $props();
 </script>
 
 <div
-  class="flex flex-col justify-between p-5 rounded-2xl bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-slate-50 to-slate-100 dark:from-[#151c2e] dark:via-[#10283b] dark:to-[#081826] border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.03),inset_0_1px_0_0_rgba(255,255,255,0.9),inset_0_-1px_0_0_rgba(0,0,0,0.03)] dark:shadow-[0_10px_25px_-5px_rgba(0,0,0,0.5),inset_0_1px_0_0_rgba(255,255,255,0.05)] hover:-translate-y-1 hover:shadow-[0_20px_30px_-10px_rgba(0,0,0,0.08)] transition-all duration-200 active:translate-y-0"
+  class="flex flex-col justify-between p-5 rounded-2xl bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-slate-50 to-slate-100 dark:from-[#151c2e] dark:via-[#0e1526] dark:to-[#080d1a] border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.03),inset_0_1px_0_0_rgba(255,255,255,0.9),inset_0_-1px_0_0_rgba(0,0,0,0.03)] dark:shadow-[0_10px_25px_-5px_rgba(0,0,0,0.5),inset_0_1px_0_0_rgba(255,255,255,0.05)] hover:-translate-y-1 hover:shadow-[0_20px_30px_-10px_rgba(0,0,0,0.08)] transition-all duration-200 active:translate-y-0"
 >
   <div class="space-y-2">
     <div class="flex items-center justify-between">

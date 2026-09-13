@@ -4,7 +4,11 @@
     notifySuccess,
     notifyError,
   } from "$shared/stores/notification.svelte";
-  import { Button } from "$shared/components/buttons";
+  import {
+    ButtonGreen,
+    ButtonYellow,
+    ButtonPurple,
+  } from "$shared/components/buttons";
   import { folderNameFromPath } from "../service";
   import type { BuilderFolder, BuilderStore } from "../types";
 
@@ -44,7 +48,7 @@
 
 <div class="space-y-4">
   <div
-    class="bg-white dark:bg-[#0b1d2e] border border-slate-200/70 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-4"
+    class="bg-white dark:bg-[#0b0f19] border border-slate-200/70 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-4"
   >
     <h3
       class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider"
@@ -52,19 +56,22 @@
       {t("builder.nav_title")}
     </h3>
     <div class="flex items-center gap-2 flex-wrap">
-      <Button variant="primary" size="xs" onclick={() => store.browse()}
-        >{t("builder.nav_home")}</Button>
-      {#if store.parentPath}<Button variant="warning"
+      <ButtonPurple size="xs" onclick={() => store.browse()}
+        >{t("builder.nav_home")}</ButtonPurple
+      >
+      {#if store.parentPath}<ButtonYellow
           size="xs"
           onclick={() => store.browse(store.parentPath ?? "")}
-          >{t("builder.nav_up")}</Button>{/if}
+          >{t("builder.nav_up")}</ButtonYellow
+        >{/if}
     </div>
     {#if store.savedPaths.length > 0}
       <div class="flex items-center gap-2 flex-wrap pt-1 border-t border-slate-100 dark:border-slate-800/60">
       {#each store.savedPaths as path}
         <div class="relative inline-block group">
-          <Button variant="success" size="xs" onclick={() => store.browse(path)} title={path}
-            ><span class="mr-1">📌</span>{folderNameFromPath(path)}</Button><span
+          <ButtonGreen size="xs" onclick={() => store.browse(path)} title={path}
+            ><span class="mr-1">📌</span>{folderNameFromPath(path)}</ButtonGreen
+          ><span
             class="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer z-10"
             role="button"
             tabindex="0"

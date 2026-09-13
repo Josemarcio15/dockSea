@@ -1,6 +1,11 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { Button } from "$shared/components/buttons";
+  import {
+    ButtonBlue,
+    ButtonGreen,
+    ButtonPurple,
+    ButtonYellow,
+  } from "$shared/components/buttons";
   import type { BuilderStore } from "../types";
   let { store, goToImages }: { store: BuilderStore; goToImages: () => void } =
     $props();
@@ -21,25 +26,28 @@
         bind:value={store.customTag}
         disabled={store.status === "building"}
       /><span class="text-xs font-mono text-slate-400 select-none">:latest</span
-      >{#if store.customTag.trim()}<Button variant="warning"
+      >{#if store.customTag.trim()}<ButtonYellow
           size="xs"
-          onclick={() => (store.customTag = "")}>Restaurar</Button>{/if}
+          onclick={() => (store.customTag = "")}>Restaurar</ButtonYellow
+        >{/if}
     </div>
     {#if store.status === "building"}<span
         class="text-xs text-amber-500 font-semibold"
         >{t("builder.building")}</span
       >{/if}
     <div class="flex items-center gap-2 w-full">
-      <Button variant="success"
+      <ButtonGreen
         size="md"
         class="flex-1"
         disabled={!store.canBuild}
         loading={store.status === "building"}
-        onclick={() => store.build()}>{t("builder.build_btn")}</Button>{#if store.currentPath}<Button variant="primary"
+        onclick={() => store.build()}>{t("builder.build_btn")}</ButtonGreen
+      >{#if store.currentPath}<ButtonPurple
           size="md"
           disabled={store.savedPaths.includes(store.currentPath)}
           onclick={() => store.saveCurrentPath()}
-          >{t("builder.save_path")}</Button>{/if}
+          >{t("builder.save_path")}</ButtonPurple
+        >{/if}
     </div>
     {#if store.status === "success"}<div
         class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 w-full"
@@ -48,8 +56,9 @@
           {t("builder.image_ready", { name: store.builtImage })}
         </p>
       </div>
-      <Button variant="primary" size="md" class="w-full" onclick={goToImages}
-        >{t("builder.transfer_btn")}</Button>{/if}
+      <ButtonBlue size="md" class="w-full" onclick={goToImages}
+        >{t("builder.transfer_btn")}</ButtonBlue
+      >{/if}
   </div>
 {:else if store.currentPath && !store.loading}<span
     class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200 mt-4"

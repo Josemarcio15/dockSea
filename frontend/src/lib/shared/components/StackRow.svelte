@@ -1,6 +1,13 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { Button } from "$shared/components/buttons";
+  import {
+    ButtonGreen,
+    ButtonYellow,
+    ButtonBlue,
+    ButtonPurple,
+    ButtonRed,
+    ButtonOrange,
+  } from "$shared/components/buttons";
   import type { StackItem } from "$lib/domains/stacks";
 
   let {
@@ -31,7 +38,7 @@
 </script>
 
 <div
-  class="flex flex-col xl:flex-row xl:items-center justify-between p-4 bg-white dark:bg-[#0e2536] border-2 border-slate-300/80 dark:border-slate-700 rounded-2xl gap-4 hover:border-violet-500/50 dark:hover:border-violet-500/40 transition-all shadow-md hover:shadow-lg"
+  class="flex flex-col xl:flex-row xl:items-center justify-between p-4 bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 rounded-2xl gap-4 hover:border-violet-500/50 dark:hover:border-violet-500/40 transition-all shadow-md hover:shadow-lg"
 >
   <!-- Stack Main Information -->
   <div class="flex items-start gap-4 min-w-0 flex-1">
@@ -110,7 +117,7 @@
   <!-- Stack Actions -->
   <div class="flex flex-wrap items-center gap-2 shrink-0 pt-2 xl:pt-0 border-t xl:border-t-0 border-slate-100 dark:border-slate-800/60">
     <!-- Deploy (Green) -->
-    <Button variant="success" size="sm" onclick={on_deploy}>
+    <ButtonGreen size="sm" onclick={on_deploy}>
       {#snippet icon()}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -126,10 +133,10 @@
         </svg>
       {/snippet}
       {t("stacks.deploy_btn")}
-    </Button>
+    </ButtonGreen>
 
     <!-- Stop / Remove Container (Yellow / Amber) -->
-    <Button variant="warning" size="sm" onclick={on_stop}>
+    <ButtonYellow size="sm" onclick={on_stop}>
       {#snippet icon()}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -141,10 +148,10 @@
         </svg>
       {/snippet}
       {t("stacks.stop_btn")}
-    </Button>
+    </ButtonYellow>
 
     <!-- Logs (Blue) -->
-    <Button variant="primary" size="sm" onclick={on_logs}>
+    <ButtonBlue size="sm" onclick={on_logs}>
       {#snippet icon()}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -161,10 +168,10 @@
         </svg>
       {/snippet}
       {t("stacks.logs_btn")}
-    </Button>
+    </ButtonBlue>
 
     <!-- Edit (Purple) -->
-    <Button variant="primary" size="sm" onclick={on_edit}>
+    <ButtonPurple size="sm" onclick={on_edit}>
       {#snippet icon()}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -183,10 +190,10 @@
         </svg>
       {/snippet}
       {t("stacks.edit_btn")}
-    </Button>
+    </ButtonPurple>
 
     <!-- Removes from VPS / Down (Orange) -->
-    <Button variant="neutral" size="sm" onclick={on_remove_remote}>
+    <ButtonOrange size="sm" onclick={on_remove_remote}>
       {#snippet icon()}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -205,10 +212,10 @@
         </svg>
       {/snippet}
       {t("stacks.remove_remote_btn")}
-    </Button>
+    </ButtonOrange>
 
     <!-- Delete Local Definition (Red / Rose) -->
-    <Button variant="danger" size="sm" onclick={on_delete_local}>
+    <ButtonRed size="sm" onclick={on_delete_local}>
       {#snippet icon()}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -226,6 +233,6 @@
         </svg>
       {/snippet}
       {t("stacks.delete_local_btn")}
-    </Button>
+    </ButtonRed>
   </div>
 </div>

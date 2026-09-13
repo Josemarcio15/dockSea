@@ -1,7 +1,5 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import PageTitle from "$shared/components/PageTitle.svelte";
-
   import StatusBanner from "$shared/components/StatusBanner.svelte";
   import { createConfigStore } from "./store.svelte";
 
@@ -9,7 +7,7 @@
   import VpsModal from "./VpsModal.svelte";
   import DiagnosticModal from "./DiagnosticModal.svelte";
   import ConfirmDialog from "$shared/components/ConfirmDialog.svelte";
-  import { Button } from "$shared/components/buttons";
+  import { ButtonPurple } from "$shared/components/buttons";
   import type { VpsFormData, VpsServer } from "./types";
 
   let { data } = $props();
@@ -63,7 +61,15 @@
 <div class="space-y-8">
   <!-- Top Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <PageTitle title={t("sidebar.configs")} />
+    <div
+      class="inline-flex items-center px-5 py-2.5 rounded-2xl bg-linear-to-br from-violet-100 to-fuchsia-100 dark:from-violet-950/40 dark:to-fuchsia-950/40 border border-violet-200/50 dark:border-violet-800/50 self-start shadow-sm"
+    >
+      <h1
+        class="text-2xl font-bold bg-linear-to-r from-violet-600 to-fuchsia-500 bg-clip-text text-transparent m-0 flex items-center gap-2"
+      >
+        {t("sidebar.configs")}
+      </h1>
+    </div>
   </div>
 
   <!-- Status Alerts -->
@@ -72,7 +78,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
     <!-- VPS Servers List (col-span-2) -->
     <div
-      class="lg:col-span-2 bg-white dark:bg-[#0b1d2e] border border-slate-200/70 dark:border-slate-800/80 p-6 rounded-2xl shadow-sm space-y-6"
+      class="lg:col-span-2 bg-white dark:bg-[#0b0f19] border border-slate-200/70 dark:border-slate-800/80 p-6 rounded-2xl shadow-sm space-y-6"
     >
       <div
         class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
@@ -88,10 +94,10 @@
           </p>
         </div>
 
-        <Button variant="primary" onclick={openCreateModal}>
+        <ButtonPurple onclick={openCreateModal}>
           <span class="text-sm font-normal">+</span>
           {t("config.add_server_btn")}
-        </Button>
+        </ButtonPurple>
       </div>
 
       <!-- Servers List (Rows) -->
@@ -119,7 +125,7 @@
     <div class="space-y-6">
       <!-- Language Card -->
       <div
-        class="bg-white dark:bg-[#0b1d2e] border border-slate-200/70 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-4"
+        class="bg-white dark:bg-[#0b0f19] border border-slate-200/70 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-4"
       >
         <h3
           class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-2"
@@ -164,7 +170,7 @@
 
       <!-- Local Database & Maintenance Card -->
       <div
-        class="bg-white dark:bg-[#0b1d2e] border border-slate-200/70 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-4"
+        class="bg-white dark:bg-[#0b0f19] border border-slate-200/70 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-4"
       >
         <h3
           class="text-sm font-bold text-slate-900 dark:text-slate-200 uppercase tracking-wider flex items-center gap-2"
