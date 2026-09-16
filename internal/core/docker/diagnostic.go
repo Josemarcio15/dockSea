@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -122,7 +123,7 @@ func testSshDiagnostic(server db.VpsServer) DiagnosticResult {
 	if port == 0 {
 		port = 22
 	}
-	targetAddr := fmt.Sprintf("%s:%d", host, port)
+	targetAddr := net.JoinHostPort(host, strconv.Itoa(port))
 
 	// 1. Resolução DNS e Teste de Conectividade de Rede (Porta TCP)
 	connStart := time.Now()

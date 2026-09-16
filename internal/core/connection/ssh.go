@@ -1,9 +1,15 @@
 package connection
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
+	"net"
 	"os"
+	"path/filepath"
+	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"go-walis/internal/core/db"
@@ -11,9 +17,71 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
+var (
+	knownHostsMu sync.Mutex
+)
+
+// getKnownHostsPath retorna o caminho do arquivo de fingerprints conhecidos do DockSea
+func getKnownHostsPath() string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return ""
+	}
+	dir := filepath.Join(home, ".docksea")
+	_ = os.MkdirAll(dir, 0700)
+	return filepath.Join(dir, "known_hosts")
+}
+
+// tofuHostKeyCallback implementa TOFU (Trust On First Use) seguro para validação de chaves SSH
+func tofuHostKeyCallback(targetAddr string) ssh.HostKeyCallback {
+	return func(hostname string, remote net.Addr, key ssh.PublicKey) error {
+		knownHostsPath := getKnownHostsPath()
+		if knownHostsPath == "" {
+			// Fallback se não conseguir obter diretório do usuário
+			return nil
+		}
+
+		knownHostsMu.Lock()
+		defer knownHostsMu.Unlock()
+
+		keyFingerprint := hex.EncodeToString(sha256.New().Sum(key.Marshal()))
+		keyType := key.Type()
+		entry := fmt.Sprintf("%s %s %s\n", targetAddr, keyType, keyFingerprint)
+
+		data, err := os.ReadFile(knownHostsPath)
+		if err != nil && !os.IsNotExist(err) {
+			return fmt.Errorf("falha ao ler known_hosts: %w", err)
+		}
+
+		if len(data) > 0 {
+			lines := strings.Split(string(data), "\n")
+			for _, line := range lines {
+				parts := strings.Fields(strings.TrimSpace(line))
+				if len(parts) >= 3 && parts[0] == targetAddr {
+					if parts[1] == keyType && parts[2] == keyFingerprint {
+						// Chave idêntica e confiável
+						return nil
+					}
+					// Chave mudou! Alerta de possível Man-In-The-Middle
+					return fmt.Errorf("ATENÇÃO: A chave do host SSH para '%s' mudou! Possível ataque Man-in-the-Middle ou servidor reinstalado. Fingerprint gravado: %s, Fingerprint recebido: %s", targetAddr, parts[2], keyFingerprint)
+				}
+			}
+		}
+
+		// Primeiro uso (TOFU): registra a chave conhecida
+		f, err := os.OpenFile(knownHostsPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+		if err == nil {
+			_, _ = f.WriteString(entry)
+			_ = f.Close()
+		}
+		return nil
+	}
+}
+
 // createSshClient constrói a conexão SSH usando a regra inteligente de autenticação
 func createSshClient(server db.VpsServer) (*ssh.Client, error) {
-	if strings.TrimSpace(server.Host) == "" {
+	host := strings.TrimSpace(server.Host)
+	if host == "" {
 		return nil, fmt.Errorf("o host ou IP da VPS é obrigatório")
 	}
 
@@ -21,7 +89,8 @@ func createSshClient(server db.VpsServer) (*ssh.Client, error) {
 	if port == 0 {
 		port = 22
 	}
-	targetAddr := fmt.Sprintf("%s:%d", strings.TrimSpace(server.Host), port)
+	// Utiliza net.JoinHostPort para suportar IPv4, IPv6 (ex: [2001:db8::1]:22) e domínios com segurança (SSH-006)
+	targetAddr := net.JoinHostPort(host, strconv.Itoa(port))
 
 	var authMethods []ssh.AuthMethod
 
@@ -71,7 +140,7 @@ func createSshClient(server db.VpsServer) (*ssh.Client, error) {
 	config := &ssh.ClientConfig{
 		User:            username,
 		Auth:            authMethods,
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		HostKeyCallback: tofuHostKeyCallback(targetAddr),
 		Timeout:         8 * time.Second,
 	}
 
