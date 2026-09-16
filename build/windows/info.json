@@ -1,19 +1,15 @@
 {
 	"fixed": {
-		"file_version": "0.0.6-alpha",
-		"product_version": "0.0.6-alpha",
-		"file_description": "DockSea Container Manager"
+		"file_version": "0.0.7-alpha"
 	},
 	"info": {
-		"string_table": {
-			"0000": {
-				"ProductVersion": "0.0.6-alpha",
-				"CompanyName": "Samabe",
-				"FileDescription": "docker sea",
-				"LegalCopyright": "(c) 2026, Samabe",
-				"ProductName": "DockSea",
-				"Comments": "docker sea"
-			}
+		"0000": {
+			"ProductVersion": "0.0.7-alpha",
+			"CompanyName": "Samabe",
+			"FileDescription": "docker sea",
+			"LegalCopyright": "(c) 2026, Samabe",
+			"ProductName": "DockSea",
+			"Comments": "docker sea"
 		}
 	}
 }

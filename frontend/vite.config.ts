@@ -8,11 +8,11 @@ import fs from "fs";
 // Read app version from single source of truth: root VERSION file
 function getAppVersion(): string {
   try {
-    const versionPath = path.resolve(__dirname, "../VERSION");
+    const versionPath = path.resolve(import.meta.dirname, "../VERSION");
     if (fs.existsSync(versionPath)) {
       return fs.readFileSync(versionPath, "utf-8").trim();
     }
-    const configPath = path.resolve(__dirname, "../build/config.yml");
+    const configPath = path.resolve(import.meta.dirname, "../build/config.yml");
     const content = fs.readFileSync(configPath, "utf-8");
     const match = content.match(/^version:\s*["']?([^"'\r\n]+)["']?/m);
     return match ? match[1] : "0.0.0";
@@ -35,11 +35,11 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      $lib: path.resolve(__dirname, "./src/lib"),
-      $shared: path.resolve(__dirname, "./src/lib/shared"),
-      $navigation: path.resolve(__dirname, "./src/lib/shared/navigation"),
-      $session: path.resolve(__dirname, "./src/lib/shared/session"),
-      $bindings: path.resolve(__dirname, "./bindings/go-walis/internal"),
+      $lib: path.resolve(import.meta.dirname, "./src/lib"),
+      $shared: path.resolve(import.meta.dirname, "./src/lib/shared"),
+      $navigation: path.resolve(import.meta.dirname, "./src/lib/shared/navigation"),
+      $session: path.resolve(import.meta.dirname, "./src/lib/shared/session"),
+      $bindings: path.resolve(import.meta.dirname, "./bindings/go-walis/internal"),
     },
   },
   plugins: [tailwindcss(), svelte(), wails("./bindings")],

@@ -40,6 +40,8 @@ tasks:
 
   package:
     summary: Packages a production build of the application
+    deps:
+      - sync:version
     cmds:
       - task: "{{.GOOS}}:package"
         vars:
@@ -47,6 +49,8 @@ tasks:
 
   run:
     summary: Runs the application
+    deps:
+      - sync:version
     cmds:
       - task: "{{.GOOS}}:run"
         vars:
@@ -54,6 +58,8 @@ tasks:
 
   dev:
     summary: Runs the application in development mode
+    deps:
+      - sync:version
     cmds:
       - wails3 dev -config ./build/config.yml -port {{.VITE_PORT}}
 
