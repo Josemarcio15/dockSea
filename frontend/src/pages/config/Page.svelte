@@ -1,5 +1,6 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
+  import { useRefreshKey } from "$shared/stores/refresh.svelte";
   import StatusBanner from "$shared/components/StatusBanner.svelte";
   import { createConfigStore } from "./store.svelte";
 
@@ -21,6 +22,7 @@
 
   // Load SQLite servers upon opening the screen
   $effect(() => {
+    useRefreshKey();
     void store.load();
   });
 

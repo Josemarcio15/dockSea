@@ -11,8 +11,8 @@ import (
 	"sync"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
+	"go-walis/internal/core/connection"
 	"go-walis/internal/core/db"
-	sharedDocker "go-walis/internal/shared/docker"
 	"go-walis/internal/stacks"
 )
 
@@ -175,7 +175,7 @@ func (s *Service) Build(folderPath, projectName, locale string) error {
 
 		emitStarted()
 		emitProgress("→ [PREPARING] Conectando à VPS remota...")
-		client, err := sharedDocker.NewClient(*srv)
+		client, err := connection.GetClient(*srv)
 		if err != nil {
 			emitProgress(fmt.Sprintf("✗ Erro de conexão com a VPS: %v", err))
 			emitComplete(false, err.Error())

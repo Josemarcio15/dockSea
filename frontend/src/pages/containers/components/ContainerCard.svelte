@@ -374,8 +374,8 @@
       <!-- Container Details & Actions Footer -->
       <div class="pt-2 border-t border-slate-300 dark:border-slate-800 grid grid-cols-3 gap-1.5">
         <ButtonPink
-          size="xs"
-          class="w-full"
+          size="sm"
+          class="w-full whitespace-nowrap"
           onclick={() => (showLabels = true)}
         >
           {#snippet icon()}
@@ -387,7 +387,7 @@
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="w-3 h-3"
+              class="w-3.5 h-3.5"
             >
               <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
               <line x1="7" y1="7" x2="7.01" y2="7" />
@@ -396,8 +396,8 @@
           {t("containers.card_view_labels")}
         </ButtonPink>
         <ButtonCyan
-          size="xs"
-          class="w-full"
+          size="sm"
+          class="w-full whitespace-nowrap"
           onclick={() => (showEnv = true)}
         >
           {#snippet icon()}
@@ -409,7 +409,7 @@
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="w-3 h-3"
+              class="w-3.5 h-3.5"
             >
               <rect width="18" height="18" x="3" y="3" rx="2" />
               <path d="M7 8h10M7 12h10M7 16h6" />
@@ -418,8 +418,8 @@
           {t("containers.card_view_env")}
         </ButtonCyan>
         <ButtonPurple
-          size="xs"
-          class="w-full"
+          size="sm"
+          class="w-full whitespace-nowrap"
           onclick={() => on_open_logs(container.name)}
         >
           {#snippet icon()}
@@ -431,7 +431,7 @@
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="w-3 h-3"
+              class="w-3.5 h-3.5"
             >
               <polyline points="4 17 10 11 4 5" />
               <line x1="12" x2="20" y1="19" y2="19" />

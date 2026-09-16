@@ -1,5 +1,6 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
+  import { useRefreshKey } from "$shared/stores/refresh.svelte";
   import StatusBanner from "$shared/components/StatusBanner.svelte";
   import { ButtonPurple } from "$shared/components/buttons";
   import ServerCard from "./components/ServerCard.svelte";
@@ -10,6 +11,7 @@
     $props();
   const serverStore = createServersStore(() => data);
   $effect(() => {
+    useRefreshKey();
     void serverStore.load();
   });
 </script>

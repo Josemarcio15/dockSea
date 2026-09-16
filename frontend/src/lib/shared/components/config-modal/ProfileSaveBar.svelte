@@ -37,7 +37,7 @@
     />
     {#if profileName.trim()}
       <ButtonGreen
-        size="sm"
+        size="xs"
         disabled={saveDisabled}
         onclick={onTriggerSave}
       >

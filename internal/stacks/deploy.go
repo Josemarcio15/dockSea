@@ -14,7 +14,6 @@ import (
 
 	"go-walis/internal/core/connection"
 	"go-walis/internal/core/db"
-	sharedDocker "go-walis/internal/shared/docker"
 )
 
 var validIDRegex = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
@@ -91,7 +90,7 @@ func ExecuteDeploy(
 
 	// 4. Obter ou criar conexão com o servidor VPS
 	broadcaster.EmitProgress(PhasePreparing, "Conectando à VPS remota via SSH...")
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		msg := fmt.Sprintf("falha na conexão com o servidor: %v", err)
 		broadcaster.EmitFailed(PhasePreparing, msg)

@@ -87,3 +87,36 @@ func (m *Manager) CloseClient(serverID string) {
 		client.ForceClose()
 	}
 }
+
+// CloseAll encerra e remove todas as conexões ativas do pool
+func (m *Manager) CloseAll() {
+	m.mu.Lock()
+	oldClients := make([]*Client, 0, len(m.clients))
+	for _, client := range m.clients {
+		oldClients = append(oldClients, client)
+	}
+	m.clients = make(map[string]*Client)
+	m.mu.Unlock()
+
+	for _, client := range oldClients {
+		if client != nil {
+			client.ForceClose()
+		}
+	}
+}
+
+// GetClient obtém ou cria uma nova conexão para o servidor reaproveitando a sessão existente no pool global
+func GetClient(server db.VpsServer) (*Client, error) {
+	return globalManager.GetClient(server)
+}
+
+// CloseClient encerra e remove do pool global a conexão de um servidor específico
+func CloseClient(serverID string) {
+	globalManager.CloseClient(serverID)
+}
+
+// CloseAll encerra todas as conexões ativas do pool global
+func CloseAll() {
+	globalManager.CloseAll()
+}
+

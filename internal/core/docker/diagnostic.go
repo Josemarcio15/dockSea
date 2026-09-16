@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"go-walis/internal/core/connection"
 	"go-walis/internal/core/db"
-	sharedDocker "go-walis/internal/shared/docker"
 )
 
 type DiagnosticStep struct {
@@ -40,7 +40,7 @@ func testLocalDiagnostic(server db.VpsServer) DiagnosticResult {
 	}
 
 	// 1. Tenta inicializar o cliente de conexão local
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		steps = append(steps, DiagnosticStep{
 			Name:    "Conexão Docker Local",
@@ -150,7 +150,7 @@ func testSshDiagnostic(server db.VpsServer) DiagnosticResult {
 	})
 
 	// 2. Autenticação e Estabelecimento de Conexão com connection.NewClient
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		steps = append(steps, DiagnosticStep{
 			Name:    "Autenticação SSH",

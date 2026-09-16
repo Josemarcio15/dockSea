@@ -43,6 +43,7 @@
   });
 
   $effect(() => {
+    useRefreshKey();
     const profileId = data?.activeProfile?.id || "default";
     void imgState.fetchSavedConfigs();
   });

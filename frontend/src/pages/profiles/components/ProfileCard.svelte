@@ -1,6 +1,10 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonPurple, ButtonRed } from "$shared/components/buttons";
+  import {
+    ButtonPurple,
+    ButtonRed,
+    EditButtonIcon,
+  } from "$shared/components/buttons";
   let { profile, active, canDelete, onSelect, onEdit, onDelete } = $props();
 </script>
 
@@ -43,31 +47,31 @@
     class="flex items-center gap-2 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800"
   >
     {#if !active}
-      <button
-        type="button"
-        class="flex-1 px-4 py-2.5 rounded-xl font-bold text-xs bg-linear-to-b from-violet-500 to-violet-600 border border-violet-400/40 border-b-violet-700 border-b-2 text-white shadow-md shadow-violet-500/25 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.35)] hover:from-violet-400 hover:to-violet-500 active:translate-y-0.5 active:border-b-0 transition-all cursor-pointer"
+      <ButtonPurple
+        size="sm"
+        class="flex-1"
         onclick={onSelect}
       >
         {t("profiles.select_btn")}
-      </button>
+      </ButtonPurple>
     {/if}
 
-    <button
-      type="button"
-      class="px-3.5 py-2.5 rounded-xl font-bold text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-sm shadow-[inset_0_-2px_0_0_rgba(0,0,0,0.06)] hover:bg-slate-50 active:translate-y-0.5 transition-all cursor-pointer"
+    <EditButtonIcon
+      size="sm"
+      title={t("common.edit")}
       onclick={onEdit}
     >
       {t("common.edit")}
-    </button>
+    </EditButtonIcon>
 
     {#if canDelete}
-      <button
-        type="button"
-        class="px-3.5 py-2.5 rounded-xl font-bold text-xs bg-linear-to-b from-rose-500 to-rose-600 text-white border border-rose-400/40 border-b-rose-700 border-b-2 shadow-md shadow-rose-500/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.35)] hover:from-rose-400 hover:to-rose-500 active:translate-y-0.5 active:border-b-0 transition-all cursor-pointer"
+      <ButtonRed
+        size="sm"
+        title={t("common.delete")}
         onclick={onDelete}
       >
         {t("common.delete")}
-      </button>
+      </ButtonRed>
     {/if}
   </div>
 </div>

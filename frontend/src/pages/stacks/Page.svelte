@@ -2,6 +2,7 @@
   import StackRow from "$shared/components/StackRow.svelte";
   import VpsSelectWarning from "$shared/components/VpsSelectWarning.svelte";
   import { t } from "$shared/stores/locale.svelte";
+  import { useRefreshKey } from "$shared/stores/refresh.svelte";
   import { ButtonBlue } from "$shared/components/buttons";
   import type { StackItem } from "./types";
   import { defaultYaml, folderName } from "./service";
@@ -163,6 +164,7 @@
   }
 
   $effect(() => {
+    useRefreshKey();
     void stackStore.load();
   });
 </script>

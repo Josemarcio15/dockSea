@@ -5,7 +5,6 @@ import (
 	"go-walis/internal/core/connection"
 	"go-walis/internal/core/db"
 	"go-walis/internal/core/docker"
-	sharedDocker "go-walis/internal/shared/docker"
 )
 
 type ConfigService struct {
@@ -51,7 +50,7 @@ func (s *ConfigService) AutoDetectDocker(server db.VpsServer) docker.DetectResul
 }
 
 func (s *ConfigService) GetSystemUsage(server db.VpsServer) (*connection.SystemUsage, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}
@@ -79,6 +78,7 @@ func (s *ConfigService) DeleteProfile(id string) error {
 	if id == "" {
 		return fmt.Errorf("id do perfil inválido")
 	}
+	connection.CloseAll()
 	return s.database.DeleteProfile(id)
 }
 
@@ -86,6 +86,7 @@ func (s *ConfigService) SetActiveProfile(id string) error {
 	if id == "" {
 		return fmt.Errorf("id do perfil inválido")
 	}
+	connection.CloseAll()
 	return s.database.SetActiveProfile(id)
 }
 

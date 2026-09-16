@@ -6,8 +6,8 @@ import (
 	"strings"
 	"sync"
 
+	"go-walis/internal/core/connection"
 	"go-walis/internal/core/db"
-	sharedDocker "go-walis/internal/shared/docker"
 	sharedevents "go-walis/internal/shared/events"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -36,7 +36,7 @@ func (s *ContainerService) StartEventsStream(server db.VpsServer) error {
 		delete(s.cancelFn, server.ID)
 	}
 
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return fmt.Errorf("falha ao conectar no servidor para eventos: %w", err)
 	}
@@ -83,7 +83,7 @@ func (s *ContainerService) StopEventsStream(serverId string) {
 
 // ListContainers obtém a lista de containers da VPS
 func (s *ContainerService) ListContainers(server db.VpsServer, all bool) ([]Container, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}
@@ -96,7 +96,7 @@ func (s *ContainerService) CreateContainer(server db.VpsServer, input CreateCont
 	if strings.TrimSpace(input.Name) == "" || strings.TrimSpace(input.Image) == "" {
 		return ContainerActionResult{Success: false, Message: "nome e imagem são obrigatórios"}
 	}
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return ContainerActionResult{Success: false, Message: fmt.Sprintf("falha ao conectar no servidor: %v", err)}
 	}
@@ -112,7 +112,7 @@ func (s *ContainerService) ExecuteAction(server db.VpsServer, actionType string,
 	if message := ValidateContainerAction(actionType); message != "" {
 		return ContainerActionResult{Success: false, Message: message}
 	}
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return ContainerActionResult{
 			Success: false,
@@ -161,7 +161,7 @@ func (s *ContainerService) ExecuteAction(server db.VpsServer, actionType string,
 
 // GetLogs obtém os logs do container especificado
 func (s *ContainerService) GetLogs(server db.VpsServer, containerName string, tail int) (string, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return "", fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}
@@ -172,7 +172,7 @@ func (s *ContainerService) GetLogs(server db.VpsServer, containerName string, ta
 
 // InspectContainer obtém detalhes completos sob demanda de um container específico
 func (s *ContainerService) InspectContainer(server db.VpsServer, id string) (*RawDockerInspect, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}

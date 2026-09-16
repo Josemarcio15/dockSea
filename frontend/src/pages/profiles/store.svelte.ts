@@ -1,5 +1,7 @@
 import { notifySuccess, notifyError } from "$shared/stores/notification.svelte";
 import { triggerRefresh } from "$shared/stores/refresh.svelte";
+import { invalidateCache } from "$shared/stores/swr-cache";
+import { loadSession } from "$session/session.svelte";
 import * as api from "./api";
 
 export function createProfilesStore() {
@@ -11,8 +13,10 @@ export function createProfilesStore() {
   async function action(operation: () => Promise<unknown>) {
     try {
       await operation();
-      notifySuccess("Operação realizada com sucesso");
+      invalidateCache();
+      await loadSession();
       triggerRefresh();
+      notifySuccess("Operação realizada com sucesso");
     } catch (error: any) {
       notifyError(error?.message || String(error));
     }
