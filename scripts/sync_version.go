@@ -56,6 +56,8 @@ func main() {
 	nshBytes, err := os.ReadFile(nshPath)
 	if err == nil {
 		content := string(nshBytes)
+		reNshVersion := regexp.MustCompile(`(?m)!define\s+INFO_PRODUCTVERSION\s+".*"`)
+		content = reNshVersion.ReplaceAllString(content, fmt.Sprintf(`!define INFO_PRODUCTVERSION "%s"`, version))
 		_ = os.WriteFile(nshPath, []byte(content), 0644)
 	}
 
