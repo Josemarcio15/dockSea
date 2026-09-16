@@ -136,39 +136,66 @@ tasks:
     deps:
       - task: build
     cmds:
+      - cp "{{.OUTPUT | default .DEFAULT_OUTPUT}}" "{{.BIN_DIR}}/{{.APP_NAME}}"
       - task: generate:dotdesktop
       - task: generate:deb
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
 
   create:rpm:
     summary: Creates a rpm package
     deps:
       - task: build
     cmds:
+      - cp "{{.OUTPUT | default .DEFAULT_OUTPUT}}" "{{.BIN_DIR}}/{{.APP_NAME}}"
       - task: generate:dotdesktop
       - task: generate:rpm
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
 
   create:aur:
     summary: Creates a arch linux packager package
     deps:
       - task: build
     cmds:
+      - cp "{{.OUTPUT | default .DEFAULT_OUTPUT}}" "{{.BIN_DIR}}/{{.APP_NAME}}"
       - task: generate:dotdesktop
       - task: generate:aur
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
 
   generate:deb:
     summary: Creates a deb package
     cmds:
       - wails3 tool package -name "{{.APP_NAME}}" -format deb -config ./build/linux/nfpm/nfpm.yaml -out {{.ROOT_DIR}}/bin
+      - |
+        if [ -f "{{.BIN_DIR}}/{{.APP_NAME}}.deb" ]; then
+          mv "{{.BIN_DIR}}/{{.APP_NAME}}.deb" "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}.deb"
+        fi
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
 
   generate:rpm:
     summary: Creates a rpm package
     cmds:
       - wails3 tool package -name "{{.APP_NAME}}" -format rpm -config ./build/linux/nfpm/nfpm.yaml -out {{.ROOT_DIR}}/bin
+      - |
+        if [ -f "{{.BIN_DIR}}/{{.APP_NAME}}.rpm" ]; then
+          mv "{{.BIN_DIR}}/{{.APP_NAME}}.rpm" "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}.rpm"
+        fi
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
 
   generate:aur:
     summary: Creates a arch linux packager package
     cmds:
       - wails3 tool package -name "{{.APP_NAME}}" -format archlinux -config ./build/linux/nfpm/nfpm.yaml -out {{.ROOT_DIR}}/bin
+      - |
+        if [ -f "{{.BIN_DIR}}/{{.APP_NAME}}.pkg.tar.zst" ]; then
+          mv "{{.BIN_DIR}}/{{.APP_NAME}}.pkg.tar.zst" "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}.pkg.tar.zst"
+        fi
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
 
   generate:dotdesktop:
     summary: Generates `.desktop` files

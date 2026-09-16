@@ -56,10 +56,18 @@ func main() {
 	nshBytes, err := os.ReadFile(nshPath)
 	if err == nil {
 		content := string(nshBytes)
-		reNsh := regexp.MustCompile(`!define INFO_PRODUCTVERSION "[^"]*"`)
-		content = reNsh.ReplaceAllString(content, fmt.Sprintf(`!define INFO_PRODUCTVERSION "%s"`, version))
-
 		_ = os.WriteFile(nshPath, []byte(content), 0644)
+	}
+
+	// Update build/linux/nfpm/nfpm.yaml if exists
+	nfpmPath := "build/linux/nfpm/nfpm.yaml"
+	nfpmBytes, err := os.ReadFile(nfpmPath)
+	if err == nil {
+		content := string(nfpmBytes)
+		reNfpm := regexp.MustCompile(`(?m)^version:\s*".*"`)
+		content = reNfpm.ReplaceAllString(content, fmt.Sprintf(`version: "%s"`, version))
+
+		_ = os.WriteFile(nfpmPath, []byte(content), 0644)
 	}
 
 	// Output version as the result for Taskfile consumption
