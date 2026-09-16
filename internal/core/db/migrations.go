@@ -1,10 +1,34 @@
 package db
 
 import (
-	"time"
+	"database/sql"
 )
 
-func (d *DB) migrate() error {
+func (d *DB) migrateMaster() error {
+	queries := []string{
+		`CREATE TABLE IF NOT EXISTS profiles (
+			id TEXT PRIMARY KEY,
+			name TEXT NOT NULL UNIQUE,
+			locale TEXT NOT NULL DEFAULT 'pt-BR',
+			is_active INTEGER DEFAULT 0,
+			created_at DATETIME NOT NULL,
+			updated_at DATETIME NOT NULL
+		);`,
+		`CREATE TABLE IF NOT EXISTS app_settings (
+			key TEXT PRIMARY KEY,
+			value TEXT NOT NULL
+		);`,
+	}
+
+	for _, query := range queries {
+		if _, err := d.masterConn.Exec(query); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func migrateProfileTables(conn *sql.DB) error {
 	queries := []string{
 		`CREATE TABLE IF NOT EXISTS vps_servers (
 			id TEXT PRIMARY KEY,
@@ -87,12 +111,11 @@ func (d *DB) migrate() error {
 	}
 
 	for _, query := range queries {
-		if _, err := d.conn.Exec(query); err != nil {
+		if _, err := conn.Exec(query); err != nil {
 			return err
 		}
 	}
 
-	// Migrações incrementais de colunas para bancos de dados existentes
 	alterColumns := []string{
 		`ALTER TABLE stacks ADD COLUMN last_deployed_yaml TEXT DEFAULT '';`,
 		`ALTER TABLE stacks ADD COLUMN last_deployed_config_yaml TEXT DEFAULT '';`,
@@ -101,18 +124,7 @@ func (d *DB) migrate() error {
 		`ALTER TABLE stacks ADD COLUMN last_deployed_at DATETIME;`,
 	}
 	for _, alterQuery := range alterColumns {
-		_, _ = d.conn.Exec(alterQuery) // Ignora erro se coluna já existir no SQLite
-	}
-
-	// Inserir perfil padrão se a tabela estiver vazia
-	var profileCount int
-	err := d.conn.QueryRow(`SELECT COUNT(*) FROM profiles`).Scan(&profileCount)
-	if err == nil && profileCount == 0 {
-		now := time.Now().UTC()
-		_, _ = d.conn.Exec(`
-			INSERT INTO profiles (id, name, locale, is_active, created_at, updated_at)
-			VALUES (?, ?, ?, ?, ?, ?)
-		`, "default", "Perfil Padrão", "pt-BR", 1, now, now)
+		_, _ = conn.Exec(alterQuery)
 	}
 
 	return nil

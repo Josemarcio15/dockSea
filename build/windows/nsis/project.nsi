@@ -75,7 +75,10 @@ ManifestDPIAware true
 #!finalize 'signtool --file "%1"'
 
 Name "${INFO_PRODUCTNAME}"
-OutFile "..\..\..\bin\${INFO_PROJECTNAME}-${ARCH}-installer.exe" # Name of the installer's file.
+!ifndef OUTPUT_FILE
+    !define OUTPUT_FILE "..\..\..\bin\${INFO_PROJECTNAME}_${INFO_PRODUCTVERSION}_windows_${ARCH}-installer.exe"
+!endif
+OutFile "${OUTPUT_FILE}" # Name of the installer's file.
 !if "${WAILS_INSTALL_SCOPE}" == "user"
     InstallDir "$LOCALAPPDATA\Programs\${INFO_PRODUCTNAME}"
 !else

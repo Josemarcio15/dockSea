@@ -35,6 +35,8 @@ tasks:
     summary: Packages a production build of the application
     cmds:
       - task: "{{.GOOS}}:package"
+        vars:
+          OUTPUT: "{{.RELEASE_BINARY}}"
 
   run:
     summary: Runs the application

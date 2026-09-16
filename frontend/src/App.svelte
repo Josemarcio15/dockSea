@@ -18,6 +18,7 @@
   import Profiles from "./pages/profiles/Page.svelte";
   import { loadSession, session } from "$session/session.svelte";
   import { navigation, navigate } from "$navigation/navigation.svelte";
+  import { useRefreshKey } from "$shared/stores/refresh.svelte";
 
   let { data = {} }: { data?: any } = $props();
 
@@ -74,6 +75,11 @@
     } catch (e: any) {
       console.warn("Erro ao buscar servidores/perfis do SQLite no App:", e);
     }
+  });
+
+  $effect(() => {
+    useRefreshKey();
+    loadSession().catch((e) => console.warn("Erro ao recarregar sessão:", e));
   });
 
   $effect(() => {

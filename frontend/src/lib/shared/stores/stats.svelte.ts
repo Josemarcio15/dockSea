@@ -80,15 +80,10 @@ function startStream(vpsId: string) {
   eventSource.onerror = () => {
     statsState.loading = false;
     statsState.checking = false;
-    // In the desktop Wails application there is an HTTP /api/stats route;
-    // the absence of this route does not mean the VPS is offline.
-    if (typeof window !== "undefined" && !["http:", "https:"].includes(window.location.protocol)) {
-      statsState.online = true;
-      statsState.error = null;
-      return;
-    }
-    statsState.online = false;
-    statsState.error = "Conexão perdida";
+    // No aplicativo Desktop (Wails v3), a rota HTTP /api/stats não existe ou não transmite via SSE HTTP,
+    // as chamadas ocorrem via Wails Bindings. Portanto, falha de SSE não significa que o servidor VPS está offline.
+    statsState.online = true;
+    statsState.error = null;
   };
 }
 
