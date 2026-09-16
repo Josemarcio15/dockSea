@@ -1,24 +1,33 @@
 # This file contains the configuration for this project.
 # When you update `info` or `fileAssociations`, run `wails3 task common:update:build-assets` to update the assets.
 # Note that this will overwrite any changes you have made to the assets.
-version: "0.0.5-alpha"
+version: "0.0.6-alpha"
+outputfilename: "DockSea"
 
-# This information is used to generate the build assets.
+# The name of the application. Defaults to the outputfilename.
+name: "DockSea"
+
+# Information that is displayed on the main window.
 info:
-  companyName: "Samabe" # The name of the company
-  productName: "DockSea" # The name of the application
-  productIdentifier: "com.samabe.docksea" # The unique product identifier
-  description: "docker sea" # The application description
-  copyright: "(c) 2026, Samabe" # Copyright text
-  comments: "docker sea" # Comments
-  version: "0.0.5-alpha"
-  # cfBundleIconName: "appicon" # The macOS icon name in Assets.car icon bundles (optional)
+  companyName: "Samabe"
+  productName: "DockSea"
+  productVersion: "0.0.6-alpha"
+  copyright: "Copyright (c) 2024 Samabe"
+  comments: "DockSea Container Manager"
+  fileDescription: "DockSea Container Manager"
+
+# Platform specific configurations
+# windows:
+#   # BinaryName is the name of the binary that is created. Defaults to the name of the project.
+#   binaryName: "docksea"
+#   # Icon is the name of the icon file. Defaults to "appicon.ico" in the build directory.
+#   icon: "appicon.ico"
+#   version: "0.0.6-alpha"
   #                               # Should match the name of your .icon file without the extension
   #                               # If not set and Assets.car exists, defaults to "appicon"
 
 # iOS build configuration (uncomment to customise iOS project generation)
 # Note: Keys under `ios` OVERRIDE values under `info` when set.
-# ios:
 #   # The iOS bundle identifier used in the generated Xcode project (CFBundleIdentifier)
 #   bundleID: "com.mycompany.myproduct"
 #   # The display name shown under the app icon (CFBundleDisplayName/CFBundleName)
