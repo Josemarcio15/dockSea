@@ -12,7 +12,7 @@ vars:
   # Password is stored securely in system keychain. Run: wails3 setup signing
 
   APP_VERSION:
-    sh: 'awk ''$1 == "version:" && $2 != "\"3\"" { gsub(/"/, "", $2); print $2; exit }'' build/config.yml'
+    sh: '{{if eq OS "windows"}}powershell -NoProfile -Command "(Get-Content VERSION).Trim()"{{else}}cat VERSION{{end}}'
   DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.ARCH | default ARCH}}.exe"
 
   # Docker image for cross-compilation with CGO (used when CGO_ENABLED=1 on non-Windows)

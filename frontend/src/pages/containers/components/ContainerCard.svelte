@@ -174,173 +174,201 @@
 </script>
 
 <div
-  class="relative rounded-2xl bg-white dark:bg-[#0b101d] border border-slate-200 dark:border-slate-800/80 hover:border-violet-500/50 dark:hover:border-violet-500/40 shadow-sm hover:shadow-md dark:shadow-none dark:hover:shadow-violet-950/20 transition-all duration-200 flex flex-col justify-between overflow-hidden self-start w-full text-slate-800 dark:text-slate-200 p-3.5 gap-3 group"
+  class="relative rounded-[22px] bg-gradient-to-b from-slate-900/90 to-[#090d16]/95 dark:from-[#111726]/90 dark:to-[#070b13]/95 border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] hover:border-violet-500/40 hover:shadow-[0_16px_36px_rgba(99,102,241,0.15)] transition-all duration-300 flex flex-col p-4 gap-3.5 group text-slate-100 overflow-hidden w-full"
 >
-  <!-- Card Header Compacto Elevado -->
+  <!-- Glow highlight top -->
+  <div class="absolute -top-12 -left-12 w-32 h-32 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>
+
+  <!-- Header Section (Glassmorphism Pill) -->
   <div
-    class="flex items-center gap-2.5 min-w-0 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+    class="relative flex items-center justify-between p-3.5 rounded-2xl bg-white/[0.04] dark:bg-white/[0.03] border border-white/[0.08] backdrop-blur-md shadow-inner"
   >
-    <!-- Checkbox -->
-    <button
-      type="button"
-      class="w-5 h-5 rounded-lg border flex items-center justify-center cursor-pointer transition-all duration-150 shrink-0 {checked
-        ? 'bg-violet-600 border-violet-500 text-white shadow-xs'
-        : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 hover:border-violet-400'}"
-      onclick={on_toggle}
-    >
-      {#if checked}
-        <span class="text-white text-[11px] font-bold leading-none">✓</span>
-      {/if}
-    </button>
-
-    <!-- Logo / Ícone Tecnológico -->
-    <div
-      class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 flex items-center justify-center shrink-0 shadow-inner"
-    >
-      {#if iconUrl}
-        <img
-          src={iconUrl}
-          alt={container.name}
-          class="w-full h-full object-contain"
-        />
-      {:else}
-        <span class="text-base">📦</span>
-      {/if}
-    </div>
-
-    <!-- Nome + Imagem + Status -->
-    <div class="flex flex-col min-w-0 flex-1">
-      <span
-        class="font-bold text-sm leading-5 text-slate-900 dark:text-white whitespace-normal break-words line-clamp-2"
-        title={container.name}
+    <div class="flex items-center gap-3.5 min-w-0 flex-1">
+      <!-- Checkbox -->
+      <button
+        type="button"
+        class="w-5 h-5 rounded-lg border flex items-center justify-center cursor-pointer transition-all duration-200 shrink-0 {checked
+          ? 'bg-gradient-to-tr from-violet-600 to-indigo-500 border-violet-400 text-white shadow-[0_0_10px_rgba(124,58,237,0.5)]'
+          : 'border-white/20 bg-white/5 hover:border-violet-400'}"
+        onclick={on_toggle}
+        aria-label="Selecionar container"
       >
-        {container.name}
-      </span>
+        {#if checked}
+          <span class="text-white text-[11px] font-extrabold leading-none">✓</span>
+        {/if}
+      </button>
 
-      <div class="flex items-center gap-1.5 mt-0.5 min-w-0">
-        <span
-          class="text-xs font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold border border-slate-200 dark:border-slate-700/50 truncate max-w-[130px]"
-          title={container.image}
+      <!-- Technology Icon Container -->
+      <div
+        class="w-11 h-11 rounded-xl bg-violet-600/10 border border-violet-500/20 p-2 flex items-center justify-center shrink-0"
+      >
+        {#if iconUrl}
+          <img
+            src={iconUrl}
+            alt={container.name}
+            class="w-full h-full object-contain"
+          />
+        {:else}
+          <span class="text-xl">📦</span>
+        {/if}
+      </div>
+
+      <!-- Container Name & Subtitle Badges -->
+      <div class="flex flex-col min-w-0 flex-1">
+        <h3
+          class="font-extrabold text-base text-white tracking-tight truncate drop-shadow-sm"
+          title={container.name}
         >
-          {container.image}
-        </span>
+          {container.name}
+        </h3>
 
-        <span class="text-xs font-medium flex items-center gap-1 shrink-0 {statusColor}">
-          <span class="w-1.5 h-1.5 rounded-full {statusDotColor} {pulseClass} shrink-0"></span>
-          {statusLabel}
-        </span>
+        <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+          <!-- Image Tag Badge -->
+          <span
+            class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-violet-500/15 border border-violet-400/30 text-violet-300 font-mono shadow-xs truncate max-w-[140px]"
+            title={container.image}
+          >
+            {container.image}
+          </span>
+
+          <!-- Status Indicator Badge -->
+          <span
+            class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold {statusBg} shadow-xs"
+          >
+            <span
+              class="w-1.5 h-1.5 rounded-full {statusDotColor} {pulseClass} shrink-0"
+            ></span>
+            {statusLabel}
+          </span>
+        </div>
       </div>
     </div>
 
-    <!-- Botão Expandir -->
+    <!-- Toggle Chevron Button -->
     <button
       type="button"
-      class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800/60 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center cursor-pointer transition-colors text-[10px] shrink-0 border border-slate-200 dark:border-slate-700/50"
+      class="w-9 h-9 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] active:scale-95 border border-white/10 text-white/80 hover:text-white flex items-center justify-center cursor-pointer transition-all duration-200 ml-2 shrink-0 shadow-sm"
       onclick={() => (expanded = !expanded)}
       title="Mais detalhes"
+      aria-label="Expandir detalhes"
     >
-      {expanded ? "▲" : "▼"}
+      <svg
+        class="w-4 h-4 transition-transform duration-300 {expanded ? 'rotate-0' : 'rotate-180'}"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path d="M12 8.586l6.293 6.293 1.414-1.414L12 5.758 4.293 13.465l1.414 1.414z"/>
+      </svg>
     </button>
   </div>
 
-  <!-- Expanded Details (Mostra todos os dados apenas ao expandir) -->
+  <!-- Expanded Details Section -->
   {#if expanded}
-    <div
-      class="p-3.5 rounded-2xl bg-slate-200/70 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 space-y-2.5 text-xs"
-    >
-      <!-- ID & Criado Em Grid -->
-      <div class="grid grid-cols-2 gap-2 text-[11px]">
+    <div class="flex flex-col gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+      <!-- 2-Column Grid: ID & Criado Em -->
+      <div class="grid grid-cols-2 gap-3">
+        <!-- ID Card -->
         <div
-          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] shadow-sm"
         >
-          <span
-            class="w-fit px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1"
-            >ID</span
+          <div
+            class="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-300 shrink-0 font-bold text-xs"
           >
-          <span class="font-mono text-indigo-600 dark:text-indigo-400 font-bold text-xs"
-            >{shortCid}</span
-          >
+            ID
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">CONTAINER ID</span>
+            <span class="font-mono font-extrabold text-sm text-indigo-300 truncate">{shortCid}</span>
+          </div>
         </div>
 
+        <!-- Criado Em Card -->
         <div
-          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] shadow-sm"
         >
-          <span
-            class="w-fit px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1"
+          <div
+            class="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0"
           >
-            {t("containers.card_created")}
-          </span>
-          <span
-            class="font-medium text-slate-800 dark:text-slate-200 truncate text-xs"
-          >
-            {createdStr || "—"}
-          </span>
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/>
+            </svg>
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("containers.card_created")}</span>
+            <span class="font-extrabold text-sm text-white truncate">{createdStr || "—"}</span>
+          </div>
         </div>
       </div>
 
       <!-- Live Stats se ativo -->
       {#if myStats}
-        <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+        <div class="grid grid-cols-2 gap-3">
           <div
-            class="p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+            class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] shadow-sm"
           >
-            <span
-              class="px-1.5 py-0.2 rounded text-[9px] uppercase font-bold tracking-wider bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300"
-              >CPU</span
+            <div
+              class="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0 font-bold text-xs"
             >
-            <p
-              class="font-bold text-slate-900 dark:text-slate-100 mt-1 mb-0 text-sm"
-            >
-              {myStats.CPUPerc || "0%"}
-            </p>
+              CPU
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">USO CPU</span>
+              <span class="font-mono font-extrabold text-sm text-purple-300">{myStats.CPUPerc || "0%"}</span>
+            </div>
           </div>
+
           <div
-            class="p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+            class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] shadow-sm"
           >
-            <span
-              class="px-1.5 py-0.2 rounded text-[9px] uppercase font-bold tracking-wider bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300"
-              >RAM</span
+            <div
+              class="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-300 shrink-0 font-bold text-xs"
             >
-            <p
-              class="font-bold text-slate-900 dark:text-slate-100 mt-1 mb-0 text-sm"
-            >
-              {myStats.MemUsage || "0B"}
-            </p>
+              RAM
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">USO MEMÓRIA</span>
+              <span class="font-mono font-extrabold text-sm text-sky-300">{myStats.MemUsage || "0B"}</span>
+            </div>
           </div>
         </div>
       {/if}
 
       <!-- Política de Reinício -->
       <div
-        class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md text-[11px]"
+        class="flex items-center justify-between p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] shadow-sm"
       >
-        <span
-          class="w-fit px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1"
-        >
-          {t("containers.card_restart")}
-        </span>
-        <span class="font-medium text-slate-800 dark:text-slate-200">
-          {restartPolicyDisplay}
-        </span>
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-300 shrink-0"
+          >
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+            </svg>
+          </div>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("containers.card_restart")}</span>
+        </div>
+        <span class="font-extrabold text-sm text-white tracking-wide">{restartPolicyDisplay}</span>
       </div>
 
       <!-- Redes Conectadas -->
       {#if networkItems.length > 0}
         <div
-          class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col gap-2 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] shadow-sm"
         >
-          <span
-            class="w-fit px-1.5 py-0.2 rounded text-[9px] text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-950/60 font-bold uppercase tracking-wider"
-          >
-            {t("containers.card_networks")}
-          </span>
-          <div class="flex flex-wrap gap-1">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-9 h-9 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0"
+            >
+              🌐
+            </div>
+            <span class="text-[10px] font-bold text-purple-300 uppercase tracking-wider">{t("containers.card_networks")}</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
             {#each networkItems as net}
               <span
-                class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] text-purple-700 dark:text-purple-300 font-medium"
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs font-semibold text-purple-200"
               >
-                {net.name}
-                {net.ip !== "—" ? `(${net.ip})` : ""}
+                {net.name} {net.ip !== "—" ? `(${net.ip})` : ""}
               </span>
             {/each}
           </div>
@@ -350,18 +378,21 @@
       <!-- Portas Mapeadas -->
       {#if portItems.length > 0}
         <div
-          class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col gap-2 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] shadow-sm"
         >
-          <span
-            class="w-fit px-1.5 py-0.2 rounded text-[9px] text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-950/60 font-bold uppercase tracking-wider"
-          >
-            {t("containers.card_ports")}
-          </span>
-          <div class="flex flex-wrap gap-1">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-300 shrink-0"
+            >
+              🔌
+            </div>
+            <span class="text-[10px] font-bold text-blue-300 uppercase tracking-wider">{t("containers.card_ports")}</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
             {#each portItems as port}
               {#if port}
                 <span
-                  class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[10px] font-semibold {port.class}"
+                  class="px-2.5 py-1 rounded-xl bg-blue-500/10 border border-blue-500/20 font-mono text-xs font-semibold text-blue-200"
                 >
                   {port.formatted}
                 </span>
@@ -372,7 +403,7 @@
       {/if}
 
       <!-- Container Details & Actions Footer -->
-      <div class="pt-2 border-t border-slate-300 dark:border-slate-800 grid grid-cols-3 gap-1.5">
+      <div class="pt-2 border-t border-white/[0.08] grid grid-cols-3 gap-2">
         <ButtonPink
           size="sm"
           class="w-full whitespace-nowrap"
@@ -446,35 +477,35 @@
   <!-- Environment Variables Modal -->
   <FormModal bind:show={showEnv} cancelLabel={t("common.close")} title={`${t("containers.card_env_title")} — ${container.name}`}>
     {#if container.env?.length}
-      <div class="grid grid-cols-[minmax(8rem,0.8fr)_minmax(0,2fr)] overflow-hidden rounded-xl border border-cyan-200 dark:border-cyan-900/50">
-        <div class="bg-slate-100 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:bg-slate-900 dark:text-slate-400">{t("containers.card_env_key")}</div>
-        <div class="bg-slate-100 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:bg-slate-900 dark:text-slate-400">{t("containers.card_env_value")}</div>
+      <div class="grid grid-cols-[minmax(8rem,0.8fr)_minmax(0,2fr)] overflow-hidden rounded-2xl border border-cyan-500/20 bg-black/40">
+        <div class="bg-cyan-950/40 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-cyan-300">{t("containers.card_env_key")}</div>
+        <div class="bg-cyan-950/40 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-cyan-300">{t("containers.card_env_value")}</div>
         {#each container.env as env}
           {@const separator = env.indexOf("=")}
           {@const key = separator >= 0 ? env.slice(0, separator) : env}
           {@const value = separator >= 0 ? env.slice(separator + 1) : ""}
-          <code class="block break-all border-t border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-orange-800 dark:border-slate-800 dark:bg-slate-950/60 dark:text-orange-400">{key}</code>
-          <code class="block break-all border-t border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-300">{value}</code>
+          <code class="block break-all border-t border-white/5 bg-white/[0.02] px-3 py-2 text-xs font-semibold text-orange-400">{key}</code>
+          <code class="block break-all border-t border-white/5 bg-white/[0.02] px-3 py-2 text-xs text-slate-300">{value}</code>
         {/each}
       </div>
     {:else}
-      <p class="text-sm text-slate-500">{t("containers.card_env_empty")}</p>
+      <p class="text-sm text-slate-400">{t("containers.card_env_empty")}</p>
     {/if}
   </FormModal>
 
   <!-- Labels Modal -->
   <FormModal bind:show={showLabels} cancelLabel={t("common.close")} title={`${t("containers.card_labels_title")} — ${container.name}`}>
     {#if labels.length}
-      <div class="grid grid-cols-[minmax(8rem,1fr)_minmax(0,2fr)] overflow-hidden rounded-xl border border-pink-200 dark:border-pink-900/50">
-        <div class="bg-slate-100 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:bg-slate-900 dark:text-slate-400">{t("containers.card_env_key")}</div>
-        <div class="bg-slate-100 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:bg-slate-900 dark:text-slate-400">{t("containers.card_env_value")}</div>
+      <div class="grid grid-cols-[minmax(8rem,1fr)_minmax(0,2fr)] overflow-hidden rounded-2xl border border-pink-500/20 bg-black/40">
+        <div class="bg-pink-950/40 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-pink-300">{t("containers.card_env_key")}</div>
+        <div class="bg-pink-950/40 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-pink-300">{t("containers.card_env_value")}</div>
         {#each labels as [k, v]}
-          <code class="block break-all select-all border-t border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-pink-700 dark:border-slate-800 dark:bg-slate-950/60 dark:text-pink-400">{k}</code>
-          <code class="block break-all select-all border-t border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-300">{v || "—"}</code>
+          <code class="block break-all select-all border-t border-white/5 bg-white/[0.02] px-3 py-2 text-xs font-semibold text-pink-400">{k}</code>
+          <code class="block break-all select-all border-t border-white/5 bg-white/[0.02] px-3 py-2 text-xs text-slate-300">{v || "—"}</code>
         {/each}
       </div>
     {:else}
-      <p class="text-sm text-slate-500">{t("containers.card_labels_empty")}</p>
+      <p class="text-sm text-slate-400">{t("containers.card_labels_empty")}</p>
     {/if}
   </FormModal>
 </div>

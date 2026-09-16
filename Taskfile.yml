@@ -4,7 +4,7 @@ vars:
   APP_NAME: "DockSea"
   BIN_DIR: "bin"
   APP_VERSION:
-    sh: 'go run scripts/sync_version.go'
+    sh: '{{if eq OS "windows"}}powershell -NoProfile -Command "(Get-Content VERSION).Trim()"{{else}}cat VERSION{{end}}'
   PACKAGE_MANAGER: '{{.PACKAGE_MANAGER | default "npm"}}'
   VITE_PORT: "{{.WAILS_VITE_PORT | default 9245}}"
   GOOS: "{{.GOOS | default OS}}"

@@ -24,16 +24,15 @@
   } = $props();
 </script>
 <div
-  class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border-2 transition-all gap-4 shadow-sm {isActive
-    ? 'border-violet-500 bg-violet-50/60 dark:bg-violet-950/20'
-    : 'border-slate-300/80 dark:border-slate-800 bg-white dark:bg-slate-900/30'}"
+  class="relative rounded-[22px] bg-gradient-to-b from-slate-900/90 to-[#090d16]/95 dark:from-[#111726]/90 dark:to-[#070b13]/95 border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] hover:border-violet-500/40 hover:shadow-[0_16px_36px_rgba(99,102,241,0.15)] transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between p-4 gap-4 group text-slate-100 overflow-hidden w-full"
 >
+  <!-- Glow highlight top -->
+  <div class="absolute -top-12 -left-12 w-32 h-32 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>
+
   <!-- Info -->
   <div class="flex items-center gap-3.5 min-w-0">
     <div
-      class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 {isActive
-        ? 'bg-violet-600 text-white shadow-md shadow-violet-500/20'
-        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-400 border border-slate-200 dark:border-slate-700'}"
+      class="w-11 h-11 rounded-xl bg-violet-600/10 border border-violet-500/20 text-violet-300 flex items-center justify-center shrink-0"
     >
       {#if server.connectionType === "ssh"}
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
@@ -48,19 +47,20 @@
 
     <div class="flex flex-col min-w-0">
       <div class="flex items-center gap-2">
-        <span class="font-bold text-sm text-slate-900 dark:text-white truncate">
+        <span class="font-extrabold text-base text-white truncate drop-shadow-sm">
           {server.name}
         </span>
         {#if isActive}
           <span
-            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/20 shadow-xs"
+            class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 shadow-xs"
           >
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399] animate-pulse"></span>
             {t("profiles.active_badge")}
           </span>
         {/if}
       </div>
 
-      <span class="text-xs text-slate-600 dark:text-slate-400 font-mono truncate font-medium">
+      <span class="text-xs text-indigo-300 font-mono truncate font-medium mt-0.5">
         {server.connectionType === "ssh"
           ? `${server.username}@${server.host}:${server.port}`
           : "Local Docker Engine"}
@@ -69,7 +69,7 @@
   </div>
 
   <!-- Actions Row -->
-  <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+  <div class="flex items-center gap-2 self-end sm:self-center shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/[0.08]">
     {#if !isActive}
       <ButtonPurple size="sm" onclick={() => onSelect(server)}>
         {t("devices.activate")}

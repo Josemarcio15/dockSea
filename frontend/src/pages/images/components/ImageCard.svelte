@@ -90,153 +90,169 @@
 </script>
 
 <div
-  class="relative rounded-2xl bg-white dark:bg-[#0b101d] border border-slate-200 dark:border-slate-800/80 hover:border-violet-500/50 dark:hover:border-violet-500/40 shadow-sm hover:shadow-md dark:shadow-none dark:hover:shadow-violet-950/20 transition-all duration-200 flex flex-col justify-between overflow-hidden self-start w-full text-slate-800 dark:text-slate-200 p-3.5 gap-3 group"
+  class="relative rounded-[22px] bg-gradient-to-b from-slate-900/90 to-[#090d16]/95 dark:from-[#111726]/90 dark:to-[#070b13]/95 border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] hover:border-violet-500/40 hover:shadow-[0_16px_36px_rgba(99,102,241,0.15)] transition-all duration-300 flex flex-col p-4 gap-3.5 group text-slate-100 overflow-hidden w-full"
 >
-  <!-- Card Header Principal Elevado -->
+  <!-- Glow highlight top -->
+  <div class="absolute -top-12 -left-12 w-32 h-32 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>
+
+  <!-- Header Section (Glassmorphism Pill) -->
   <div
-    class="flex items-center gap-2.5 min-w-0 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+    class="relative flex items-center justify-between p-3.5 rounded-2xl bg-white/[0.04] dark:bg-white/[0.03] border border-white/[0.08] backdrop-blur-md shadow-inner"
   >
-    <!-- Checkbox Customizado -->
-    <button
-      type="button"
-      class="w-5 h-5 rounded-lg border flex items-center justify-center cursor-pointer transition-all duration-150 shrink-0 {checked
-        ? 'bg-violet-600 border-violet-500 text-white shadow-xs'
-        : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 hover:border-violet-400'}"
-      onclick={on_toggle}
-    >
-      {#if checked}
-        <span class="text-white text-[11px] font-bold leading-none">✓</span>
-      {/if}
-    </button>
+    <div class="flex items-center gap-3.5 min-w-0 flex-1">
+      <!-- Checkbox Customizado -->
+      <button
+        type="button"
+        class="w-5 h-5 rounded-lg border flex items-center justify-center cursor-pointer transition-all duration-200 shrink-0 {checked
+          ? 'bg-gradient-to-tr from-violet-600 to-indigo-500 border-violet-400 text-white shadow-[0_0_10px_rgba(124,58,237,0.5)]'
+          : 'border-white/20 bg-white/5 hover:border-violet-400'}"
+        onclick={on_toggle}
+        aria-label="Selecionar imagem"
+      >
+        {#if checked}
+          <span class="text-white text-[11px] font-extrabold leading-none">✓</span>
+        {/if}
+      </button>
 
-    <!-- Logo / Ícone -->
-    <div
-      class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 flex items-center justify-center shrink-0 shadow-inner"
-    >
-      {#if iconUrl}
-        <img
-          src={iconUrl}
-          alt={img.repo}
-          class="w-full h-full object-contain"
-        />
-      {:else}
-        <span class="text-base font-bold text-violet-500">IMG</span>
-      {/if}
-    </div>
+      <!-- Logo / Ícone Container -->
+      <div
+        class="w-11 h-11 rounded-xl bg-violet-600/10 border border-violet-500/20 p-2 flex items-center justify-center shrink-0"
+      >
+        {#if iconUrl}
+          <img
+            src={iconUrl}
+            alt={img.repo}
+            class="w-full h-full object-contain"
+          />
+        {:else}
+          <span class="text-sm font-black text-violet-300">IMG</span>
+        {/if}
+      </div>
 
-    <!-- Título + Tag + Status Compacto -->
-    <div class="flex flex-col min-w-0 flex-1">
-      <div class="flex items-center gap-1.5 min-w-0">
-        <span
-          class="font-bold text-xs text-slate-900 dark:text-white truncate"
+      <!-- Título + Tag + Status Compacto -->
+      <div class="flex flex-col min-w-0 flex-1">
+        <h3
+          class="font-extrabold text-base text-white tracking-tight truncate drop-shadow-sm"
           title={img.repo}
         >
           {#if !img.repo || img.repo === "<none>"}
-            <span class="text-slate-500 dark:text-slate-400 italic font-normal">&lt;sem tag&gt;</span>
+            <span class="text-slate-400 italic font-normal">&lt;sem tag&gt;</span>
           {:else}
             {img.repo}
           {/if}
-        </span>
-      </div>
+        </h3>
 
-      <div class="flex items-center gap-1.5 mt-0.5">
-        <span
-          class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-violet-50 dark:bg-violet-950/50 text-violet-700 dark:text-violet-300 font-semibold border border-violet-200 dark:border-violet-800/40 truncate max-w-[85px]"
-          title={img.tag}
-        >
-          {img.tag || "latest"}
-        </span>
-
-        <span
-          class="text-[10px] font-medium flex items-center gap-1 {isInUse
-            ? 'text-emerald-600 dark:text-emerald-400'
-            : 'text-slate-500 dark:text-slate-400'}"
-        >
+        <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+          <!-- Tag Badge -->
           <span
-            class="w-1.5 h-1.5 rounded-full {isInUse
-              ? 'bg-emerald-500'
-              : 'bg-slate-300 dark:bg-slate-600'} shrink-0"
-          ></span>
-          {isInUse ? `${containerCount} em uso` : 'Livre'}
-        </span>
+            class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-violet-500/15 border border-violet-400/30 text-violet-300 font-mono shadow-xs truncate max-w-[120px]"
+            title={img.tag}
+          >
+            {img.tag || "latest"}
+          </span>
+
+          <!-- Status Indicator Badge -->
+          <span
+            class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold {isInUse
+              ? 'bg-emerald-500/15 border border-emerald-400/30 text-emerald-300'
+              : 'bg-slate-500/15 border border-slate-400/30 text-slate-300'} shadow-xs"
+          >
+            <span
+              class="w-1.5 h-1.5 rounded-full {isInUse
+                ? 'bg-emerald-400 shadow-[0_0_6px_#34d399]'
+                : 'bg-slate-400'} shrink-0"
+            ></span>
+            {isInUse ? `${containerCount} em uso` : 'Livre'}
+          </span>
+        </div>
       </div>
     </div>
 
     <!-- Botão Expandir / Recolher Detalhes -->
     <button
       type="button"
-      class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800/60 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center cursor-pointer transition-colors text-[10px] shrink-0 border border-slate-200 dark:border-slate-700/50"
+      class="w-9 h-9 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] active:scale-95 border border-white/10 text-white/80 hover:text-white flex items-center justify-center cursor-pointer transition-all duration-200 ml-2 shrink-0 shadow-sm"
       onclick={() => (expanded = !expanded)}
       title="Mais detalhes"
+      aria-label="Expandir detalhes"
     >
-      {expanded ? "▲" : "▼"}
+      <svg
+        class="w-4 h-4 transition-transform duration-300 {expanded ? 'rotate-0' : 'rotate-180'}"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path d="M12 8.586l6.293 6.293 1.414-1.414L12 5.758 4.293 13.465l1.414 1.414z"/>
+      </svg>
     </button>
   </div>
 
   <!-- Detalhes Extras (visíveis apenas quando expandido) -->
   {#if expanded}
-    <div
-      class="p-3.5 rounded-2xl bg-slate-200/70 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 space-y-2.5 text-xs animate-fadeIn"
-    >
+    <div class="flex flex-col gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
       <!-- ID & Tamanho Grid -->
-      <div class="grid grid-cols-2 gap-2 text-[11px]">
+      <div class="grid grid-cols-2 gap-3">
+        <!-- ID Card -->
         <div
-          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] shadow-sm"
         >
-          <span
-            class="w-fit px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1"
-            >ID</span
+          <div
+            class="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-300 shrink-0 font-bold text-xs"
           >
-          <span
-            class="font-mono text-blue-600 dark:text-blue-400 font-bold truncate text-xs"
-            >{img.id.substring(0, 8)}</span
-          >
+            ID
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">IMAGE ID</span>
+            <span class="font-mono font-extrabold text-sm text-blue-300 truncate">{img.id.substring(0, 12)}</span>
+          </div>
         </div>
 
+        <!-- Tamanho Card -->
         <div
-          class="flex flex-col p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex items-center gap-3 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] shadow-sm"
         >
-          <span
-            class="w-fit px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-1"
+          <div
+            class="w-10 h-10 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-300 shrink-0"
           >
-            {t("images.card_size")}
-          </span>
-          <span
-            class="font-bold text-slate-800 dark:text-slate-200 truncate text-xs"
-          >
-            {img.size}
-          </span>
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 4.02 2 6.5s4.48 4.5 10 4.5 10-2.02 10-4.5S17.52 2 12 2zm0 6c-3.86 0-7-1.12-7-2.5S8.14 3 12 3s7 1.12 7 2.5S15.86 8 12 8zm0 4.5c-5.52 0-10-2.02-10-4.5v3c0 2.48 4.48 4.5 10 4.5s10-2.02 10-4.5v-3c0 2.48-4.48 4.5-10 4.5zm0 6c-5.52 0-10-2.02-10-4.5v3c0 2.48 4.48 4.5 10 4.5s10-2.02 10-4.5v-3c0 2.48-4.48 4.5-10 4.5z"/>
+            </svg>
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("images.card_size")}</span>
+            <span class="font-extrabold text-sm text-white truncate">{img.size}</span>
+          </div>
         </div>
       </div>
 
       <!-- Data de Criação -->
       <div
-        class="flex items-center justify-between p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md text-[11px]"
+        class="flex items-center justify-between p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] shadow-sm"
       >
-        <span
-          class="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
-        >
-          {t("images.card_created")}
-        </span>
-        <span class="font-medium text-slate-800 dark:text-slate-200">
-          {createdStr || "—"}
-        </span>
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0"
+          >
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/>
+            </svg>
+          </div>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("images.card_created")}</span>
+        </div>
+        <span class="font-extrabold text-sm text-white tracking-wide">{createdStr || "—"}</span>
       </div>
 
       <!-- Containers Usando -->
       {#if img.containersUsing && img.containersUsing.length > 0}
         <div
-          class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white dark:bg-[#0c1220] border-2 border-slate-300/80 dark:border-slate-700 shadow-md"
+          class="flex flex-col gap-2 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] shadow-sm"
         >
-          <span
-            class="w-fit px-1.5 py-0.2 rounded text-[9px] text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-950/60 font-bold uppercase tracking-wider"
-          >
+          <span class="text-[10px] font-bold text-purple-300 uppercase tracking-wider">
             {t("images.card_containers_using")}
           </span>
-          <div class="flex flex-wrap gap-1">
+          <div class="flex flex-wrap gap-1.5">
             {#each img.containersUsing as containerName}
               <span
-                class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] text-purple-700 dark:text-purple-300 font-medium"
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs font-semibold text-purple-200"
               >
                 {containerName}
               </span>
@@ -248,9 +264,10 @@
   {/if}
 
   <!-- Ação Sempre Visível (mesmo recolhido) -->
-  <div class="pt-1.5 border-t border-slate-100 dark:border-slate-800/60 flex justify-center">
+  <div class="pt-2 border-t border-white/[0.08] flex justify-center">
     <ButtonBlue
-      size="xs"
+      size="sm"
+      class="w-full"
       onclick={on_build}
     >
       {t("images.btn_build_container")}
