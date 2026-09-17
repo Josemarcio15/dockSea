@@ -72,6 +72,35 @@ func main() {
 		_ = os.WriteFile(nfpmPath, []byte(content), 0644)
 	}
 
+	// Update build/windows/wails.exe.manifest if exists
+	manifestPath := "build/windows/wails.exe.manifest"
+	manifestBytes, err := os.ReadFile(manifestPath)
+	if err == nil {
+		content := string(manifestBytes)
+		// Fix XML header if previously replaced
+		content = strings.Replace(content, `<?xml version="0.0.9-alpha"`, `<?xml version="1.0"`, 1)
+		content = strings.Replace(content, `Microsoft.Windows.Common-Controls" version="0.0.9-alpha"`, `Microsoft.Windows.Common-Controls" version="6.0.0.0"`, 1)
+		reManifest := regexp.MustCompile(`(<assemblyIdentity type="win32" name="com\.samabe\.docksea" version=")[^"]*(")`)
+		content = reManifest.ReplaceAllString(content, fmt.Sprintf(`${1}%s${2}`, version))
+		_ = os.WriteFile(manifestPath, []byte(content), 0644)
+	}
+
+	// Update build/windows/nsis/project.nsi if exists
+	nsiPath := "build/windows/nsis/project.nsi"
+	nsiBytes, err := os.ReadFile(nsiPath)
+	if err == nil {
+		content := string(nsiBytes)
+		// Extract numeric version (e.g. 0.0.9-alpha -> 0.0.9.0)
+		numParts := regexp.MustCompile(`^(\d+)\.(\d+)\.(\d+)`).FindStringSubmatch(version)
+		numVer := "0.0.0.0"
+		if len(numParts) == 4 {
+			numVer = fmt.Sprintf("%s.%s.%s.0", numParts[1], numParts[2], numParts[3])
+		}
+		reNumVer := regexp.MustCompile(`(?m)!define\s+INFO_NUMERIC_VERSION\s+".*"`)
+		content = reNumVer.ReplaceAllString(content, fmt.Sprintf(`!define INFO_NUMERIC_VERSION "%s"`, numVer))
+		_ = os.WriteFile(nsiPath, []byte(content), 0644)
+	}
+
 	// Output version as the result for Taskfile consumption
 	fmt.Print(version)
 }

@@ -37,7 +37,7 @@ Unicode true
 
 # The version information for this two must consist of 4 parts (numeric only)
 !ifndef INFO_NUMERIC_VERSION
-    !define INFO_NUMERIC_VERSION "0.0.2.0"
+    !define INFO_NUMERIC_VERSION "0.0.10.0"
 !endif
 VIProductVersion "${INFO_NUMERIC_VERSION}"
 VIFileVersion    "${INFO_NUMERIC_VERSION}"
