@@ -371,7 +371,7 @@
       <SidebarItem
         icon={iconConfig}
         iconBg="from-cyan-400 to-blue-500"
-        label="Extras"
+        label={t("sidebar.extras")}
         active={navigation.currentRoute === "extras"}
         disabled={!hasProfile}
         onclick={() => navigate("extras")}
@@ -437,10 +437,10 @@
     <button
       class="mx-3 mb-3 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 flex items-center justify-center gap-2 text-xs font-semibold text-violet-200 hover:text-white cursor-pointer transition-all duration-200 shadow-sm"
       onclick={() => themeStore.toggleEditor()}
-      title="Personalizar Tema"
+      title={t("sidebar.theme_editor")}
     >
       <span class="text-base">🎨</span>
-      Personalizar Tema
+      {t("sidebar.theme_editor")}
     </button>
   </div>
 

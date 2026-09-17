@@ -174,13 +174,13 @@ export function getButtonTranslationKey(route: string, btnKey: string): string {
       manage_vps_btn: "devices.manage_vps",
       add_first_btn: "devices.add_first",
       connect_btn: "devices.activate",
-      view_containers_btn: "networks_card.view_containers",
+      view_containers_btn: "devices.view_containers",
     },
     images: {
       create_container_btn: "images.create_container_btn",
       pull_btn: "images.pull_btn",
-      prune_btn: "images.delete_selected",
-      delete_btn: "images.delete_btn",
+      prune_btn: "volumes.prune_btn",
+      delete_btn: "images.delete_selected",
       select_all_btn: "common.select_all",
     },
     containers: {
@@ -223,9 +223,9 @@ export function getButtonTranslationKey(route: string, btnKey: string): string {
       browse_folder_btn: "builder.select_folder",
     },
     config: {
-      add_server_btn: "devices.manage_vps",
+      add_server_btn: "config.add_server_btn",
       activate_btn: "devices.activate",
-      test_conn_btn: "devices_card.click_to_test",
+      test_conn_btn: "config.test_conn_btn",
       edit_btn: "config.edit",
       delete_btn: "config.remove",
       backup_btn: "config.db_backup_btn",

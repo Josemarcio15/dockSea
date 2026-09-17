@@ -80,13 +80,17 @@
       themeKey="config.edit_btn"
       title={t("common.edit")}
       onclick={() => onEdit(server)}
-    />
+    >
+      {t("config.edit")}
+    </EditButtonIcon>
 
     <TrashButtonIcon
       size="sm"
       themeKey="config.delete_btn"
       title={t("common.delete")}
       onclick={() => onDelete(server)}
-    />
+    >
+      {t("config.remove")}
+    </TrashButtonIcon>
   </div>
 </div>

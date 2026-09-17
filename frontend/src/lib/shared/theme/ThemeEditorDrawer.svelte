@@ -16,8 +16,8 @@
   let copyFeedback = $state(false);
   let importFeedback = $state("");
 
-  // Text Tab state
-  let textSearchQuery = $state("");
+  // Search State Global (busca em todas as abas: botões, textos, fundos, etc)
+  let searchQuery = $state("");
   let textCategory = $state("current");
   let editingTextKey = $state<string | null>(null);
   let editingTextValue = $state("");
@@ -55,7 +55,7 @@
     return key.replace(/_/g, " ");
   }
 
-  const currentRouteButtons = $derived.by(() => {
+  const allRouteButtons = $derived.by(() => {
     const routeObj =
       themeStore.editingTheme.routes?.[activeEditorRoute] ||
       defaultTheme.routes?.[activeEditorRoute] ||
@@ -70,6 +70,16 @@
       textHover: style.textHover || style.text || "#ffffff",
       size: style.size || "sm",
     }));
+  });
+
+  const currentRouteButtons = $derived.by(() => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return allRouteButtons;
+    return allRouteButtons.filter((btn) =>
+      btn.key.toLowerCase().includes(q) ||
+      btn.alias.toLowerCase().includes(q) ||
+      btn.label.toLowerCase().includes(q)
+    );
   });
 
   let editingAliasKey = $state<string | null>(null);
@@ -118,7 +128,7 @@
   const allFlattenedTexts = $derived(getFlattenedTranslations());
 
   const filteredTexts = $derived.by(() => {
-    const query = textSearchQuery.toLowerCase().trim();
+    const query = searchQuery.toLowerCase().trim();
     return allFlattenedTexts.filter((item) => {
       // Filtro por Categoria / Rota
       if (textCategory === "current") {
@@ -382,6 +392,29 @@
 
     <!-- ETAPA 3: EDIÇÃO COM ABAS: TELA ATUAL | TEXTOS | FUNDO | JSON -->
     {:else if themeStore.editorStep === "edit"}
+      <!-- Barra de Busca Global (Acima das Abas) -->
+      <div class="px-3 pt-2.5 pb-1 bg-slate-950/40 border-b border-slate-800/80 shrink-0">
+        <div class="relative flex items-center">
+          <span class="absolute left-2.5 text-slate-400 text-xs pointer-events-none">🔍</span>
+          <input
+            type="text"
+            bind:value={searchQuery}
+            placeholder={t("theme_editor.search_texts_placeholder")}
+            class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-8 pr-7 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-colors shadow-inner"
+          />
+          {#if searchQuery}
+            <button
+              type="button"
+              onclick={() => (searchQuery = "")}
+              class="absolute right-2 text-slate-400 hover:text-white text-xs px-1 cursor-pointer"
+              title="Limpar pesquisa"
+            >
+              ✕
+            </button>
+          {/if}
+        </div>
+      </div>
+
       <!-- Navegação de Abas -->
       <div class="flex border-b border-slate-800 bg-slate-950/30 text-xs font-semibold px-2 pt-1.5 gap-1 shrink-0 overflow-x-auto">
         <button
@@ -391,6 +424,9 @@
             : 'border-transparent text-slate-400 hover:text-slate-200'}"
         >
           {t("theme_editor.tab_current_screen")}
+          {#if searchQuery && currentRouteButtons.length > 0}
+            <span class="ml-1 text-[9px] bg-sky-500/20 text-sky-300 px-1.5 py-0.2 rounded-full font-mono">{currentRouteButtons.length}</span>
+          {/if}
         </button>
         <button
           onclick={() => (activeTab = "text")}
@@ -399,6 +435,9 @@
             : 'border-transparent text-slate-400 hover:text-slate-200'}"
         >
           {t("theme_editor.tab_texts")}
+          {#if searchQuery && filteredTexts.length > 0}
+            <span class="ml-1 text-[9px] bg-sky-500/20 text-sky-300 px-1.5 py-0.2 rounded-full font-mono">{filteredTexts.length}</span>
+          {/if}
         </button>
         <button
           onclick={() => (activeTab = "global")}
@@ -570,50 +609,31 @@
         <!-- ABA 2: TEXTOS / LABELS DO JSON DE TRADUÇÃO -->
         {:else if activeTab === "text"}
           <div class="space-y-3">
-            <!-- Barra de Filtro e Busca -->
-            <div class="flex flex-col gap-2 bg-slate-950/40 p-2.5 rounded-xl border border-slate-800/80">
-              <div class="flex items-center gap-2">
-                <input
-                  type="text"
-                  bind:value={textSearchQuery}
-                  placeholder={t("theme_editor.search_texts_placeholder")}
-                  class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500"
-                />
-                {#if textSearchQuery}
-                  <button
-                    onclick={() => (textSearchQuery = "")}
-                    class="text-slate-400 hover:text-white text-xs px-1"
-                  >
-                    ✕
-                  </button>
-                {/if}
-              </div>
-
-              <div class="flex items-center justify-between gap-2">
-                <select
-                  bind:value={textCategory}
-                  class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-slate-300 focus:outline-none cursor-pointer"
-                >
-                  <option value="current">{t("theme_editor.category_current", { route: activeEditorRoute })}</option>
-                  <option value="all">{t("theme_editor.category_all")}</option>
-                  <option value="common">common</option>
-                  <option value="sidebar">sidebar</option>
-                  <option value="containers">containers</option>
-                  <option value="images">images</option>
-                  <option value="volumes">volumes</option>
-                  <option value="networks">networks</option>
-                  <option value="stacks">stacks</option>
-                  <option value="builder">builder</option>
-                  <option value="devices">devices / servers</option>
-                  <option value="config">config</option>
-                  <option value="profiles">profiles</option>
-                  <option value="extras">extras</option>
-                  <option value="theme_editor">theme_editor</option>
-                </select>
-                <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400 shrink-0">
-                  {t("theme_editor.texts_count", { count: filteredTexts.length })}
-                </span>
-              </div>
+            <!-- Barra de Filtro de Categoria -->
+            <div class="flex items-center justify-between gap-2 bg-slate-950/40 p-2 rounded-xl border border-slate-800/80">
+              <select
+                bind:value={textCategory}
+                class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-slate-300 focus:outline-none cursor-pointer"
+              >
+                <option value="current">{t("theme_editor.category_current", { route: activeEditorRoute })}</option>
+                <option value="all">{t("theme_editor.category_all")}</option>
+                <option value="common">common</option>
+                <option value="sidebar">sidebar</option>
+                <option value="containers">containers</option>
+                <option value="images">images</option>
+                <option value="volumes">volumes</option>
+                <option value="networks">networks</option>
+                <option value="stacks">stacks</option>
+                <option value="builder">builder</option>
+                <option value="devices">devices / servers</option>
+                <option value="config">config</option>
+                <option value="profiles">profiles</option>
+                <option value="extras">extras</option>
+                <option value="theme_editor">theme_editor</option>
+              </select>
+              <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400 shrink-0">
+                {t("theme_editor.texts_count", { count: filteredTexts.length })}
+              </span>
             </div>
 
             <!-- Lista de Textos -->
@@ -730,45 +750,53 @@
           <div class="space-y-2.5">
             <p class="text-slate-400 text-[11px]">{t("theme_editor.global_colors_desc")}</p>
             
-            <div class="flex items-center justify-between bg-slate-800/40 p-2 rounded-xl border border-slate-700/40">
-              <span>{t("theme_editor.global_app_bg")}</span>
-              <input
-                type="color"
-                value={themeStore.editingTheme.global.appBg}
-                oninput={(e) => themeStore.setDraftGlobalColor("appBg", e.currentTarget.value)}
-                class="w-7 h-7 rounded-lg cursor-pointer bg-transparent border-0"
-              />
-            </div>
+            {#if !searchQuery || "app background fundo geral appbg".includes(searchQuery.toLowerCase()) || t("theme_editor.global_app_bg").toLowerCase().includes(searchQuery.toLowerCase())}
+              <div class="flex items-center justify-between bg-slate-800/40 p-2 rounded-xl border border-slate-700/40">
+                <span>{t("theme_editor.global_app_bg")}</span>
+                <input
+                  type="color"
+                  value={themeStore.editingTheme.global.appBg}
+                  oninput={(e) => themeStore.setDraftGlobalColor("appBg", e.currentTarget.value)}
+                  class="w-7 h-7 rounded-lg cursor-pointer bg-transparent border-0"
+                />
+              </div>
+            {/if}
 
-            <div class="flex items-center justify-between bg-slate-800/40 p-2 rounded-xl border border-slate-700/40">
-              <span>{t("theme_editor.global_card_bg")}</span>
-              <input
-                type="color"
-                value={themeStore.editingTheme.global.cardBg}
-                oninput={(e) => themeStore.setDraftGlobalColor("cardBg", e.currentTarget.value)}
-                class="w-7 h-7 rounded-lg cursor-pointer bg-transparent border-0"
-              />
-            </div>
+            {#if !searchQuery || "card background fundo dos cards cardbg".includes(searchQuery.toLowerCase()) || t("theme_editor.global_card_bg").toLowerCase().includes(searchQuery.toLowerCase())}
+              <div class="flex items-center justify-between bg-slate-800/40 p-2 rounded-xl border border-slate-700/40">
+                <span>{t("theme_editor.global_card_bg")}</span>
+                <input
+                  type="color"
+                  value={themeStore.editingTheme.global.cardBg}
+                  oninput={(e) => themeStore.setDraftGlobalColor("cardBg", e.currentTarget.value)}
+                  class="w-7 h-7 rounded-lg cursor-pointer bg-transparent border-0"
+                />
+              </div>
+            {/if}
 
-            <div class="flex items-center justify-between bg-slate-800/40 p-2 rounded-xl border border-slate-700/40">
-              <span>{t("theme_editor.global_sidebar_from")}</span>
-              <input
-                type="color"
-                value={themeStore.editingTheme.global.sidebarFrom}
-                oninput={(e) => themeStore.setDraftGlobalColor("sidebarFrom", e.currentTarget.value)}
-                class="w-7 h-7 rounded-lg cursor-pointer bg-transparent border-0"
-              />
-            </div>
+            {#if !searchQuery || "sidebar topo lateral sidebarfrom".includes(searchQuery.toLowerCase()) || t("theme_editor.global_sidebar_from").toLowerCase().includes(searchQuery.toLowerCase())}
+              <div class="flex items-center justify-between bg-slate-800/40 p-2 rounded-xl border border-slate-700/40">
+                <span>{t("theme_editor.global_sidebar_from")}</span>
+                <input
+                  type="color"
+                  value={themeStore.editingTheme.global.sidebarFrom}
+                  oninput={(e) => themeStore.setDraftGlobalColor("sidebarFrom", e.currentTarget.value)}
+                  class="w-7 h-7 rounded-lg cursor-pointer bg-transparent border-0"
+                />
+              </div>
+            {/if}
 
-            <div class="flex items-center justify-between bg-slate-800/40 p-2 rounded-xl border border-slate-700/40">
-              <span>{t("theme_editor.global_sidebar_to")}</span>
-              <input
-                type="color"
-                value={themeStore.editingTheme.global.sidebarTo}
-                oninput={(e) => themeStore.setDraftGlobalColor("sidebarTo", e.currentTarget.value)}
-                class="w-7 h-7 rounded-lg cursor-pointer bg-transparent border-0"
-              />
-            </div>
+            {#if !searchQuery || "sidebar fim lateral sidebarto".includes(searchQuery.toLowerCase()) || t("theme_editor.global_sidebar_to").toLowerCase().includes(searchQuery.toLowerCase())}
+              <div class="flex items-center justify-between bg-slate-800/40 p-2 rounded-xl border border-slate-700/40">
+                <span>{t("theme_editor.global_sidebar_to")}</span>
+                <input
+                  type="color"
+                  value={themeStore.editingTheme.global.sidebarTo}
+                  oninput={(e) => themeStore.setDraftGlobalColor("sidebarTo", e.currentTarget.value)}
+                  class="w-7 h-7 rounded-lg cursor-pointer bg-transparent border-0"
+                />
+              </div>
+            {/if}
           </div>
 
         <!-- ABA 4: IMPORTAR / EXPORTAR JSON -->

@@ -30,7 +30,9 @@
     "stacks": "Stacks",
     "builder": "Image Builder",
     "configs": "Configurações",
-    "profiles": "Perfis"
+    "extras": "Extras",
+    "profiles": "Perfis",
+    "theme_editor": "Personalizar Tema"
   },
   "containers": {
     "status_stop": "Parado",
@@ -814,7 +816,7 @@
     "texts_count": "{count} textos",
     "no_buttons_route": "Nenhum botão registrado para esta rota ainda.",
     "no_texts_found": "Nenhum texto encontrado para os filtros atuais.",
-    "search_texts_placeholder": "Buscar por chave ou texto...",
+    "search_texts_placeholder": "Pesquisar botões, textos, chaves ou fundos...",
     "category_all": "Todas as seções",
     "category_current": "Tela Atual ({route})",
     "edit_alias_title": "Editar Alias deste botão",

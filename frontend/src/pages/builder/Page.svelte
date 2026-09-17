@@ -7,12 +7,13 @@
   import { builderStore as store } from "./store.svelte";
   import FolderBrowser from "./components/FolderBrowser.svelte";
   import BuildControls from "./components/BuildControls.svelte";
+  import { navigate } from "$navigation/navigation.svelte";
   import TaskProgressModal from "$shared/components/TaskProgressModal.svelte";
 
   let { data } = $props();
 
   function goToImages() {
-    window.location.href = `/images?highlight=${encodeURIComponent(store.builtImage)}`;
+    navigate("images");
   }
 
   onMount(() => {
