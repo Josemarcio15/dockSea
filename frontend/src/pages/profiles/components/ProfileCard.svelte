@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { Button, EditButtonIcon } from "$shared/components/buttons";
   let { profile, active, canDelete, onSelect, onEdit, onDelete } = $props();
@@ -48,6 +48,16 @@
         </span>
       {/if}
     </div>
+
+    <!-- Tags de Idioma e Tema -->
+    <div class="flex items-center gap-2 text-[11px] font-medium text-slate-400 px-1">
+      <span class="inline-flex items-center gap-1 bg-slate-800/60 px-2 py-0.5 rounded-md border border-slate-700/50">
+        🌐 {profile.locale || "pt-BR"}
+      </span>
+      <span class="inline-flex items-center gap-1 bg-slate-800/60 px-2 py-0.5 rounded-md border border-slate-700/50 font-mono">
+        🎨 {profile.theme || "default"}.json
+      </span>
+    </div>
   </div>
 
   <div
@@ -56,6 +66,7 @@
     {#if !active}
       <Button
         size="sm"
+        themeKey="profiles.select_btn"
         class="flex-1"
         onclick={onSelect}
       >
@@ -65,6 +76,7 @@
 
     <EditButtonIcon
       size="sm"
+      themeKey="profiles.edit_btn"
       title={t("common.edit")}
       onclick={onEdit}
     >
@@ -74,6 +86,7 @@
     {#if canDelete}
       <Button
         size="sm"
+        themeKey="profiles.delete_btn"
         title={t("common.delete")}
         onclick={onDelete}
       >

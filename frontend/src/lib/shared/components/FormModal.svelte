@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import type { Snippet } from "svelte";
   import { Button } from "$shared/components/buttons";
@@ -6,6 +6,7 @@
   export interface ModalButton {
     label: string;
     variant?: "primary" | "secondary" | "danger" | "success" | "warning";
+    themeKey?: string;
     onclick: () => void | Promise<void>;
     disabled?: boolean;
     type?: "button" | "submit";
@@ -66,39 +67,14 @@
         </Button>
 
         {#each buttons as btn}
-          {#if btn.variant === "danger"}
-            <Button
-              type={btn.type || "button"}
-              disabled={btn.disabled}
-              onclick={btn.onclick}
-            >
-              {btn.label}
-            </Button>
-          {:else if btn.variant === "warning"}
-            <Button
-              type={btn.type || "button"}
-              disabled={btn.disabled}
-              onclick={btn.onclick}
-            >
-              {btn.label}
-            </Button>
-          {:else if btn.variant === "success" || btn.variant === "primary"}
-            <Button
-              type={btn.type || "button"}
-              disabled={btn.disabled}
-              onclick={btn.onclick}
-            >
-              {btn.label}
-            </Button>
-          {:else}
-            <Button
-              type={btn.type || "button"}
-              disabled={btn.disabled}
-              onclick={btn.onclick}
-            >
-              {btn.label}
-            </Button>
-          {/if}
+          <Button
+            type={btn.type || "button"}
+            themeKey={btn.themeKey}
+            disabled={btn.disabled}
+            onclick={btn.onclick}
+          >
+            {btn.label}
+          </Button>
         {/each}
       </div>
     </div>

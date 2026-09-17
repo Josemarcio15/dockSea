@@ -11,6 +11,7 @@ import (
 	"go-walis/internal/dashboard"
 	"go-walis/internal/extras"
 	"go-walis/internal/images"
+	"go-walis/internal/locale"
 	"go-walis/internal/networks"
 	"go-walis/internal/profiles"
 	"go-walis/internal/servers"
@@ -45,6 +46,7 @@ func main() {
 	serverService := servers.NewService(database)
 	stackService := stacks.NewStackService(database)
 	themeService := theme.NewThemeService(database.GetThemesDir())
+	localeService := locale.NewLocaleService(database.GetLocalesDir())
 	volumeService := volumes.NewVolumeService(database)
 
 	app := application.New(application.Options{
@@ -61,6 +63,7 @@ func main() {
 			application.NewService(containerService),
 			application.NewService(extraService),
 			application.NewService(imageService),
+			application.NewService(localeService),
 			application.NewService(networkService),
 			application.NewService(profileService),
 			application.NewService(serverService),

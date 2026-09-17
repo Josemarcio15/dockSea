@@ -1,7 +1,10 @@
 import { defaultTheme, type DockSeaTheme, type ButtonRouteStyle } from "./defaultTheme";
 import * as ThemeWails from "$bindings/theme/themeservice.js";
 
-const THEME_STORAGE_KEY = "docksea_custom_theme";
+export function isPredefinedThemeName(name: string): boolean {
+  const clean = name.toLowerCase().replace(/\.json$/, "").trim();
+  return clean === "default" || clean === "docksea_dark_classic" || clean === "docksea_default";
+}
 
 function applyThemeToDom(theme: DockSeaTheme) {
   if (typeof document === "undefined") return;
@@ -46,13 +49,25 @@ function applyThemeToDom(theme: DockSeaTheme) {
 }
 
 class ThemeStore {
+  // Tema ativo no aplicativo
   currentTheme = $state<DockSeaTheme>(defaultTheme);
+  activeThemeName = $state<string>("default");
+
+  // Estado do Editor
   isEditorOpen = $state(false);
+  editorStep = $state<"select" | "copy" | "edit">("select");
+  
+  // Tema em edição (draft) antes de salvar ou cancelar
+  editingTheme = $state<DockSeaTheme>(JSON.parse(JSON.stringify(defaultTheme)));
+  editingThemeName = $state<string>("");
+  isEditingPredefined = $state<boolean>(false);
+
   availableDiskThemes = $state<string[]>([]);
   themesDirectoryPath = $state<string>("");
 
   constructor() {
-    this.loadTheme();
+    this.currentTheme = this.normalizeTheme(defaultTheme);
+    applyThemeToDom(this.currentTheme);
     this.refreshDiskThemes();
   }
 
@@ -67,23 +82,86 @@ class ThemeStore {
     }
   }
 
-  async saveThemeToDisk(name: string): Promise<boolean> {
-    try {
-      const cleanName = name.trim() || "default";
-      await ThemeWails.SaveTheme(cleanName, this.exportThemeJson());
-      await this.refreshDiskThemes();
-      return true;
-    } catch (e) {
-      console.error("Falha ao salvar tema no disco:", e);
-      return false;
+  normalizeTheme(rawTheme: any): DockSeaTheme {
+    const normalized: DockSeaTheme = {
+      name: rawTheme?.name || defaultTheme.name,
+      author: rawTheme?.author || defaultTheme.author,
+      version: rawTheme?.version || defaultTheme.version,
+      global: {
+        ...defaultTheme.global,
+        ...(rawTheme?.global || {}),
+      },
+      routes: {},
+    };
+
+    const allRouteKeys = new Set([
+      ...Object.keys(defaultTheme.routes || {}),
+      ...Object.keys(rawTheme?.routes || {}),
+    ]);
+
+    for (const routeKey of allRouteKeys) {
+      const defRoute = defaultTheme.routes[routeKey] || {};
+      const rawRoute = rawTheme?.routes?.[routeKey] || {};
+      normalized.routes[routeKey] = {};
+
+      const allBtnKeys = new Set([
+        ...Object.keys(defRoute),
+        ...Object.keys(rawRoute),
+      ]);
+
+      for (const btnKey of allBtnKeys) {
+        const defBtn = defRoute[btnKey] || {};
+        const rawBtn = rawRoute[btnKey] || {};
+
+        const bg = rawBtn.bg || rawBtn.color || defBtn.bg || "#2563eb";
+        const hover = rawBtn.hover || defBtn.hover || bg;
+        const text = rawBtn.text || defBtn.text || "#ffffff";
+        const textHover = rawBtn.textHover || defBtn.textHover || text;
+        const size = rawBtn.size || defBtn.size || "sm";
+
+        normalized.routes[routeKey][btnKey] = {
+          bg,
+          hover,
+          text,
+          textHover,
+          size,
+        };
+      }
     }
+
+    return normalized;
   }
 
-  async loadThemeFromDisk(name: string): Promise<boolean> {
+  // Iniciar fluxo ao clicar no botão "🎨 Personalizar Tema"
+  openEditor() {
+    this.refreshDiskThemes();
+    this.editorStep = "select";
+    this.isEditorOpen = true;
+  }
+
+  closeEditor() {
+    this.isEditorOpen = false;
+    // Restaura o DOM para o tema ativo caso estivesse visualizando preview
+    applyThemeToDom(this.currentTheme);
+  }
+
+  // Aplicar tema diretamente (para usar no app sem necessariamente editar)
+  async applyTheme(name: string): Promise<boolean> {
+    if (isPredefinedThemeName(name)) {
+      this.currentTheme = this.normalizeTheme(defaultTheme);
+      this.activeThemeName = "default";
+      applyThemeToDom(this.currentTheme);
+      return true;
+    }
+
     try {
       const jsonContent = await ThemeWails.LoadTheme(name);
       if (jsonContent) {
-        return this.importTheme(jsonContent);
+        const parsed = JSON.parse(jsonContent);
+        this.currentTheme = this.normalizeTheme(parsed);
+        this.activeThemeName = name;
+        applyThemeToDom(this.currentTheme);
+        return true;
       }
       return false;
     } catch (e) {
@@ -92,67 +170,62 @@ class ThemeStore {
     }
   }
 
-  async deleteThemeFromDisk(name: string): Promise<boolean> {
-    try {
-      await ThemeWails.DeleteTheme(name);
-      await this.refreshDiskThemes();
-      return true;
-    } catch (e) {
-      console.error("Falha ao deletar tema do disco:", e);
+  // Escolher um tema no editor
+  async selectThemeForEdit(name: string) {
+    if (isPredefinedThemeName(name)) {
+      // Tema predefinido: obriga a criar uma cópia
+      this.editingTheme = JSON.parse(JSON.stringify(defaultTheme));
+      this.editingThemeName = "";
+      this.isEditingPredefined = true;
+      this.editorStep = "copy";
+    } else {
+      // Tema customizado existente: carrega para editar diretamente ou copiar
+      try {
+        const jsonContent = await ThemeWails.LoadTheme(name);
+        if (jsonContent) {
+          this.editingTheme = this.normalizeTheme(JSON.parse(jsonContent));
+          this.editingThemeName = name;
+          this.isEditingPredefined = false;
+          this.editorStep = "edit";
+          // Aplica preview no DOM
+          applyThemeToDom(this.editingTheme);
+        }
+      } catch (e) {
+        console.error("Falha ao carregar tema:", e);
+      }
+    }
+  }
+
+  // Criar cópia com novo nome e começar a editar
+  startEditNewCopy(newThemeName: string): boolean {
+    const clean = newThemeName.trim();
+    if (!clean) return false;
+    if (isPredefinedThemeName(clean)) {
+      alert("Não é permitido usar o nome de um tema predefinido.");
       return false;
     }
+    this.editingThemeName = clean;
+    this.editingTheme.name = clean;
+    this.editorStep = "edit";
+    applyThemeToDom(this.editingTheme);
+    return true;
   }
 
-  loadTheme() {
-    if (typeof localStorage === "undefined") return;
-    try {
-      const saved = localStorage.getItem(THEME_STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        const mergedRoutes: Record<string, any> = {};
-        const allRouteKeys = new Set([
-          ...Object.keys(defaultTheme.routes || {}),
-          ...Object.keys(parsed.routes || {}),
-        ]);
-
-        for (const routeKey of allRouteKeys) {
-          mergedRoutes[routeKey] = {
-            ...(defaultTheme.routes[routeKey] || {}),
-            ...(parsed.routes?.[routeKey] || {}),
-          };
-        }
-
-        this.currentTheme = {
-          ...defaultTheme,
-          ...parsed,
-          global: { ...defaultTheme.global, ...(parsed.global || {}) },
-          routes: mergedRoutes as any,
-        };
-      } else {
-        this.currentTheme = JSON.parse(JSON.stringify(defaultTheme));
-      }
-    } catch (e) {
-      console.warn("Erro ao carregar tema:", e);
-      this.currentTheme = { ...defaultTheme };
-    }
-    applyThemeToDom(this.currentTheme);
-  }
-
-  getRouteButtonStyle(route: string, btnKey: string): ButtonRouteStyle | undefined {
-    return this.currentTheme.routes?.[route]?.[btnKey];
-  }
-
-  setRouteButtonProp(
+  // Edição de propriedades durante o draft
+  setDraftRouteButtonProp(
     route: string,
     btnKey: string,
     prop: keyof ButtonRouteStyle,
     value: string
   ) {
-    if (!this.currentTheme.routes[route]) {
-      this.currentTheme.routes[route] = {};
+    if (!this.editingTheme.routes) {
+      this.editingTheme.routes = {};
     }
-    if (!this.currentTheme.routes[route][btnKey]) {
-      this.currentTheme.routes[route][btnKey] = {
+    if (!this.editingTheme.routes[route]) {
+      this.editingTheme.routes[route] = {};
+    }
+    if (!this.editingTheme.routes[route][btnKey]) {
+      this.editingTheme.routes[route][btnKey] = {
         bg: "#2563eb",
         hover: "#1d4ed8",
         text: "#ffffff",
@@ -160,77 +233,103 @@ class ThemeStore {
         size: "sm",
       };
     }
-    (this.currentTheme.routes[route][btnKey] as any)[prop] = value;
-    applyThemeToDom(this.currentTheme);
-    this.saveTheme();
+    (this.editingTheme.routes[route][btnKey] as any)[prop] = value;
+    // Forçar atualização reativa profunda no Svelte 5
+    this.editingTheme = { ...this.editingTheme };
+    applyThemeToDom(this.editingTheme);
   }
 
-  setRouteButtonColor(route: string, btnKey: string, color: string) {
-    this.setRouteButtonProp(route, btnKey, "bg", color);
+  setDraftGlobalColor(key: keyof DockSeaTheme["global"], value: string) {
+    this.editingTheme.global[key] = value;
+    this.editingTheme = { ...this.editingTheme };
+    applyThemeToDom(this.editingTheme);
   }
 
-  setRouteButtonHover(route: string, btnKey: string, hoverColor: string) {
-    this.setRouteButtonProp(route, btnKey, "hover", hoverColor);
-  }
-
-  setRouteButtonText(route: string, btnKey: string, textColor: string) {
-    this.setRouteButtonProp(route, btnKey, "text", textColor);
-  }
-
-  setRouteButtonSize(route: string, btnKey: string, size: "xs" | "sm" | "md" | "lg") {
-    this.setRouteButtonProp(route, btnKey, "size", size);
-  }
-
-  setGlobalColor(key: keyof DockSeaTheme["global"], value: string) {
-    this.currentTheme.global[key] = value;
-    applyThemeToDom(this.currentTheme);
-    this.saveTheme();
-  }
-
-  saveTheme() {
-    if (typeof localStorage === "undefined") return;
+  // Ação de SALVAR: grava no arquivo .json e torna o tema ativo (opcionalmente fecha o editor)
+  async saveDraftToDisk(closeAfterSave = true): Promise<boolean> {
     try {
-      localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(this.currentTheme));
-    } catch (e) {
-      console.error("Falha ao salvar tema:", e);
-    }
-  }
+      const cleanName = this.editingThemeName.trim();
+      if (!cleanName) {
+        alert("Nome do tema inválido.");
+        return false;
+      }
+      if (isPredefinedThemeName(cleanName)) {
+        alert("Não é permitido sobrescrever temas predefinidos.");
+        return false;
+      }
 
-  importTheme(jsonString: string): boolean {
-    try {
-      const parsed = JSON.parse(jsonString);
-      if (!parsed || typeof parsed !== "object") return false;
-      this.currentTheme = {
-        ...defaultTheme,
-        ...parsed,
-        global: { ...defaultTheme.global, ...(parsed.global || {}) },
-        routes: { ...defaultTheme.routes, ...(parsed.routes || {}) },
-      };
+      const jsonStr = JSON.stringify(this.editingTheme, null, 2);
+      await ThemeWails.SaveTheme(cleanName, jsonStr);
+      await this.refreshDiskThemes();
+
+      // Torna o tema ativo
+      this.currentTheme = JSON.parse(JSON.stringify(this.editingTheme));
+      this.activeThemeName = cleanName;
       applyThemeToDom(this.currentTheme);
-      this.saveTheme();
+      if (closeAfterSave) {
+        this.closeEditor();
+      }
       return true;
     } catch (e) {
-      console.error("JSON de tema inválido:", e);
+      console.error("Falha ao salvar tema no disco:", e);
       return false;
     }
   }
 
-  resetToDefault() {
-    this.currentTheme = JSON.parse(JSON.stringify(defaultTheme));
+  // Ação de CANCELAR: descarta alterações e restaura o tema ativo anterior
+  cancelDraft() {
     applyThemeToDom(this.currentTheme);
-    if (typeof localStorage !== "undefined") {
-      localStorage.removeItem(THEME_STORAGE_KEY);
+    this.closeEditor();
+  }
+
+  // Ação de RESTAURAR DRAFT para o padrão enquanto edita
+  resetDraftToDefault() {
+    this.editingTheme = this.normalizeTheme(defaultTheme);
+    this.editingTheme.name = this.editingThemeName;
+    applyThemeToDom(this.editingTheme);
+  }
+
+  async deleteThemeFromDisk(name: string): Promise<boolean> {
+    if (isPredefinedThemeName(name)) {
+      alert("Não é permitido excluir o tema predefinido.");
+      return false;
+    }
+    try {
+      await ThemeWails.DeleteTheme(name);
+      await this.refreshDiskThemes();
+      if (this.activeThemeName === name) {
+        await this.applyTheme("default");
+      }
+      return true;
+    } catch (e) {
+      console.error("Falha ao deletar tema do disco:", e);
+      return false;
     }
   }
 
-  exportThemeJson(): string {
-    return JSON.stringify(this.currentTheme, null, 2);
+  exportEditingJson(): string {
+    return JSON.stringify(this.editingTheme, null, 2);
+  }
+
+  importEditingJson(jsonString: string): boolean {
+    try {
+      const parsed = JSON.parse(jsonString);
+      if (!parsed || typeof parsed !== "object") return false;
+      this.editingTheme = this.normalizeTheme(parsed);
+      this.editingTheme.name = this.editingThemeName;
+      applyThemeToDom(this.editingTheme);
+      return true;
+    } catch (e) {
+      console.error("JSON inválido:", e);
+      return false;
+    }
   }
 
   toggleEditor() {
-    this.isEditorOpen = !this.isEditorOpen;
     if (this.isEditorOpen) {
-      this.refreshDiskThemes();
+      this.closeEditor();
+    } else {
+      this.openEditor();
     }
   }
 }

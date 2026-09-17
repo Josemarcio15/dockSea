@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import StackRow from "$shared/components/StackRow.svelte";
   import VpsSelectWarning from "$shared/components/VpsSelectWarning.svelte";
   import { t } from "$shared/stores/locale.svelte";
@@ -193,7 +193,7 @@
           class="px-4 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#0b0f19] text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 shadow-2xs transition-all w-60"
           bind:value={stackStore.searchQuery}
         />
-        <Button size="sm" onclick={openCreate}
+        <Button size="sm" themeKey="stacks.new_stack_btn" onclick={openCreate}
           >+ {t("stacks.new_stack")}</Button
         >
       </div>

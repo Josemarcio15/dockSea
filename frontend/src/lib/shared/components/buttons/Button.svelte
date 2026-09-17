@@ -41,19 +41,24 @@
     lg: "px-5 py-2.5 text-sm rounded-xl gap-2.5 font-bold",
   };
 
+  // Obter o tema ativo ou em edição (quando o editor estiver aberto)
+  let activeTheme = $derived(
+    themeStore.isEditorOpen ? themeStore.editingTheme : themeStore.currentTheme
+  );
+
   // Buscar dados do tema por rota/chave de forma reativa direta
   let routeConfig = $derived.by(() => {
     if (!themeKey) return undefined;
     const parts = themeKey.split(".");
     if (parts.length === 2) {
       const [route, btnKey] = parts;
-      return themeStore.currentTheme.routes?.[route]?.[btnKey];
+      return activeTheme.routes?.[route]?.[btnKey];
     }
     return undefined;
   });
 
-  // Determinar tamanho final (prop > tema > default "md")
-  let activeSize = $derived<ButtonSize>(size || routeConfig?.size || "md");
+  // Determinar tamanho final (tema > prop > default "sm")
+  let activeSize = $derived<ButtonSize>(routeConfig?.size || size || "sm");
 
   // Cor de fundo calculada
   let activeBg = $derived.by(() => {
@@ -90,6 +95,8 @@
     }
     return styles.join("; ");
   });
+  // Classes de padding/tamanho dinâmicas
+  let sizeClass = $derived(sizeClasses[activeSize] || sizeClasses.sm);
 </script>
 
 <button
@@ -98,9 +105,7 @@
   disabled={disabled || loading}
   {onclick}
   style={dynamicStyle}
-  class="ds-btn inline-flex items-center justify-center transition-all duration-150 select-none cursor-pointer border font-sans active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:active:scale-100 {sizeClasses[
-    activeSize
-  ]} {customClass}"
+  class="ds-btn inline-flex items-center justify-center transition-all duration-150 select-none cursor-pointer border font-sans active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:active:scale-100 {sizeClass} {customClass}"
 >
   {#if loading}
     <div

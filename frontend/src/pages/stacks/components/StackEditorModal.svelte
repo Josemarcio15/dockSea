@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { Button } from "$shared/components/buttons";
   import CodeEditor from "$shared/components/CodeEditor.svelte";
@@ -126,7 +126,7 @@
                 placeholder={t("stacks.placeholder_folder_path")}
                 bind:value={editorFolderPath}
               />
-              <Button size="sm" onclick={onOpenFolderBrowser}>
+              <Button size="sm" themeKey="stacks.browse_folder_btn" onclick={onOpenFolderBrowser}>
                 {t("stacks.browse_folder_btn")}
               </Button>
             </div>

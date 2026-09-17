@@ -12,8 +12,8 @@ type ThemeService struct {
 }
 
 func NewThemeService(themesDir string) *ThemeService {
-	if err := os.MkdirAll(themesDir, 0755); err != nil {
-		fmt.Printf("Aviso: Falha ao criar diretório de temas '%s': %v\n", themesDir, err)
+	if err := EnsureDefaultThemeFile(themesDir); err != nil {
+		fmt.Printf("Aviso: Falha ao inicializar tema predefinido na pasta '%s': %v\n", themesDir, err)
 	}
 	return &ThemeService{themesDir: themesDir}
 }
@@ -21,6 +21,12 @@ func NewThemeService(themesDir string) *ThemeService {
 // GetThemesDir retorna o caminho absoluto da pasta themes
 func (s *ThemeService) GetThemesDir() string {
 	return s.themesDir
+}
+
+// IsPredefinedTheme verifica se o nome do tema é um tema protegido do sistema
+func (s *ThemeService) IsPredefinedTheme(name string) bool {
+	clean := strings.ToLower(strings.TrimSuffix(strings.TrimSpace(name), ".json"))
+	return clean == "default" || clean == "docksea_dark_classic" || clean == "docksea_default"
 }
 
 // ListThemes lista todos os temas .json disponíveis na pasta ~/Documents/DockSea/themes/
@@ -59,12 +65,17 @@ func (s *ThemeService) LoadTheme(name string) (string, error) {
 	return string(data), nil
 }
 
-// SaveTheme grava ou atualiza um arquivo de tema JSON na pasta themes
+// SaveTheme grava ou atualiza um arquivo de tema JSON na pasta themes (impede sobrescrever temas protegidos)
 func (s *ThemeService) SaveTheme(name string, jsonContent string) error {
 	cleanName := strings.TrimSpace(name)
 	if cleanName == "" {
 		return fmt.Errorf("nome do tema não pode ser vazio")
 	}
+
+	if s.IsPredefinedTheme(cleanName) {
+		return fmt.Errorf("não é permitido alterar ou sobrescrever temas predefinidos. Crie uma cópia com outro nome.")
+	}
+
 	if !strings.HasSuffix(strings.ToLower(cleanName), ".json") {
 		cleanName += ".json"
 	}
@@ -81,9 +92,13 @@ func (s *ThemeService) SaveTheme(name string, jsonContent string) error {
 	return nil
 }
 
-// DeleteTheme remove um arquivo de tema
+// DeleteTheme remove um arquivo de tema (impede exclusão de temas protegidos)
 func (s *ThemeService) DeleteTheme(name string) error {
 	cleanName := strings.TrimSpace(name)
+	if s.IsPredefinedTheme(cleanName) {
+		return fmt.Errorf("não é permitido excluir temas predefinidos do sistema")
+	}
+
 	if !strings.HasSuffix(strings.ToLower(cleanName), ".json") {
 		cleanName += ".json"
 	}

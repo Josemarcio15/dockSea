@@ -10,6 +10,7 @@ func (d *DB) migrateMaster() error {
 			id TEXT PRIMARY KEY,
 			name TEXT NOT NULL UNIQUE,
 			locale TEXT NOT NULL DEFAULT 'pt-BR',
+			theme TEXT NOT NULL DEFAULT 'default',
 			is_active INTEGER DEFAULT 0,
 			created_at DATETIME NOT NULL,
 			updated_at DATETIME NOT NULL
@@ -25,6 +26,10 @@ func (d *DB) migrateMaster() error {
 			return err
 		}
 	}
+
+	// Migração para banco existente: adicionar coluna theme se ainda não existir
+	_, _ = d.masterConn.Exec(`ALTER TABLE profiles ADD COLUMN theme TEXT NOT NULL DEFAULT 'default';`)
+
 	return nil
 }
 

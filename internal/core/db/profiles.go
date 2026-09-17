@@ -11,6 +11,7 @@ type Profile struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	Locale    string    `json:"locale"`
+	Theme     string    `json:"theme"`
 	IsActive  bool      `json:"isActive"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
@@ -26,7 +27,7 @@ func (d *DB) ListProfiles() ([]Profile, error) {
 	}
 
 	rows, err := conn.Query(`
-		SELECT id, name, locale, is_active, created_at, updated_at
+		SELECT id, name, locale, theme, is_active, created_at, updated_at
 		FROM profiles
 		ORDER BY created_at ASC
 	`)
@@ -39,10 +40,13 @@ func (d *DB) ListProfiles() ([]Profile, error) {
 	for rows.Next() {
 		var p Profile
 		var isActiveInt int
-		if err := rows.Scan(&p.ID, &p.Name, &p.Locale, &isActiveInt, &p.CreatedAt, &p.UpdatedAt); err != nil {
+		if err := rows.Scan(&p.ID, &p.Name, &p.Locale, &p.Theme, &isActiveInt, &p.CreatedAt, &p.UpdatedAt); err != nil {
 			return nil, err
 		}
 		p.IsActive = isActiveInt == 1
+		if p.Theme == "" {
+			p.Theme = "default"
+		}
 		profiles = append(profiles, p)
 	}
 	if err := rows.Err(); err != nil {
@@ -63,24 +67,27 @@ func (d *DB) GetActiveProfile() (*Profile, error) {
 	var p Profile
 	var isActiveInt int
 	err := conn.QueryRow(`
-		SELECT id, name, locale, is_active, created_at, updated_at
+		SELECT id, name, locale, theme, is_active, created_at, updated_at
 		FROM profiles
 		WHERE is_active = 1
 		LIMIT 1
-	`).Scan(&p.ID, &p.Name, &p.Locale, &isActiveInt, &p.CreatedAt, &p.UpdatedAt)
+	`).Scan(&p.ID, &p.Name, &p.Locale, &p.Theme, &isActiveInt, &p.CreatedAt, &p.UpdatedAt)
 	if err != nil {
 		// Se nenhum estiver ativo, pega o primeiro da lista
 		err = conn.QueryRow(`
-			SELECT id, name, locale, is_active, created_at, updated_at
+			SELECT id, name, locale, theme, is_active, created_at, updated_at
 			FROM profiles
 			ORDER BY created_at ASC
 			LIMIT 1
-		`).Scan(&p.ID, &p.Name, &p.Locale, &isActiveInt, &p.CreatedAt, &p.UpdatedAt)
+		`).Scan(&p.ID, &p.Name, &p.Locale, &p.Theme, &isActiveInt, &p.CreatedAt, &p.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
 	}
 	p.IsActive = true
+	if p.Theme == "" {
+		p.Theme = "default"
+	}
 	return &p, nil
 }
 
@@ -97,6 +104,9 @@ func (d *DB) SaveProfile(p Profile) error {
 	}
 	if p.Locale == "" {
 		p.Locale = "pt-BR"
+	}
+	if p.Theme == "" {
+		p.Theme = "default"
 	}
 
 	conn := d.masterConn
@@ -178,15 +188,19 @@ func (d *DB) saveProfileToMaster(p Profile) error {
 	if p.IsActive {
 		isActiveInt = 1
 	}
+	if p.Theme == "" {
+		p.Theme = "default"
+	}
 
 	_, err := conn.Exec(`
-		INSERT INTO profiles (id, name, locale, is_active, created_at, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?)
+		INSERT INTO profiles (id, name, locale, theme, is_active, created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?)
 		ON CONFLICT(id) DO UPDATE SET
 			name = excluded.name,
 			locale = excluded.locale,
+			theme = excluded.theme,
 			updated_at = excluded.updated_at
-	`, p.ID, p.Name, p.Locale, isActiveInt, now, now)
+	`, p.ID, p.Name, p.Locale, p.Theme, isActiveInt, now, now)
 	return err
 }
 
@@ -207,7 +221,7 @@ func (d *DB) DeleteProfile(id string) error {
 
 	var prof Profile
 	var isActiveInt int
-	err = conn.QueryRow(`SELECT id, name, locale, is_active FROM profiles WHERE id = ?`, id).Scan(&prof.ID, &prof.Name, &prof.Locale, &isActiveInt)
+	err = conn.QueryRow(`SELECT id, name, locale, theme, is_active FROM profiles WHERE id = ?`, id).Scan(&prof.ID, &prof.Name, &prof.Locale, &prof.Theme, &isActiveInt)
 	if err != nil {
 		return fmt.Errorf("perfil não encontrado: %w", err)
 	}
@@ -260,8 +274,8 @@ func (d *DB) SetActiveProfile(id string) error {
 
 	var targetProfile Profile
 	var isActiveInt int
-	err := conn.QueryRow(`SELECT id, name, locale, is_active, created_at, updated_at FROM profiles WHERE id = ?`, id).Scan(
-		&targetProfile.ID, &targetProfile.Name, &targetProfile.Locale, &isActiveInt, &targetProfile.CreatedAt, &targetProfile.UpdatedAt,
+	err := conn.QueryRow(`SELECT id, name, locale, theme, is_active, created_at, updated_at FROM profiles WHERE id = ?`, id).Scan(
+		&targetProfile.ID, &targetProfile.Name, &targetProfile.Locale, &targetProfile.Theme, &isActiveInt, &targetProfile.CreatedAt, &targetProfile.UpdatedAt,
 	)
 	if err != nil {
 		return fmt.Errorf("perfil não encontrado: %w", err)
@@ -305,5 +319,17 @@ func (d *DB) UpdateProfileLocale(id string, locale string) error {
 	_, err := conn.Exec(`
 		UPDATE profiles SET locale = ?, updated_at = ? WHERE id = ?
 	`, locale, now, id)
+	return err
+}
+
+func (d *DB) UpdateProfileTheme(id string, themeName string) error {
+	conn := d.masterConn
+	if conn == nil {
+		conn = d.conn
+	}
+	now := time.Now().UTC()
+	_, err := conn.Exec(`
+		UPDATE profiles SET theme = ?, updated_at = ? WHERE id = ?
+	`, themeName, now, id)
 	return err
 }

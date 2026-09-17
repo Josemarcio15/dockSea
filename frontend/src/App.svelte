@@ -2,7 +2,7 @@
   import StatusBanner from "$shared/components/StatusBanner.svelte";
   import SidebarItem from "$shared/components/SidebarItem.svelte";
   import ActiveServerWidget from "$shared/components/ActiveServerWidget.svelte";
-  import { setLocale, t } from "$shared/stores/locale.svelte";
+  import { setLocale, t, initLocalesFromDisk } from "$shared/stores/locale.svelte";
   import { onMount } from "svelte";
 
   // Import page components
@@ -70,6 +70,7 @@
     }
 
     try {
+      await initLocalesFromDisk();
       await loadSession();
       if (session.activeProfile?.locale) {
         appData.locale = session.activeProfile.locale;

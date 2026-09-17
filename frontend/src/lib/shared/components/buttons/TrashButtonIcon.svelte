@@ -4,7 +4,8 @@
 
   let {
     type = "button",
-    size = "sm",
+    size,
+    themeKey,
     disabled = false,
     loading = false,
     title = "Excluir",
@@ -14,6 +15,7 @@
   }: {
     type?: "button" | "submit" | "reset";
     size?: ButtonSize;
+    themeKey?: string;
     disabled?: boolean;
     loading?: boolean;
     title?: string;
@@ -43,10 +45,11 @@
 <Button
   {type}
   {size}
+  {themeKey}
   {disabled}
   {loading}
   {title}
-  class="bg-red-500 hover:bg-red-600 text-white shadow-md shadow-red-500/20 border-transparent active:bg-red-700 {customClass}"
+  class={customClass}
   {onclick}
   icon={defaultTrashIcon}
 >

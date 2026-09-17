@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { Button, EditButtonIcon, TrashButtonIcon } from "$shared/components/buttons";
 
@@ -77,12 +77,14 @@
 
     <EditButtonIcon
       size="sm"
+      themeKey="config.edit_btn"
       title={t("common.edit")}
       onclick={() => onEdit(server)}
     />
 
     <TrashButtonIcon
       size="sm"
+      themeKey="config.delete_btn"
       title={t("common.delete")}
       onclick={() => onDelete(server)}
     />

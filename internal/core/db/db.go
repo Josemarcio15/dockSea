@@ -20,6 +20,7 @@ type DB struct {
 	appDir        string
 	profilesDir   string
 	themesDir     string
+	localesDir    string
 	activeProfile Profile
 }
 
@@ -69,6 +70,11 @@ func InitDB() (*DB, error) {
 		return nil, fmt.Errorf("failed to create themes dir: %w", err)
 	}
 
+	localesDir := filepath.Join(appDir, "locales")
+	if err := os.MkdirAll(localesDir, 0755); err != nil {
+		return nil, fmt.Errorf("failed to create locales dir: %w", err)
+	}
+
 	// Migrar dados do antigo UserConfigDir se existir
 	if configDir, err := os.UserConfigDir(); err == nil {
 		oldAppDir := filepath.Join(configDir, "docksea")
@@ -110,6 +116,7 @@ func InitDB() (*DB, error) {
 		appDir:      appDir,
 		profilesDir: profilesDir,
 		themesDir:   themesDir,
+		localesDir:  localesDir,
 	}
 
 	// Migrate master table
@@ -170,6 +177,12 @@ func (d *DB) GetThemesDir() string {
 	d.mu.RLock()
 	defer d.mu.RUnlock()
 	return d.themesDir
+}
+
+func (d *DB) GetLocalesDir() string {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	return d.localesDir
 }
 
 func (d *DB) GetAppDir() string {

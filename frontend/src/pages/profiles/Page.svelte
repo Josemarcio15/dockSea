@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import StatusBanner from "$shared/components/StatusBanner.svelte";
   import { t } from "$shared/stores/locale.svelte";
   import ConfirmDialog from "$shared/components/ConfirmDialog.svelte";
@@ -24,7 +24,7 @@
       </h1>
     </div>
 
-    <Button size="sm" onclick={store.openCreate}>
+    <Button size="sm" themeKey="profiles.new_profile_btn" onclick={store.openCreate}>
       {t("profiles.new_profile")}
     </Button>
   </div>
@@ -51,6 +51,8 @@
   bind:show={store.showModal}
   id={store.form.id}
   bind:name={store.form.name}
+  bind:locale={store.form.locale}
+  bind:theme={store.form.theme}
   onSave={store.save}
 />
 

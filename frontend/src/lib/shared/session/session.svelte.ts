@@ -1,5 +1,7 @@
 import * as ProfileService from "$bindings/profiles/service.js";
 import * as ServerService from "$bindings/servers/service.js";
+import { setLocale } from "$shared/stores/locale.svelte";
+import { themeStore } from "$shared/theme/theme.svelte";
 import type { SessionState } from "./session.types";
 
 export const session = $state<SessionState>({
@@ -9,6 +11,7 @@ export const session = $state<SessionState>({
   activeProfile: {
     name: "Perfil Padrão",
     locale: "pt-BR",
+    theme: "default",
   },
 });
 
@@ -21,8 +24,17 @@ export async function loadSession(): Promise<void> {
   const profiles = await ProfileService.ListProfiles();
   if (profiles && profiles.length > 0) {
     session.profiles = profiles;
-    session.activeProfile =
-      profiles.find((profile: any) => profile.isActive) || profiles[0];
+    const active = profiles.find((profile: any) => profile.isActive) || profiles[0];
+    session.activeProfile = active;
+
+    // Sincronizar idioma do perfil
+    if (active.locale) {
+      setLocale(active.locale);
+    }
+    // Sincronizar tema do perfil
+    if (active.theme) {
+      void themeStore.applyTheme(active.theme);
+    }
   } else {
     session.profiles = [];
   }

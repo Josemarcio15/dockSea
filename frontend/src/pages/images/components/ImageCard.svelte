@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import type { DockerImage } from "$lib/domains/images";
   import { Button } from "$shared/components/buttons";
@@ -267,10 +267,11 @@
   <div class="pt-2 border-t border-white/[0.08] flex justify-center">
     <Button
       size="sm"
+      themeKey="images.create_container_btn"
       class="w-full"
       onclick={on_build}
     >
-      {t("images.btn_build_container")}
+      {t("images.create_container_btn")}
     </Button>
   </div>
 </div>

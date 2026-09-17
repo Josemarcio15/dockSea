@@ -4,7 +4,8 @@
 
   let {
     type = "button",
-    size = "sm",
+    size,
+    themeKey,
     disabled = false,
     loading = false,
     title = "Editar",
@@ -14,6 +15,7 @@
   }: {
     type?: "button" | "submit" | "reset";
     size?: ButtonSize;
+    themeKey?: string;
     disabled?: boolean;
     loading?: boolean;
     title?: string;
@@ -43,10 +45,11 @@
 <Button
   {type}
   {size}
+  {themeKey}
   {disabled}
   {loading}
   {title}
-  class="bg-teal-600 hover:bg-teal-700 text-white shadow-md shadow-teal-500/20 border-transparent active:bg-teal-800 {customClass}"
+  class={customClass}
   {onclick}
   icon={defaultEditIcon}
 >
