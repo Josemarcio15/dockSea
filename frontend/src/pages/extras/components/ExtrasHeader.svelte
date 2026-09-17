@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { Button } from "$shared/components/buttons";
   import type { ExtrasMainTab } from "../types";
@@ -41,7 +41,7 @@
       >
       <button type="button" class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer {mainTab === 'deploy_temp' ? 'bg-violet-600 text-white shadow-xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}" onclick={() => (mainTab = "deploy_temp")}>{t("extras.tab_deploy_temp")}</button>
     </div>
-    <Button size="sm" title={t("common.refresh")} onclick={refresh}
+    <Button size="sm" themeKey="extras.refresh_btn" title={t("common.refresh")} onclick={refresh}
       >{t("common.refresh")}</Button
     >
   </div>

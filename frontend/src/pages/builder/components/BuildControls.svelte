@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { Button } from "$shared/components/buttons";
   import type { BuilderStore } from "../types";
@@ -50,6 +50,7 @@
       <Button
         size="md"
         class="flex-1"
+        themeKey="builder.build_btn"
         disabled={!store.canBuild}
         loading={store.status === "building"}
         onclick={() => store.build()}

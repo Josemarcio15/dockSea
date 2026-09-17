@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { Button } from "$shared/components/buttons";
 
@@ -38,15 +38,17 @@
     <div class="flex gap-2">
       <Button
         size="sm"
+        themeKey="extras.back_btn"
         disabled={deployPath === "$HOME/.docksea"}
-        onclick={onGoParent}>Voltar</Button
+        onclick={onGoParent}>{t("extras.btn_back")}</Button
       >
       <Button
         size="sm"
+        themeKey="extras.delete_selected_btn"
         disabled={!selectedDeployPaths.length}
         onclick={onRequestDelete}
       >
-        Remover selecionados
+        {t("extras.btn_delete_selected")}
       </Button>
     </div>
   </div>

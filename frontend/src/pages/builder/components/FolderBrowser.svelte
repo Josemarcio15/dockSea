@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import {
     notifySuccess,
@@ -26,18 +26,18 @@
   async function save() {
     try {
       await store.saveCurrentPath();
-      notifySuccess("Pasta salva com sucesso!");
+      notifySuccess(t("builder.folder_saved_success"));
     } catch (error: any) {
-      notifyError(`Erro ao salvar pasta: ${error?.message || error}`);
+      notifyError(t("builder.folder_save_error", { error: error?.message || error }));
     }
   }
   async function remove(path: string, event: Event) {
     event.stopPropagation();
     try {
       await store.removeSavedPath(path);
-      notifySuccess("Pasta removida dos favoritos!");
+      notifySuccess(t("builder.folder_removed_success"));
     } catch (error: any) {
-      notifyError(`Erro ao remover pasta: ${error?.message || error}`);
+      notifyError(t("builder.folder_remove_error", { error: error?.message || error }));
     }
   }
 </script>

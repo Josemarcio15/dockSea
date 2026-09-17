@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { Button } from "$shared/components/buttons";
   import type { DockerNetwork } from "$lib/domains/networks";
@@ -161,7 +161,7 @@
             ID
           </div>
           <div class="flex flex-col min-w-0">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">NETWORK ID</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("networks.card_id")}</span>
             <span class="font-mono font-extrabold text-sm text-blue-300 truncate">{network.id.substring(0, 12)}</span>
           </div>
         </div>
@@ -178,7 +178,7 @@
             </svg>
           </div>
           <div class="flex flex-col min-w-0">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">SUBNET</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("networks.card_subnet")}</span>
             <span class="font-mono font-extrabold text-sm text-white truncate">{network.subnet || "—"}</span>
           </div>
         </div>

@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import FormModal from "$shared/components/FormModal.svelte";
   import Input from "$shared/components/Input.svelte";
   import { Button } from "$shared/components/buttons";
@@ -123,7 +123,7 @@
         );
       }
     } catch (e: any) {
-      notifyError(`Erro ao autodetectar: ${e.message || e}`);
+      notifyError(t("config.autodetect_error", { error: e.message || e }));
     } finally {
       isDetecting = false;
     }

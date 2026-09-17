@@ -80,7 +80,7 @@
   function copyMountpoint() {
     if (vol.mountpoint) {
       navigator.clipboard.writeText(vol.mountpoint);
-      notifySuccess("Ponto de montagem copiado!");
+      notifySuccess(t("volumes.mountpoint_copied"));
     }
   }
 </script>
@@ -189,7 +189,7 @@
             </svg>
           </div>
           <div class="flex flex-col min-w-0">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ESCOPO</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("volumes.label_scope")}</span>
             <span class="font-extrabold text-sm text-white capitalize truncate">{vol.scope || "Local"}</span>
           </div>
         </div>

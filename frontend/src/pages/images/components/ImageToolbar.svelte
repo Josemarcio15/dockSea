@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import ColumnLayoutSwitcher from "$shared/components/ColumnLayoutSwitcher.svelte";
   import { Button } from "$shared/components/buttons";
@@ -41,6 +41,7 @@
       <!-- Botão Marcar Todos (Verde) -->
       <Button
         size="sm"
+        themeKey="images.select_all_btn"
         onclick={onToggleAll}
       >
         {allSelected ? t("common.deselect_all") : t("common.select_all")}

@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { useRefreshKey, triggerRefresh } from "$shared/stores/refresh.svelte";
   import { notifySuccess, notifyError } from "$shared/stores/notification.svelte";
@@ -40,12 +40,12 @@
   });
 
   async function handleCreateContainer(config: any) {
-    if (!data.activeVps) return notifyError("Nenhum servidor selecionado.");
+    if (!data.activeVps) return notifyError(t("images.select_vps_error"));
 
     const netName = (config?.network || "").trim();
     if (netName) {
       if (!isValidNetworkName(netName)) {
-        return notifyError("Nome de rede inválido.");
+        return notifyError(t("images.invalid_network_name_error"));
       }
       try {
         const netListRes = await listNetworks(data.activeVps);
@@ -246,6 +246,7 @@
               />
               <Button
                 size="md"
+                themeKey="images.pull_btn"
                 onclick={() => imgState.handlePull(imgState.downloadQuery)}
               >
                 {t("images.pull_btn")}
@@ -590,7 +591,7 @@
   title={imgState.pullImageTargetName ? `Download de Imagem: ${imgState.pullImageTargetName}` : "Download de Imagem"}
   eventPrefix="docker:image:pull"
   oncomplete={async () => {
-    notifySuccess("Processo de download finalizado!");
+    notifySuccess(t("images.download_finished_success"));
     await imgState.fetchImages(true);
     await imgState.fetchHistory();
     triggerRefresh();

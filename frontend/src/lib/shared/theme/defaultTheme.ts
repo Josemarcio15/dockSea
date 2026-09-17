@@ -8,6 +8,12 @@ export interface ButtonRouteStyle {
   size?: "xs" | "sm" | "md" | "lg";
 }
 
+export interface TextStyle {
+  color?: string; // Cor do texto (ex: "#f8fafc")
+  bg?: string;    // Cor de fundo do texto (ex: "transparent" ou "#1e293b")
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | string; // Tamanho da fonte
+}
+
 export interface DockSeaTheme {
   name: string;
   author: string;
@@ -24,6 +30,7 @@ export interface DockSeaTheme {
     textMuted: string;
   };
   routes: Record<string, Record<string, ButtonRouteStyle>>;
+  texts?: Record<string, TextStyle>;
 }
 
 // A fonte padrão é o arquivo JSON físico

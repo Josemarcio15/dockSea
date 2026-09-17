@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { notifyWarning } from "$shared/stores/notification.svelte";
   import { Button } from "$shared/components/buttons";
@@ -66,6 +66,7 @@
     <div class="flex flex-wrap items-center gap-2">
       <Button
         size="sm"
+        themeKey="extras.test_nginx_btn"
         loading={busy === "test"}
         onclick={() => onRun("test")}
       >
@@ -73,16 +74,18 @@
       </Button>
       <Button
         size="sm"
+        themeKey="extras.restart_nginx_btn"
         loading={busy === "restart"}
         onclick={() => onRun("restart")}
       >
         {t("extras.restart_nginx")}
       </Button>
-      <Button size="sm" onclick={onViewLogs}>
+      <Button size="sm" themeKey="extras.view_logs_btn" onclick={onViewLogs}>
         {t("extras.view_logs")}
       </Button>
       <Button
         size="sm"
+        themeKey="extras.delete_file_btn"
         disabled={!site.trim() || !!busy}
         onclick={() =>
           site.trim()
@@ -91,7 +94,7 @@
       >
         {t("extras.delete_file")}
       </Button>
-      <Button size="sm" onclick={onNewSite}>
+      <Button size="sm" themeKey="extras.new_site_btn" onclick={onNewSite}>
         {t("extras.new_site")}
       </Button>
     </div>
@@ -125,6 +128,7 @@
   <div class="flex flex-wrap gap-2.5 pt-2">
     <Button
       size="md"
+      themeKey="extras.enable_site_btn"
       loading={busy === "enable"}
       onclick={() => onRun("enable")}
     >
@@ -132,6 +136,7 @@
     </Button>
     <Button
       size="md"
+      themeKey="extras.save_site_btn"
       loading={busy === "save"}
       onclick={() => onRun("save")}
     >

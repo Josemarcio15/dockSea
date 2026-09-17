@@ -1,3 +1,4 @@
+import { t } from "$shared/stores/locale.svelte";
 import { notifySuccess, notifyError } from "$shared/stores/notification.svelte";
 import { triggerRefresh } from "$shared/stores/refresh.svelte";
 import { invalidateCache } from "$shared/stores/swr-cache";
@@ -16,7 +17,7 @@ export function createProfilesStore() {
       invalidateCache();
       await loadSession();
       triggerRefresh();
-      notifySuccess("Operação realizada com sucesso");
+      notifySuccess(t("common.success"));
     } catch (error: any) {
       notifyError(error?.message || String(error));
     }

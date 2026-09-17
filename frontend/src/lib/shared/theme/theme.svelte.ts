@@ -1,4 +1,4 @@
-import { defaultTheme, type DockSeaTheme, type ButtonRouteStyle } from "./defaultTheme";
+import { defaultTheme, type DockSeaTheme, type ButtonRouteStyle, type TextStyle } from "./defaultTheme";
 import * as ThemeWails from "$bindings/theme/themeservice.js";
 
 export function isPredefinedThemeName(name: string): boolean {
@@ -43,6 +43,23 @@ function applyThemeToDom(theme: DockSeaTheme) {
         if (style.textHover) {
           root.style.setProperty(`${prefix}-text-hover`, style.textHover);
         }
+      }
+    }
+  }
+
+  // 3. Variáveis de Textos / Labels
+  if (theme.texts) {
+    for (const [textKey, style] of Object.entries(theme.texts)) {
+      const safeKey = textKey.replace(/[^a-zA-Z0-9_-]/g, "-");
+      const prefix = `--ds-txt-${safeKey}`;
+      if (style.color) {
+        root.style.setProperty(`${prefix}-color`, style.color);
+      }
+      if (style.bg) {
+        root.style.setProperty(`${prefix}-bg`, style.bg);
+      }
+      if (style.size) {
+        root.style.setProperty(`${prefix}-size`, style.size);
       }
     }
   }
@@ -128,6 +145,11 @@ class ThemeStore {
         };
       }
     }
+
+    normalized.texts = {
+      ...(defaultTheme.texts || {}),
+      ...(rawTheme?.texts || {}),
+    };
 
     return normalized;
   }
@@ -235,6 +257,22 @@ class ThemeStore {
     }
     (this.editingTheme.routes[route][btnKey] as any)[prop] = value;
     // Forçar atualização reativa profunda no Svelte 5
+    this.editingTheme = { ...this.editingTheme };
+    applyThemeToDom(this.editingTheme);
+  }
+
+  setDraftTextProp(
+    textKey: string,
+    prop: keyof TextStyle,
+    value: string
+  ) {
+    if (!this.editingTheme.texts) {
+      this.editingTheme.texts = {};
+    }
+    if (!this.editingTheme.texts[textKey]) {
+      this.editingTheme.texts[textKey] = {};
+    }
+    (this.editingTheme.texts[textKey] as any)[prop] = value;
     this.editingTheme = { ...this.editingTheme };
     applyThemeToDom(this.editingTheme);
   }

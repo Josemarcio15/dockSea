@@ -1,3 +1,4 @@
+import { t } from "$shared/stores/locale.svelte";
 import { notifySuccess } from "$shared/stores/notification.svelte";
 import * as api from "./api";
 import { activeServer } from "./service";
@@ -26,10 +27,10 @@ export function createServersStore(getData: () => any): ServersStore {
       await api.setActiveServer(server.id);
       data.activeVps = server;
       data.servers = (await api.listServers()) || data.servers;
-      notifySuccess(`Servidor '${server.name}' ativado com sucesso!`);
+      notifySuccess(t("devices.server_activated_success", { name: server.name }));
     } catch {
       data.activeVps = server;
-      notifySuccess(`Servidor '${server.name}' selecionado.`);
+      notifySuccess(t("devices.server_selected_success", { name: server.name }));
     }
     fetchUsage(server);
   }

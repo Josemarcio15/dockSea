@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import ColumnLayoutSwitcher from "$shared/components/ColumnLayoutSwitcher.svelte";
   import { Button } from "$shared/components/buttons";
@@ -53,6 +53,7 @@
       />
       <Button
         size="sm"
+        themeKey="containers.refresh_btn"
         title={t("common.refresh")}
         onclick={onRefresh}
       >
@@ -82,6 +83,7 @@
     <div class="flex items-center gap-2">
       <Button
         size="sm"
+        themeKey="containers.select_all_btn"
         onclick={onToggleAll}
       >
         {#snippet icon()}

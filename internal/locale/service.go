@@ -2,6 +2,7 @@ package locale
 
 import (
 	"embed"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -23,7 +24,27 @@ func NewLocaleService(localesDir string) *LocaleService {
 	return s
 }
 
-// EnsureDefaultLocales cria a pasta locales e provisiona os arquivos padrão caso não existam
+// mergeMaps mescla recursivamente novas chaves de src para dst sem apagar o que já existe em dst
+func mergeMaps(dst, src map[string]any) bool {
+	changed := false
+	for k, srcVal := range src {
+		if dstVal, exists := dst[k]; exists {
+			if srcMap, ok := srcVal.(map[string]any); ok {
+				if dstMap, ok := dstVal.(map[string]any); ok {
+					if mergeMaps(dstMap, srcMap) {
+						changed = true
+					}
+				}
+			}
+		} else {
+			dst[k] = srcVal
+			changed = true
+		}
+	}
+	return changed
+}
+
+// EnsureDefaultLocales cria a pasta locales e provisiona ou atualiza os arquivos com novas chaves do binário
 func (s *LocaleService) EnsureDefaultLocales() error {
 	if err := os.MkdirAll(s.localesDir, 0755); err != nil {
 		return fmt.Errorf("falha ao criar pasta de locales: %w", err)
@@ -39,13 +60,27 @@ func (s *LocaleService) EnsureDefaultLocales() error {
 			continue
 		}
 		targetPath := filepath.Join(s.localesDir, entry.Name())
+		embeddedData, err := defaultLocalesFS.ReadFile("default_locales/" + entry.Name())
+		if err != nil {
+			continue
+		}
+
 		// Se não existe, escreve o arquivo padrão do binário
 		if _, err := os.Stat(targetPath); os.IsNotExist(err) {
-			data, err := defaultLocalesFS.ReadFile("default_locales/" + entry.Name())
-			if err != nil {
-				continue
+			_ = os.WriteFile(targetPath, embeddedData, 0644)
+		} else {
+			// Se já existe, mescla chaves novas que ainda não existam no arquivo do usuário
+			existingData, err := os.ReadFile(targetPath)
+			if err == nil {
+				var existingMap, embeddedMap map[string]any
+				if json.Unmarshal(existingData, &existingMap) == nil && json.Unmarshal(embeddedData, &embeddedMap) == nil {
+					if mergeMaps(existingMap, embeddedMap) {
+						if mergedJSON, err := json.MarshalIndent(existingMap, "", "  "); err == nil {
+							_ = os.WriteFile(targetPath, mergedJSON, 0644)
+						}
+					}
+				}
 			}
-			_ = os.WriteFile(targetPath, data, 0644)
 		}
 	}
 	return nil

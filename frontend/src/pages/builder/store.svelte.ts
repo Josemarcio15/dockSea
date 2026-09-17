@@ -1,4 +1,4 @@
-import { getLocale } from "$shared/stores/locale.svelte";
+import { getLocale, t } from "$shared/stores/locale.svelte";
 import { notifyError, notifySuccess } from "$shared/stores/notification.svelte";
 import * as api from "./api";
 import { folderNameFromPath, sanitizeTag, tagFromPath } from "./service";
@@ -117,7 +117,7 @@ export const builderStore: BuilderStore & { showProgressModal: boolean } = {
       hasDockerfile = false;
       hasDockerignore = false;
       ignoredFiles = [];
-      errorMsg = "Erro ao navegar para a pasta.";
+      errorMsg = t("builder.no_dockerfile");
     } finally {
       loading = false;
     }
@@ -145,7 +145,7 @@ export const builderStore: BuilderStore & { showProgressModal: boolean } = {
       await api.build(currentPath, this.effectiveTag, getLocale());
     } catch (error: any) {
       status = "error";
-      errorMsg = error?.message || "Build falhou";
+      errorMsg = error?.message || t("builder.build_failed", { code: "" });
       notifyError(errorMsg);
     }
   },
@@ -158,12 +158,12 @@ export const builderStore: BuilderStore & { showProgressModal: boolean } = {
     if (result.success) {
       builtImage = result.image || this.effectiveTag;
       status = "success";
-      notifySuccess(`Imagem '${builtImage}' construída com sucesso!`);
+      notifySuccess(t("builder.build_success", { tag: builtImage }));
     } else {
-      errorMsg = result.message || "Build falhou";
+      errorMsg = result.message || t("builder.build_failed", { code: "" });
       status = "error";
       notifyError(
-        errorMsg || "Falha na construção da imagem. Verifique os logs.",
+        errorMsg || t("builder.build_error", { message: "" }),
       );
     }
   },

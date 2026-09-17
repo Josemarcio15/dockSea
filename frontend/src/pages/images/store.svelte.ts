@@ -169,13 +169,13 @@ export function createImagesStore(
       profileId: getProfileId(),
     });
     await fetchSavedConfigs();
-    notifySuccess("Perfil salvo com sucesso!");
+    notifySuccess(t("images.profile_saved_success"));
   }
 
   async function deleteProfile(id: string) {
     await pageApi.deleteContainerConfig(id);
     savedConfigs = savedConfigs.filter((config) => config.id !== id);
-    notifySuccess("Perfil excluído.");
+    notifySuccess(t("images.profile_deleted_success"));
   }
 
   function toggleChecked(id: string) {
@@ -216,9 +216,9 @@ export function createImagesStore(
       await pageApi.deleteHistory(selectedHistoryIds);
       selectedHistoryIds = [];
       await fetchHistory();
-      notifySuccess("Itens do histórico removidos com sucesso!");
+      notifySuccess(t("images.history_removed_success"));
     } catch (e: any) {
-      notifyError(e.message || "Erro ao deletar histórico");
+      notifyError(e.message || t("images.delete_error", { error: e.message || e }));
     }
   }
 
@@ -227,9 +227,9 @@ export function createImagesStore(
       const profileId = getProfileId();
       await pageApi.clearHistory(profileId);
       await fetchHistory();
-      notifySuccess("Histórico limpo com sucesso!");
+      notifySuccess(t("images.history_cleared_success"));
     } catch (e: any) {
-      notifyError(e.message || "Erro ao limpar histórico");
+      notifyError(e.message || t("images.delete_error", { error: e.message || e }));
     }
   }
 
@@ -240,7 +240,7 @@ export function createImagesStore(
     }
     const server = getServer();
     if (!server) {
-      notifyError("Selecione um servidor VPS ativo.");
+      notifyError(t("images.select_vps_error"));
       return;
     }
 
@@ -263,14 +263,14 @@ export function createImagesStore(
   async function handleDeleteSingle(imageId: string) {
     const server = getServer();
     if (!server) {
-      notifyError("Nenhum servidor VPS ativo.");
+      notifyError(t("images.select_vps_error"));
       return;
     }
 
     try {
       const result = await pageApi.remove(server, [imageId]);
       if (result.success) {
-        notifySuccess("Imagem removida com sucesso!");
+        notifySuccess(t("images.image_deleted_success"));
         await fetchImages(true);
       } else {
         notifyError(
@@ -286,12 +286,12 @@ export function createImagesStore(
 
   async function handleDeleteSelected() {
     if (selectedImageIds.length === 0) {
-      notifyWarning("Selecione pelo menos uma imagem para deletar.");
+      notifyWarning(t("images.select_image_warn"));
       return;
     }
     const server = getServer();
     if (!server) {
-      notifyError("Nenhum servidor VPS ativo.");
+      notifyError(t("images.select_vps_error"));
       return;
     }
 
@@ -324,7 +324,7 @@ export function createImagesStore(
   async function handlePruneUnused() {
     const server = getServer();
     if (!server) {
-      notifyError("Nenhum servidor VPS ativo.");
+      notifyError(t("images.select_vps_error"));
       return;
     }
 
@@ -338,7 +338,7 @@ export function createImagesStore(
       .map((img) => img.id);
 
     if (unusedIds.length === 0) {
-      notifyWarning("Não há imagens sem uso para limpar.");
+      notifyWarning(t("images.no_unused_warn"));
       return;
     }
 
@@ -389,7 +389,7 @@ export function createImagesStore(
       const list = await pageApi.list(sourceServer);
       sourceImages = list || [];
     } catch (e: any) {
-      notifyError(`Erro ao carregar imagens da origem: ${e.message || e}`);
+      notifyError(t("images.load_source_images_error", { error: e.message || e }));
       sourceImages = [];
     } finally {
       sourceLoading = false;
@@ -438,7 +438,7 @@ export function createImagesStore(
     const dstServer = servers.find((s: any) => s.id === transferDestId);
 
     if (!srcServer || !dstServer) {
-      notifyError("Servidores de origem ou destino inválidos.");
+      notifyError(t("images.invalid_servers_error"));
       return;
     }
 

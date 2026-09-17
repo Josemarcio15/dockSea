@@ -123,6 +123,47 @@ export function t(
   return value;
 }
 
+class LocaleState {
+  version = $state(0);
+}
+export const localeVersionState = new LocaleState();
+
+/**
+ * Retorna todas as traduções achatadas em dot-notation (ex: "containers.title", "common.save")
+ */
+export function getFlattenedTranslations(
+  targetLocale?: string,
+  filterSection?: string
+): { key: string; value: string }[] {
+  // Registrar dependência reativa
+  const _ = localeVersionState.version;
+  const loc = targetLocale || currentLocale;
+  const source = translations[loc] || translations["pt-BR"] || translations["en-US"] || {};
+  const list: { key: string; value: string }[] = [];
+
+  function recurse(obj: any, prefix = "") {
+    if (!obj || typeof obj !== "object") return;
+    for (const [k, v] of Object.entries(obj)) {
+      const fullKey = prefix ? `${prefix}.${k}` : k;
+      if (typeof v === "string") {
+        if (
+          !filterSection ||
+          filterSection === "all" ||
+          fullKey.startsWith(filterSection + ".") ||
+          fullKey === filterSection
+        ) {
+          list.push({ key: fullKey, value: v });
+        }
+      } else if (typeof v === "object" && v !== null) {
+        recurse(v, fullKey);
+      }
+    }
+  }
+
+  recurse(source);
+  return list;
+}
+
 /**
  * Retorna a chave do locale usada para um botão em determinada rota
  */
@@ -133,6 +174,7 @@ export function getButtonTranslationKey(route: string, btnKey: string): string {
       manage_vps_btn: "devices.manage_vps",
       add_first_btn: "devices.add_first",
       connect_btn: "devices.activate",
+      view_containers_btn: "networks_card.view_containers",
     },
     images: {
       create_container_btn: "images.create_container_btn",
@@ -181,6 +223,9 @@ export function getButtonTranslationKey(route: string, btnKey: string): string {
       browse_folder_btn: "builder.select_folder",
     },
     config: {
+      add_server_btn: "devices.manage_vps",
+      activate_btn: "devices.activate",
+      test_conn_btn: "devices_card.click_to_test",
       edit_btn: "config.edit",
       delete_btn: "config.remove",
       backup_btn: "config.db_backup_btn",
@@ -190,6 +235,21 @@ export function getButtonTranslationKey(route: string, btnKey: string): string {
     profiles: {
       new_profile_btn: "profiles.new_profile",
       select_btn: "profiles.select_btn",
+      edit_btn: "common.edit",
+      save_btn: "common.save",
+      delete_btn: "common.delete",
+    },
+    extras: {
+      refresh_btn: "common.refresh",
+      test_nginx_btn: "extras.test_nginx",
+      restart_nginx_btn: "extras.restart_nginx",
+      view_logs_btn: "extras.view_logs",
+      delete_file_btn: "extras.delete_file",
+      new_site_btn: "extras.new_site",
+      enable_site_btn: "extras.btn_enable",
+      save_site_btn: "extras.btn_save",
+      back_btn: "extras.btn_back",
+      delete_selected_btn: "extras.btn_delete_selected",
     },
   };
 
@@ -226,6 +286,8 @@ export async function updateLocaleTranslationKey(
 
   const lastPart = parts[parts.length - 1];
   currentObj[lastPart] = newValue;
+  translations[loc] = { ...translations[loc] };
+  localeVersionState.version += 1;
 
   // Persistir no arquivo ~/Documents/DockSea/locales/{loc}.json
   try {

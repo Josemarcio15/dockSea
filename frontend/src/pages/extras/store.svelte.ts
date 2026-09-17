@@ -1,4 +1,4 @@
-import { getLocale } from "$shared/stores/locale.svelte";
+import { t } from "$shared/stores/locale.svelte";
 import {
   notifyError,
   notifySuccess,
@@ -119,29 +119,29 @@ export const extrasStore = {
   },
 
   async remove() {
-    if (!site.trim()) return notifyWarning("Selecione um arquivo.");
-    if (!activeVps) return notifyError("Nenhuma VPS ativa selecionada.");
+    if (!site.trim()) return notifyWarning(t("extras.select_file_warn"));
+    if (!activeVps) return notifyError(t("common.no_vps"));
     busy = "delete";
     try {
       const result = await api.deleteNginxSite(activeVps, site, activeTab);
       if (!result?.success)
-        return notifyError(result?.message || "Falha ao apagar arquivo.");
+        return notifyError(result?.message || t("extras.delete_error", { error: "Falha ao apagar" }));
       site = "";
       content = "";
       editorKey += 1;
-      notifySuccess(result.message || "Arquivo apagado.");
+      notifySuccess(result.message || t("extras.delete_success"));
       await this.load();
     } catch (cause: any) {
-      notifyError(cause?.message || String(cause) || "Erro ao apagar arquivo.");
+      notifyError(t("extras.delete_error", { error: cause?.message || String(cause) }));
     } finally {
       busy = null;
     }
   },
 
   async run(action: NginxAction) {
-    if (!activeVps) return notifyError("Nenhuma VPS ativa selecionada.");
+    if (!activeVps) return notifyError(t("common.no_vps"));
     if ((action === "enable" || action === "save") && !site.trim())
-      return notifyWarning("Informe o nome do arquivo.");
+      return notifyWarning(t("extras.input_name_warn"));
     busy = action;
     try {
       const result =
@@ -156,15 +156,15 @@ export const extrasStore = {
         return notifyError(
           result?.message ||
             result?.output ||
-            "Falha ao executar ação no Nginx.",
+            t("extras.exec_error", { error: "Falha na ação" }),
         );
       notifySuccess(
-        result.message || result.output || "Comando executado com sucesso.",
+        result.message || result.output || t("extras.exec_success"),
       );
       if (action === "save" || action === "enable") await this.load(true);
     } catch (cause: any) {
       notifyError(
-        cause?.message || String(cause) || "Erro ao executar comando.",
+        t("extras.exec_error", { error: cause?.message || String(cause) }),
       );
     } finally {
       busy = null;

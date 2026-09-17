@@ -2,19 +2,35 @@
   import { themeStore, isPredefinedThemeName } from "./theme.svelte.ts";
   import { defaultTheme } from "./defaultTheme";
   import { navigation } from "$navigation/navigation.svelte";
-  import { t, getButtonTranslationKey, updateLocaleTranslationKey } from "$shared/stores/locale.svelte";
+  import {
+    t,
+    getButtonTranslationKey,
+    updateLocaleTranslationKey,
+    getFlattenedTranslations,
+    localeVersionState,
+  } from "$shared/stores/locale.svelte";
   import { Button, EditButtonIcon, TrashButtonIcon } from "$shared/components/buttons";
 
-  let activeTab = $state<"route" | "global" | "json">("route");
+  let activeTab = $state<"route" | "text" | "global" | "json">("route");
   let newCopyName = $state("");
   let copyFeedback = $state(false);
   let importFeedback = $state("");
+
+  // Text Tab state
+  let textSearchQuery = $state("");
+  let textCategory = $state("current");
+  let editingTextKey = $state<string | null>(null);
+  let editingTextValue = $state("");
+
+  // Route selector in Route tab (defaults to currentRoute)
+  let selectedRouteOverride = $state<string>("");
 
   function focusElement(node: HTMLElement) {
     node.focus();
   }
 
   let currentRoute = $derived(navigation.currentRoute || "stacks");
+  let activeEditorRoute = $derived(selectedRouteOverride || currentRoute);
 
   const routeTitles = $derived<Record<string, string>>({
     servers: t("sidebar.devices"),
@@ -29,60 +45,25 @@
     config: t("sidebar.configs"),
   });
 
-  // Helper para buscar o alias traduzido do botão baseado na rota e chave
+  // Helper uniforme para buscar o alias traduzido do botão baseado na rota e chave
   function getButtonAlias(route: string, key: string): string {
-    // 1. Tenta buscar direto por rota.chave (ex: stacks.deploy_btn, profiles.select_btn)
-    const directTranslation = t(`${route}.${key}`);
-    if (directTranslation && directTranslation !== `${route}.${key}`) {
-      return directTranslation;
+    const translationKey = getButtonTranslationKey(route, key);
+    const translated = t(translationKey);
+    if (translated && translated !== translationKey) {
+      return translated;
     }
-
-    // 2. Mapeamentos comuns de botões para chaves do locale
-    const commonFallbacks: Record<string, string> = {
-      edit_btn: t("common.edit"),
-      delete_btn: t("common.delete"),
-      save_btn: t("common.save"),
-      refresh_btn: t("common.refresh"),
-      select_all_btn: t("common.select_all"),
-      activate_btn: t("common.confirm"),
-      stop_btn: t("containers.stop"),
-      start_btn: t("containers.start"),
-      restart_btn: t("containers.restart"),
-      new_stack_btn: t("stacks.new_stack"),
-      new_profile_btn: t("profiles.new_profile"),
-      new_volume_btn: t("volumes.new_volume"),
-      new_network_btn: t("networks.create_title"),
-      prune_btn: t("volumes.prune_btn"),
-      pull_btn: t("images.pull_btn"),
-      create_container_btn: t("images.btn_build_container"),
-      build_btn: t("builder.build_btn"),
-      manage_vps_btn: t("devices.manage_vps"),
-      add_first_btn: t("devices.add_first"),
-      connect_btn: t("devices.activate"),
-      test_conn_btn: t("devices_card.click_to_test"),
-      view_containers_btn: t("networks_card.view_containers"),
-      view_logs_btn: t("containers.card_view_logs"),
-      view_env_btn: t("containers.card_view_env"),
-      view_labels_btn: t("containers.card_view_labels"),
-      browse_folder_btn: t("builder.select_folder"),
-      remove_remote_btn: t("stacks.card_stop"),
-      delete_local_btn: t("stacks.delete_btn"),
-    };
-
-    if (commonFallbacks[key]) {
-      return commonFallbacks[key];
-    }
-
-    // 3. Fallback genérico legível
     return key.replace(/_/g, " ");
   }
 
   const currentRouteButtons = $derived.by(() => {
-    const routeObj = themeStore.editingTheme.routes?.[currentRoute] || defaultTheme.routes?.[currentRoute] || {};
+    const routeObj =
+      themeStore.editingTheme.routes?.[activeEditorRoute] ||
+      defaultTheme.routes?.[activeEditorRoute] ||
+      {};
     return Object.entries(routeObj).map(([key, style]) => ({
       key,
       label: key,
-      alias: getButtonAlias(currentRoute, key),
+      alias: getButtonAlias(activeEditorRoute, key),
       bg: style.bg || (style as any).color || "#2563eb",
       hover: style.hover || style.bg || "#1d4ed8",
       text: style.text || "#ffffff",
@@ -133,6 +114,67 @@
     themeStore.setDraftRouteButtonProp(route, btnKey, "size", size);
   }
 
+  // --- Funções da Aba Text ---
+  const allFlattenedTexts = $derived(getFlattenedTranslations());
+
+  const filteredTexts = $derived.by(() => {
+    const query = textSearchQuery.toLowerCase().trim();
+    return allFlattenedTexts.filter((item) => {
+      // Filtro por Categoria / Rota
+      if (textCategory === "current") {
+        const route = activeEditorRoute;
+        const prefix = route === "servers" ? "devices" : route;
+        if (!item.key.startsWith(prefix + ".") && !item.key.startsWith(route + ".")) {
+          return false;
+        }
+      } else if (textCategory !== "all") {
+        if (!item.key.startsWith(textCategory + ".") && item.key !== textCategory) {
+          return false;
+        }
+      }
+
+      // Filtro por Texto ou Chave
+      if (query) {
+        return (
+          item.key.toLowerCase().includes(query) ||
+          item.value.toLowerCase().includes(query)
+        );
+      }
+      return true;
+    });
+  });
+
+  function startEditText(key: string, val: string) {
+    editingTextKey = key;
+    editingTextValue = val;
+  }
+
+  async function saveText(key: string) {
+    if (editingTextValue.trim()) {
+      await updateLocaleTranslationKey(key, editingTextValue.trim());
+    }
+    editingTextKey = null;
+    editingTextValue = "";
+  }
+
+  function cancelEditText() {
+    editingTextKey = null;
+    editingTextValue = "";
+  }
+
+  function handleTextColorChange(key: string, color: string) {
+    themeStore.setDraftTextProp(key, "color", color);
+  }
+
+  function handleTextBgChange(key: string, bg: string) {
+    themeStore.setDraftTextProp(key, "bg", bg);
+  }
+
+  function handleTextSizeChange(key: string, size: string) {
+    themeStore.setDraftTextProp(key, "size", size);
+  }
+
+  // --- Exportar / Importar ---
   function handleExportFile() {
     const jsonStr = themeStore.exportEditingJson();
     const blob = new Blob([jsonStr], { type: "application/json" });
@@ -182,7 +224,7 @@
 
 {#if themeStore.isEditorOpen}
   <div
-    class="fixed bottom-5 right-5 z-50 w-96 h-[50vh] bg-slate-900/95 border border-slate-700/80 backdrop-blur-xl rounded-2xl shadow-2xl flex flex-col overflow-hidden text-slate-200 font-sans animate-in fade-in zoom-in-95 duration-200"
+    class="fixed bottom-5 right-5 z-50 w-[420px] max-w-[95vw] h-[60vh] min-h-[460px] max-h-[85vh] bg-slate-900/95 border border-slate-700/80 backdrop-blur-xl rounded-2xl shadow-2xl flex flex-col overflow-hidden text-slate-200 font-sans animate-in fade-in zoom-in-95 duration-200"
   >
     <!-- Header -->
     <div class="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-950/50 shrink-0">
@@ -338,22 +380,30 @@
         </Button>
       </div>
 
-    <!-- ETAPA 3: EDIÇÃO COM ABAS E BOTÕES SALVAR / CANCELAR / RESTAURAR -->
+    <!-- ETAPA 3: EDIÇÃO COM ABAS: TELA ATUAL | TEXTOS | FUNDO | JSON -->
     {:else if themeStore.editorStep === "edit"}
       <!-- Navegação de Abas -->
-      <div class="flex border-b border-slate-800 bg-slate-950/30 text-xs font-semibold px-2 pt-1.5 gap-1 shrink-0">
+      <div class="flex border-b border-slate-800 bg-slate-950/30 text-xs font-semibold px-2 pt-1.5 gap-1 shrink-0 overflow-x-auto">
         <button
           onclick={() => (activeTab = "route")}
           class="px-3 py-1.5 rounded-t-lg border-b-2 whitespace-nowrap transition-all {activeTab === 'route'
-            ? 'border-sky-500 text-sky-400 bg-slate-800/40'
+            ? 'border-sky-500 text-sky-400 bg-slate-800/40 font-bold'
             : 'border-transparent text-slate-400 hover:text-slate-200'}"
         >
           {t("theme_editor.tab_current_screen")}
         </button>
         <button
+          onclick={() => (activeTab = "text")}
+          class="px-3 py-1.5 rounded-t-lg border-b-2 whitespace-nowrap transition-all {activeTab === 'text'
+            ? 'border-sky-500 text-sky-400 bg-slate-800/40 font-bold'
+            : 'border-transparent text-slate-400 hover:text-slate-200'}"
+        >
+          {t("theme_editor.tab_texts")}
+        </button>
+        <button
           onclick={() => (activeTab = "global")}
           class="px-3 py-1.5 rounded-t-lg border-b-2 whitespace-nowrap transition-all {activeTab === 'global'
-            ? 'border-sky-500 text-sky-400 bg-slate-800/40'
+            ? 'border-sky-500 text-sky-400 bg-slate-800/40 font-bold'
             : 'border-transparent text-slate-400 hover:text-slate-200'}"
         >
           {t("theme_editor.tab_background")}
@@ -361,7 +411,7 @@
         <button
           onclick={() => (activeTab = "json")}
           class="px-3 py-1.5 rounded-t-lg border-b-2 whitespace-nowrap transition-all {activeTab === 'json'
-            ? 'border-sky-500 text-sky-400 bg-slate-800/40'
+            ? 'border-sky-500 text-sky-400 bg-slate-800/40 font-bold'
             : 'border-transparent text-slate-400 hover:text-slate-200'}"
         >
           {t("theme_editor.tab_json")}
@@ -370,13 +420,27 @@
 
       <!-- Conteúdo da Aba -->
       <div class="p-4 flex-1 overflow-y-auto text-xs space-y-3">
+        <!-- ABA 1: BOTÕES DA ROTA / TELA ATUAL -->
         {#if activeTab === "route"}
           <div>
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-bold text-slate-200 uppercase tracking-wider text-[11px]">
-                {routeTitles[currentRoute] || currentRoute}
-              </span>
-              <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">
+            <div class="flex items-center justify-between mb-2 gap-2">
+              <select
+                value={activeEditorRoute}
+                onchange={(e) => (selectedRouteOverride = e.currentTarget.value)}
+                class="bg-slate-900 border border-slate-700 font-bold text-sky-400 rounded-lg px-2 py-1 text-xs focus:outline-none cursor-pointer"
+              >
+                <option value="stacks">{routeTitles.stacks || "Stacks"}</option>
+                <option value="containers">{routeTitles.containers || "Containers"}</option>
+                <option value="images">{routeTitles.images || "Images"}</option>
+                <option value="volumes">{routeTitles.volumes || "Volumes"}</option>
+                <option value="networks">{routeTitles.networks || "Networks"}</option>
+                <option value="servers">{routeTitles.servers || "Servers"}</option>
+                <option value="builder">{routeTitles.builder || "Builder"}</option>
+                <option value="config">{routeTitles.config || "Config"}</option>
+                <option value="profiles">{routeTitles.profiles || "Profiles"}</option>
+                <option value="extras">{routeTitles.extras || "Extras"}</option>
+              </select>
+              <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400 shrink-0">
                 {t("theme_editor.buttons_count", { count: currentRouteButtons.length })}
               </span>
             </div>
@@ -391,8 +455,8 @@
                       <!-- Size Selector -->
                       <select
                         value={btn.size}
-                        onchange={(e) => handleSizeChange(currentRoute, btn.key, e.currentTarget.value)}
-                        class="bg-slate-900 border border-slate-700 rounded-lg px-1.5 py-0.5 text-[10px] text-slate-300 focus:outline-none shrink-0"
+                        onchange={(e) => handleSizeChange(activeEditorRoute, btn.key, e.currentTarget.value)}
+                        class="bg-slate-900 border border-slate-700 rounded-lg px-1.5 py-0.5 text-[10px] text-slate-300 focus:outline-none shrink-0 cursor-pointer"
                       >
                         <option value="xs">{t("theme_editor.size_xs")}</option>
                         <option value="sm">{t("theme_editor.size_sm")}</option>
@@ -410,20 +474,20 @@
                         <form
                           onsubmit={(e) => {
                             e.preventDefault();
-                            saveAlias(currentRoute, btn.key);
+                            saveAlias(activeEditorRoute, btn.key);
                           }}
                           class="flex items-center gap-1 flex-1 min-w-0"
                         >
                           <input
                             type="text"
                             bind:value={editingAliasValue}
-                            class="w-full bg-slate-950 border border-sky-500 rounded px-1.5 py-0.5 text-xs text-white focus:outline-none"
+                            class="w-full bg-slate-950 border border-sky-500 rounded px-1.5 py-0.5 text-xs text-white focus:outline-none font-sans"
                             placeholder={t("theme_editor.new_alias_placeholder")}
                             use:focusElement
                           />
                           <button
                             type="submit"
-                            class="text-emerald-400 hover:text-emerald-300 px-1 text-xs"
+                            class="text-emerald-400 hover:text-emerald-300 px-1 text-xs cursor-pointer font-bold"
                             title={t("theme_editor.btn_save_alias")}
                           >
                             ✓
@@ -431,7 +495,7 @@
                           <button
                             type="button"
                             onclick={cancelEditAlias}
-                            class="text-slate-500 hover:text-slate-300 px-1 text-xs"
+                            class="text-slate-500 hover:text-slate-300 px-1 text-xs cursor-pointer"
                             title={t("common.cancel")}
                           >
                             ✕
@@ -455,7 +519,7 @@
                         <input
                           type="color"
                           value={btn.bg}
-                          oninput={(e) => handleBgChange(currentRoute, btn.key, e.currentTarget.value)}
+                          oninput={(e) => handleBgChange(activeEditorRoute, btn.key, e.currentTarget.value)}
                           class="w-5 h-5 rounded cursor-pointer bg-transparent border-0"
                         />
                       </label>
@@ -466,7 +530,7 @@
                         <input
                           type="color"
                           value={btn.hover}
-                          oninput={(e) => handleHoverChange(currentRoute, btn.key, e.currentTarget.value)}
+                          oninput={(e) => handleHoverChange(activeEditorRoute, btn.key, e.currentTarget.value)}
                           class="w-5 h-5 rounded cursor-pointer bg-transparent border-0"
                         />
                       </label>
@@ -477,7 +541,7 @@
                         <input
                           type="color"
                           value={btn.text}
-                          oninput={(e) => handleTextChange(currentRoute, btn.key, e.currentTarget.value)}
+                          oninput={(e) => handleTextChange(activeEditorRoute, btn.key, e.currentTarget.value)}
                           class="w-5 h-5 rounded cursor-pointer bg-transparent border-0"
                         />
                       </label>
@@ -488,7 +552,7 @@
                         <input
                           type="color"
                           value={btn.textHover}
-                          oninput={(e) => handleTextHoverChange(currentRoute, btn.key, e.currentTarget.value)}
+                          oninput={(e) => handleTextHoverChange(activeEditorRoute, btn.key, e.currentTarget.value)}
                           class="w-5 h-5 rounded cursor-pointer bg-transparent border-0"
                         />
                       </label>
@@ -502,6 +566,166 @@
               </div>
             {/if}
           </div>
+
+        <!-- ABA 2: TEXTOS / LABELS DO JSON DE TRADUÇÃO -->
+        {:else if activeTab === "text"}
+          <div class="space-y-3">
+            <!-- Barra de Filtro e Busca -->
+            <div class="flex flex-col gap-2 bg-slate-950/40 p-2.5 rounded-xl border border-slate-800/80">
+              <div class="flex items-center gap-2">
+                <input
+                  type="text"
+                  bind:value={textSearchQuery}
+                  placeholder={t("theme_editor.search_texts_placeholder")}
+                  class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500"
+                />
+                {#if textSearchQuery}
+                  <button
+                    onclick={() => (textSearchQuery = "")}
+                    class="text-slate-400 hover:text-white text-xs px-1"
+                  >
+                    ✕
+                  </button>
+                {/if}
+              </div>
+
+              <div class="flex items-center justify-between gap-2">
+                <select
+                  bind:value={textCategory}
+                  class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-slate-300 focus:outline-none cursor-pointer"
+                >
+                  <option value="current">{t("theme_editor.category_current", { route: activeEditorRoute })}</option>
+                  <option value="all">{t("theme_editor.category_all")}</option>
+                  <option value="common">common</option>
+                  <option value="sidebar">sidebar</option>
+                  <option value="containers">containers</option>
+                  <option value="images">images</option>
+                  <option value="volumes">volumes</option>
+                  <option value="networks">networks</option>
+                  <option value="stacks">stacks</option>
+                  <option value="builder">builder</option>
+                  <option value="devices">devices / servers</option>
+                  <option value="config">config</option>
+                  <option value="profiles">profiles</option>
+                  <option value="extras">extras</option>
+                  <option value="theme_editor">theme_editor</option>
+                </select>
+                <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400 shrink-0">
+                  {t("theme_editor.texts_count", { count: filteredTexts.length })}
+                </span>
+              </div>
+            </div>
+
+            <!-- Lista de Textos -->
+            {#if filteredTexts.length > 0}
+              <div class="space-y-2.5 max-h-[50vh] overflow-y-auto pr-1">
+                {#each filteredTexts as item (item.key)}
+                  {@const textStyle = themeStore.editingTheme.texts?.[item.key] || {}}
+                  <div class="flex flex-col bg-slate-800/50 p-2.5 rounded-xl border border-slate-700/50 gap-2">
+                    <!-- Top: Key do Texto & Seletor de Tamanho de Fonte -->
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="font-mono font-bold text-sky-400 text-[11px] truncate select-all" title={item.key}>
+                        {item.key}
+                      </span>
+                      <select
+                        value={textStyle.size || ""}
+                        onchange={(e) => handleTextSizeChange(item.key, e.currentTarget.value)}
+                        class="bg-slate-900 border border-slate-700 rounded-lg px-1.5 py-0.5 text-[10px] text-slate-300 focus:outline-none shrink-0 cursor-pointer"
+                      >
+                        <option value="">{t("theme_editor.size_sm")}</option>
+                        <option value="xs">{t("theme_editor.size_xs")}</option>
+                        <option value="sm">{t("theme_editor.size_sm")}</option>
+                        <option value="md">{t("theme_editor.size_md")}</option>
+                        <option value="lg">{t("theme_editor.size_lg")}</option>
+                        <option value="xl">{t("theme_editor.size_xl")}</option>
+                        <option value="2xl">{t("theme_editor.size_2xl")}</option>
+                      </select>
+                    </div>
+
+                    <!-- Linha divisória -->
+                    <div class="border-t border-slate-700/40"></div>
+
+                    <!-- Middle: Tradução Atual & Edição de Tradução -->
+                    <div class="flex items-center justify-between gap-2 min-h-[24px]">
+                      {#if editingTextKey === item.key}
+                        <form
+                          onsubmit={(e) => {
+                            e.preventDefault();
+                            saveText(item.key);
+                          }}
+                          class="flex items-center gap-1 flex-1 min-w-0"
+                        >
+                          <input
+                            type="text"
+                            bind:value={editingTextValue}
+                            class="w-full bg-slate-950 border border-sky-500 rounded px-1.5 py-0.5 text-xs text-white focus:outline-none font-sans"
+                            placeholder={t("theme_editor.new_text_placeholder")}
+                            use:focusElement
+                          />
+                          <button
+                            type="submit"
+                            class="text-emerald-400 hover:text-emerald-300 px-1 text-xs cursor-pointer font-bold"
+                            title={t("theme_editor.btn_save_text")}
+                          >
+                            ✓
+                          </button>
+                          <button
+                            type="button"
+                            onclick={cancelEditText}
+                            class="text-slate-500 hover:text-slate-300 px-1 text-xs cursor-pointer"
+                            title={t("common.cancel")}
+                          >
+                            ✕
+                          </button>
+                        </form>
+                      {:else}
+                        <span class="text-slate-200 font-medium text-xs break-words line-clamp-2" title={item.value}>
+                          {item.value}
+                        </span>
+                        <EditButtonIcon
+                          size="xs"
+                          title={t("theme_editor.edit_text_title")}
+                          onclick={() => startEditText(item.key, item.value)}
+                          class="!p-1 bg-transparent hover:bg-slate-700 text-slate-400 hover:text-sky-400 shadow-none shrink-0"
+                        />
+                      {/if}
+                    </div>
+
+                    <!-- Bottom: Configuração de Cores (Texto & Fundo) -->
+                    <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-700/40 text-[10px]">
+                      <!-- Cor do Texto -->
+                      <label class="flex items-center justify-between bg-slate-900/60 px-2 py-1 rounded-lg border border-slate-800 cursor-pointer">
+                        <span class="text-slate-400">{t("theme_editor.color_text")}</span>
+                        <input
+                          type="color"
+                          value={textStyle.color || "#f8fafc"}
+                          oninput={(e) => handleTextColorChange(item.key, e.currentTarget.value)}
+                          class="w-5 h-5 rounded cursor-pointer bg-transparent border-0"
+                        />
+                      </label>
+
+                      <!-- Cor do Fundo -->
+                      <label class="flex items-center justify-between bg-slate-900/60 px-2 py-1 rounded-lg border border-slate-800 cursor-pointer">
+                        <span class="text-slate-400">{t("theme_editor.color_bg")}</span>
+                        <input
+                          type="color"
+                          value={textStyle.bg || "#111827"}
+                          oninput={(e) => handleTextBgChange(item.key, e.currentTarget.value)}
+                          class="w-5 h-5 rounded cursor-pointer bg-transparent border-0"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            {:else}
+              <div class="py-8 text-center text-slate-500">
+                {t("theme_editor.no_texts_found")}
+              </div>
+            {/if}
+          </div>
+
+        <!-- ABA 3: CORES GLOBAIS / FUNDO -->
         {:else if activeTab === "global"}
           <div class="space-y-2.5">
             <p class="text-slate-400 text-[11px]">{t("theme_editor.global_colors_desc")}</p>
@@ -546,6 +770,8 @@
               />
             </div>
           </div>
+
+        <!-- ABA 4: IMPORTAR / EXPORTAR JSON -->
         {:else if activeTab === "json"}
           <div class="space-y-4 py-1">
             <p class="text-slate-400 text-[11px] leading-relaxed">

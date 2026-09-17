@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import type { Container } from "$lib/domains/containers";
   import { statsState } from "$shared/stores/stats.svelte";
@@ -312,7 +312,7 @@
               CPU
             </div>
             <div class="flex flex-col min-w-0">
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">USO CPU</span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("containers.card_cpu")}</span>
               <span class="font-mono font-extrabold text-sm text-purple-300">{myStats.CPUPerc || "0%"}</span>
             </div>
           </div>
@@ -326,7 +326,7 @@
               RAM
             </div>
             <div class="flex flex-col min-w-0">
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">USO MEMÓRIA</span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("containers.card_memory")}</span>
               <span class="font-mono font-extrabold text-sm text-sky-300">{myStats.MemUsage || "0B"}</span>
             </div>
           </div>

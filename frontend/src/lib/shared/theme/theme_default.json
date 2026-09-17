@@ -84,8 +84,17 @@
       "reset_btn": { "bg": "#e11d48", "hover": "#be123c", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
     },
     "extras": {
-      "save_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
-      "reload_btn": { "bg": "#2563eb", "hover": "#1d4ed8", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
+      "refresh_btn": { "bg": "#2563eb", "hover": "#1d4ed8", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "test_nginx_btn": { "bg": "#3b82f6", "hover": "#2563eb", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "restart_nginx_btn": { "bg": "#f59e0b", "hover": "#d97706", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "view_logs_btn": { "bg": "#9333ea", "hover": "#7e22ce", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "delete_file_btn": { "bg": "#dc2626", "hover": "#b91c1c", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "new_site_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "enable_site_btn": { "bg": "#8b5cf6", "hover": "#7c3aed", "text": "#ffffff", "textHover": "#ffffff", "size": "md" },
+      "save_site_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "md" },
+      "back_btn": { "bg": "#64748b", "hover": "#475569", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "delete_selected_btn": { "bg": "#dc2626", "hover": "#b91c1c", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
     }
-  }
+  },
+  "texts": {}
 }

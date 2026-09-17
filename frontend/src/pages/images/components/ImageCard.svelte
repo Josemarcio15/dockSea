@@ -201,7 +201,7 @@
             ID
           </div>
           <div class="flex flex-col min-w-0">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">IMAGE ID</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("images.card_image_id")}</span>
             <span class="font-mono font-extrabold text-sm text-blue-300 truncate">{img.id.substring(0, 12)}</span>
           </div>
         </div>

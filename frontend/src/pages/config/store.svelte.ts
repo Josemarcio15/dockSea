@@ -102,9 +102,9 @@ export function createConfigStore(getData: () => any) {
     try {
       await api.saveServer(serverPayload(value));
       await load();
-      notifySuccess("Servidor salvo no SQLite com sucesso!");
+      notifySuccess(t("config.server_saved_success"));
     } catch (error: any) {
-      notifyError(`Erro ao salvar no banco: ${error?.message || error}`);
+      notifyError(t("config.server_save_error", { error: error?.message || error }));
     }
     showVpsModal = false;
   }
@@ -119,9 +119,9 @@ export function createConfigStore(getData: () => any) {
     try {
       await api.deleteServer(serverToDelete.id);
       await load();
-      notifySuccess(`Servidor '${serverToDelete.name}' removido.`);
+      notifySuccess(t("config.server_delete_error", { error: "" }).replace("Erro ao remover: ", "").replace("Error removing server: ", "") || `Servidor '${serverToDelete.name}' removido.`);
     } catch (error: any) {
-      notifyError(`Erro ao remover: ${error?.message || error}`);
+      notifyError(t("config.server_delete_error", { error: error?.message || error }));
     }
     showDeleteConfirm = false;
   }
@@ -130,10 +130,10 @@ export function createConfigStore(getData: () => any) {
     try {
       await api.setActiveServer(server.id);
       await load();
-      notifySuccess(`Servidor '${server.name}' ativado com sucesso!`);
+      notifySuccess(t("devices.server_activated_success", { name: server.name }));
     } catch {
       getData().activeVps = server;
-      notifySuccess(`Servidor '${server.name}' selecionado como ativo.`);
+      notifySuccess(t("devices.server_selected_success", { name: server.name }));
     }
   }
 
@@ -175,7 +175,7 @@ export function createConfigStore(getData: () => any) {
       await api.exportDatabaseBackup(selected);
       notifySuccess(t("config.db_backup_success", { path: selected }));
     } catch (error: any) {
-      notifyError(`Erro ao exportar backup: ${error?.message || error}`);
+      notifyError(t("config.db_export_error", { error: error?.message || error }));
     } finally {
       isBackingUp = false;
     }
@@ -210,7 +210,7 @@ export function createConfigStore(getData: () => any) {
       await load();
       notifySuccess(t("config.db_restore_success"));
     } catch (error: any) {
-      notifyError(`Erro ao restaurar backup: ${error?.message || error}`);
+      notifyError(t("config.db_restore_error", { error: error?.message || error }));
     } finally {
       isRestoring = false;
     }
@@ -227,7 +227,7 @@ export function createConfigStore(getData: () => any) {
       await load();
       notifySuccess(t("config.db_reset_success"));
     } catch (error: any) {
-      notifyError(`Erro ao resetar banco: ${error?.message || error}`);
+      notifyError(t("config.db_reset_error", { error: error?.message || error }));
     } finally {
       isResetting = false;
       showResetConfirm = false;
