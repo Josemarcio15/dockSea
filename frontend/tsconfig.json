@@ -5,24 +5,34 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "resolveJsonModule": true,
-    /**
-     * Typecheck JS in `.svelte` and `.js` files by default.
-     * Disable checkJs if you'd like to use dynamic types in JS.
-     * Note that setting allowJs false does not prevent the use
-     * of JS in `.svelte` files.
-     */
     "allowJs": true,
     "checkJs": true,
     "isolatedModules": true,
     "baseUrl": ".",
     "paths": {
-      "$lib/*": ["src/lib/*"],
-      "$shared/*": ["src/lib/shared/*"],
-      "$navigation/*": ["src/lib/shared/navigation/*"],
-      "$session/*": ["src/lib/shared/session/*"],
-      "$bindings/*": ["bindings/go-walis/internal/*"]
+      "$lib/*": [
+        "src/lib/*"
+      ],
+      "$shared/*": [
+        "src/lib/shared/*"
+      ],
+      "$navigation/*": [
+        "src/lib/shared/navigation/*"
+      ],
+      "$session/*": [
+        "src/lib/shared/session/*"
+      ],
+      "$bindings/*": [
+        "bindings/go-walis/internal/*"
+      ]
     },
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "bindings"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.svelte",
+    "bindings",
+    "vite.config.ts"
+  ]
 }

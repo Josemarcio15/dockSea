@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"go-walis/internal/core/connection"
 	"go-walis/internal/core/db"
-	sharedDocker "go-walis/internal/shared/docker"
 	sharedevents "go-walis/internal/shared/events"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -26,7 +26,7 @@ func NewImageService(database *db.DB) *ImageService {
 
 // ListImages obtém a lista de imagens da VPS e correlaciona os containers em uso
 func (s *ImageService) ListImages(server db.VpsServer) ([]DockerImage, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}
@@ -37,7 +37,7 @@ func (s *ImageService) ListImages(server db.VpsServer) ([]DockerImage, error) {
 
 // DeleteImages remove uma ou mais imagens pelo ID ou nome
 func (s *ImageService) DeleteImages(server db.VpsServer, imageIds []string) ImageActionResult {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return ImageActionResult{
 			Success: false,
@@ -88,7 +88,7 @@ func (s *ImageService) PullImage(server db.VpsServer, imageName string, profileI
 		}
 	}
 
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return ImageActionResult{
 			Success: false,
@@ -163,7 +163,7 @@ func (s *ImageService) TransferImages(srcServer, dstServer db.VpsServer, imageId
 		}
 	}
 
-	srcClient, err := sharedDocker.NewClient(srcServer)
+	srcClient, err := connection.GetClient(srcServer)
 	if err != nil {
 		return ImageActionResult{
 			Success: false,
@@ -172,7 +172,7 @@ func (s *ImageService) TransferImages(srcServer, dstServer db.VpsServer, imageId
 	}
 	defer srcClient.Close()
 
-	dstClient, err := sharedDocker.NewClient(dstServer)
+	dstClient, err := connection.GetClient(dstServer)
 	if err != nil {
 		return ImageActionResult{
 			Success: false,

@@ -4,16 +4,13 @@ vars:
   APP_NAME: "DockSea"
   BIN_DIR: "bin"
   APP_VERSION:
-    sh: 'awk ''$1 == "version:" && $2 != "\"3\"" { gsub(/"/, "", $2); print $2; exit }'' build/config.yml'
+    sh: '{{if eq OS "windows"}}powershell -NoProfile -Command "(Get-Content VERSION).Trim()"{{else}}cat VERSION{{end}}'
   PACKAGE_MANAGER: '{{.PACKAGE_MANAGER | default "npm"}}'
   VITE_PORT: "{{.WAILS_VITE_PORT | default 9245}}"
-  # Target OS for build/package/run. Defaults to the host OS, and is overridden
-  # by `wails3 build GOOS=...` (or the GOOS env var) for cross-compilation. The
-  # tasks below dispatch to the matching platform Taskfile via this variable.
   GOOS: "{{.GOOS | default OS}}"
   TARGET_ARCH: "{{.ARCH | default ARCH}}"
   RELEASE_BINARY:
-    sh: 'printf "{{.BIN_DIR}}/{{.APP_NAME}}_%s_%s_%s{{if eq .GOOS "windows"}}.exe{{end}}" "$(awk ''$1 == "version:" && $2 != "\"3\"" { gsub(/"/, "", $2); print $2; exit }'' build/config.yml)" "{{.GOOS}}" "{{.TARGET_ARCH}}"'
+    sh: 'printf "{{.BIN_DIR}}/{{.APP_NAME}}_%s_%s_%s{{if eq .GOOS "windows"}}.exe{{end}}" "{{.APP_VERSION}}" "{{.GOOS}}" "{{.TARGET_ARCH}}"'
 
 includes:
   common: ./build/Taskfile.yml
@@ -24,8 +21,15 @@ includes:
   android: ./build/android/Taskfile.yml
 
 tasks:
+  sync:version:
+    summary: Synchronizes the version across all build configurations from VERSION file
+    cmds:
+      - go run scripts/sync_version.go
+
   build:
     summary: Builds the application
+    deps:
+      - sync:version
     cmds:
       - task: "{{.GOOS}}:build"
         vars:
@@ -33,11 +37,17 @@ tasks:
 
   package:
     summary: Packages a production build of the application
+    deps:
+      - sync:version
     cmds:
       - task: "{{.GOOS}}:package"
+        vars:
+          OUTPUT: "{{.RELEASE_BINARY}}"
 
   run:
     summary: Runs the application
+    deps:
+      - sync:version
     cmds:
       - task: "{{.GOOS}}:run"
         vars:
@@ -45,6 +55,8 @@ tasks:
 
   dev:
     summary: Runs the application in development mode
+    deps:
+      - sync:version
     cmds:
       - wails3 dev -config ./build/config.yml -port {{.VITE_PORT}}
 

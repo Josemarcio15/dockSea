@@ -6,7 +6,6 @@ import (
 	"go-walis/internal/core/connection"
 	"go-walis/internal/core/db"
 	"go-walis/internal/core/docker"
-	sharedDocker "go-walis/internal/shared/docker"
 )
 
 // Service coordinates server management and connection diagnostics.
@@ -34,7 +33,7 @@ func (s *Service) SaveServer(server db.VpsServer) error {
 	if message := ValidateServer(server); message != "" {
 		return fmt.Errorf("%s", message)
 	}
-	sharedDocker.CloseClient(server.ID)
+	connection.CloseClient(server.ID)
 	return s.repository.SaveServer(server)
 }
 
@@ -42,7 +41,7 @@ func (s *Service) DeleteServer(id string) error {
 	if id == "" {
 		return fmt.Errorf("id inválido")
 	}
-	sharedDocker.CloseClient(id)
+	connection.CloseClient(id)
 	return s.repository.DeleteServer(id)
 }
 
@@ -62,7 +61,7 @@ func (s *Service) AutoDetectDocker(server db.VpsServer) docker.DetectResult {
 }
 
 func (s *Service) GetSystemUsage(server db.VpsServer) (*connection.SystemUsage, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}

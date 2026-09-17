@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getLocale, t } from "$shared/stores/locale.svelte";
-  import { Button } from "$shared/components/buttons";
+  import { ButtonOrange } from "$shared/components/buttons";
   import TerminalLogsView from "$shared/components/TerminalLogsView.svelte";
   import { tick } from "svelte";
 
@@ -164,7 +164,7 @@
     class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
     <div
-      class="bg-white dark:bg-[#0b1d2e] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-200 max-w-full max-h-[90vh] flex flex-col text-slate-800 dark:text-slate-100 overflow-hidden"
+      class="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-200 max-w-full max-h-[90vh] flex flex-col text-slate-800 dark:text-slate-100 overflow-hidden"
     >
       <!-- Modal Header -->
       <div
@@ -324,9 +324,9 @@
       <div
         class="flex justify-end px-6 py-4 border-t border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900/50"
       >
-        <Button variant="neutral" onclick={() => (show = false)}>
+        <ButtonOrange onclick={() => (show = false)}>
           {t("common.close")}
-        </Button>
+        </ButtonOrange>
       </div>
     </div>
   </div>

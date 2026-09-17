@@ -4,6 +4,11 @@ includes:
   common: ../Taskfile.yml
 
 vars:
+  # Signing configuration - edit these values for your project
+  APP_VERSION:
+    sh: 'awk ''$1 == "version:" && $2 != "\"3\"" { gsub(/"/, "", $2); print $2; exit }'' build/config.yml'
+  DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.ARCH | default ARCH}}"
+
   # Docker image for cross-compilation (used when building on non-macOS)
   CROSS_IMAGE: wails-cross
 
@@ -20,7 +25,7 @@ tasks:
           OBFUSCATED: "{{.OBFUSCATED}}"
           GARBLE_ARGS: "{{.GARBLE_ARGS}}"
     vars:
-      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}"
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.ARCH | default ARCH}}"
       OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
 
   build:native:
@@ -44,7 +49,7 @@ tasks:
       - '{{if eq .OBFUSCATED "true"}}garble {{.GARBLE_ARGS}} build{{else}}go build{{end}} {{.BUILD_FLAGS}} -o "{{.OUTPUT}}"'
     vars:
       BUILD_FLAGS: '{{if eq .DEV "true"}}{{if or .EXTRA_TAGS (eq .OBFUSCATED "true")}}-tags {{if eq .OBFUSCATED "true"}}wails_obfuscated{{if .EXTRA_TAGS}},{{end}}{{end}}{{.EXTRA_TAGS}} {{end}}-buildvcs=false -gcflags=all="-l"{{else}}-tags production{{if eq .OBFUSCATED "true"}},wails_obfuscated{{end}}{{if .EXTRA_TAGS}},{{.EXTRA_TAGS}}{{end}} -trimpath -buildvcs=false -ldflags="-w -s"{{end}}'
-      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}"
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.ARCH | default ARCH}}"
       OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
     env:
       GOOS: darwin
@@ -78,7 +83,7 @@ tasks:
       - mv "bin/{{.APP_NAME}}-darwin-{{.DOCKER_ARCH}}" "{{.OUTPUT}}"
     vars:
       DOCKER_ARCH: '{{if eq .ARCH "arm64"}}arm64{{else if eq .ARCH "amd64"}}amd64{{else}}arm64{{end}}'
-      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}"
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.ARCH | default ARCH}}"
       OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
       # Generate Docker volume mounts: Go module cache + go.mod replace directives
       # Uses wails3 tool docker-mounts for cross-platform compatibility (Windows/Linux/macOS)
@@ -164,9 +169,12 @@ tasks:
         if [ -f build/darwin/Assets.car ]; then
           cp build/darwin/Assets.car "{{.BIN_DIR}}/{{.APP_NAME}}.app/Contents/Resources"
         fi
-      - cp "{{.BIN_DIR}}/{{.APP_NAME}}" "{{.BIN_DIR}}/{{.APP_NAME}}.app/Contents/MacOS"
+      - cp "{{.OUTPUT | default .DEFAULT_OUTPUT}}" "{{.BIN_DIR}}/{{.APP_NAME}}.app/Contents/MacOS/{{.APP_NAME}}"
       - cp build/darwin/Info.plist "{{.BIN_DIR}}/{{.APP_NAME}}.app/Contents"
       - task: '{{if eq OS "darwin"}}codesign:adhoc{{else}}codesign:skip{{end}}'
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.ARCH | default ARCH}}"
+      OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
 
   codesign:adhoc:
     summary: Ad-hoc signs the app bundle (macOS only)
@@ -189,10 +197,13 @@ tasks:
         if [ -f build/darwin/Assets.car ]; then
           cp build/darwin/Assets.car "{{.BIN_DIR}}/{{.APP_NAME}}.dev.app/Contents/Resources"
         fi
-      - cp "{{.BIN_DIR}}/{{.APP_NAME}}" "{{.BIN_DIR}}/{{.APP_NAME}}.dev.app/Contents/MacOS"
+      - cp "{{.OUTPUT | default .DEFAULT_OUTPUT}}" "{{.BIN_DIR}}/{{.APP_NAME}}.dev.app/Contents/MacOS/{{.APP_NAME}}"
       - cp "build/darwin/Info.dev.plist" "{{.BIN_DIR}}/{{.APP_NAME}}.dev.app/Contents/Info.plist"
       - codesign --force --deep --sign - "{{.BIN_DIR}}/{{.APP_NAME}}.dev.app"
       - '"{{.BIN_DIR}}/{{.APP_NAME}}.dev.app/Contents/MacOS/{{.APP_NAME}}"'
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.ARCH | default ARCH}}"
+      OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
 
   sign:
     summary: Signs the application bundle with Developer ID

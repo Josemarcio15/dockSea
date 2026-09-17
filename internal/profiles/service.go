@@ -2,6 +2,7 @@ package profiles
 
 import (
 	"fmt"
+	"go-walis/internal/core/connection"
 	"go-walis/internal/core/db"
 )
 
@@ -36,6 +37,7 @@ func (s *Service) DeleteProfile(id string) error {
 	if id == "" {
 		return fmt.Errorf("id do perfil inválido")
 	}
+	connection.CloseAll()
 	return s.repository.DeleteProfile(id)
 }
 
@@ -43,6 +45,7 @@ func (s *Service) SetActiveProfile(id string) error {
 	if id == "" {
 		return fmt.Errorf("id do perfil inválido")
 	}
+	connection.CloseAll()
 	return s.repository.SetActiveProfile(id)
 }
 

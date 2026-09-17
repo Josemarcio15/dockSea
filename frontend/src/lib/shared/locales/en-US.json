@@ -76,7 +76,7 @@
     "card_id": "ID",
     "card_gateway": "GW",
     "card_view_logs": "View Logs",
-    "card_view_env": "Environment Variables",
+    "card_view_env": "Variables",
     "card_env_title": "Environment Variables",
     "card_env_key": "Key",
     "card_env_value": "Value",

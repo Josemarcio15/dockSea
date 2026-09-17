@@ -6,7 +6,6 @@ import (
 
 	"go-walis/internal/core/connection"
 	"go-walis/internal/core/db"
-	sharedDocker "go-walis/internal/shared/docker"
 )
 
 type DetectResult struct {
@@ -36,7 +35,7 @@ func parseUniqueLines(output string) []string {
 
 // AutoDetectEnvironment descobre dinamicamente os caminhos e versões do Docker no servidor
 func AutoDetectEnvironment(server db.VpsServer) DetectResult {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return DetectResult{
 			Success: false,

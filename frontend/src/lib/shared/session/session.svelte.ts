@@ -14,15 +14,16 @@ export const session = $state<SessionState>({
 
 export async function loadSession(): Promise<void> {
   const servers = await ServerService.ListServers();
-  if (servers) {
-    session.servers = servers;
-    session.activeVps = servers.find((server: any) => server.isActive) || null;
-  }
+  session.servers = servers || [];
+  session.activeVps =
+    (servers && servers.find((server: any) => server.isActive)) || null;
 
   const profiles = await ProfileService.ListProfiles();
   if (profiles && profiles.length > 0) {
     session.profiles = profiles;
     session.activeProfile =
       profiles.find((profile: any) => profile.isActive) || profiles[0];
+  } else {
+    session.profiles = [];
   }
 }

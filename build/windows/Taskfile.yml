@@ -11,6 +11,10 @@ vars:
   #
   # Password is stored securely in system keychain. Run: wails3 setup signing
 
+  APP_VERSION:
+    sh: '{{if eq OS "windows"}}powershell -NoProfile -Command "(Get-Content VERSION).Trim()"{{else}}cat VERSION{{end}}'
+  DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.ARCH | default ARCH}}.exe"
+
   # Docker image for cross-compilation with CGO (used when CGO_ENABLED=1 on non-Windows)
   CROSS_IMAGE: wails-cross
 
@@ -23,10 +27,13 @@ tasks:
         vars:
           ARCH: "{{.ARCH}}"
           DEV: "{{.DEV}}"
+          OUTPUT: "{{.OUTPUT}}"
           EXTRA_TAGS: "{{.EXTRA_TAGS}}"
           OBFUSCATED: "{{.OBFUSCATED}}"
           GARBLE_ARGS: "{{.GARBLE_ARGS}}"
     vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS}}_{{.ARCH | default ARCH}}.exe"
+      OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
       # Default to CGO_ENABLED=0 if not explicitly set
       CGO_ENABLED: '{{.CGO_ENABLED | default "0"}}'
 
@@ -51,12 +58,14 @@ tasks:
       - task: generate:syso
         vars:
           ARCH: "{{.ARCH}}"
-      - '{{if eq .OBFUSCATED "true"}}garble {{.GARBLE_ARGS}} build{{else}}go build{{end}} {{.BUILD_FLAGS}} -o "{{.BIN_DIR}}/{{.APP_NAME}}.exe"'
+      - '{{if eq .OBFUSCATED "true"}}garble {{.GARBLE_ARGS}} build{{else}}go build{{end}} {{.BUILD_FLAGS}} -o "{{.OUTPUT}}"'
       - cmd: powershell Remove-item *.syso
         platforms: [windows]
       - cmd: rm -f *.syso
         platforms: [linux, darwin]
     vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS}}_{{.ARCH | default ARCH}}.exe"
+      OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
       BUILD_FLAGS: '{{if eq .DEV "true"}}{{if or .EXTRA_TAGS (eq .OBFUSCATED "true")}}-tags {{if eq .OBFUSCATED "true"}}wails_obfuscated{{if .EXTRA_TAGS}},{{end}}{{end}}{{.EXTRA_TAGS}} {{end}}-buildvcs=false -gcflags=all="-l"{{else}}-tags production{{if eq .OBFUSCATED "true"}},wails_obfuscated{{end}}{{if .EXTRA_TAGS}},{{.EXTRA_TAGS}}{{end}} -trimpath -buildvcs=false -ldflags="-w -s -H windowsgui"{{end}}'
     env:
       GOOS: windows
@@ -86,9 +95,13 @@ tasks:
       - docker run --rm -v "{{.ROOT_DIR}}:/app" {{.DOCKER_MOUNTS}} -e APP_NAME="{{.APP_NAME}}" {{if .EXTRA_TAGS}}-e EXTRA_TAGS="{{.EXTRA_TAGS}}"{{end}} {{if eq .OBFUSCATED "true"}}-e OBFUSCATED=true{{end}} {{if .GARBLE_ARGS}}-e GARBLE_ARGS="{{.GARBLE_ARGS}}"{{end}} {{.CROSS_IMAGE}} windows {{.DOCKER_ARCH}}
       - cmd: docker run --rm -v "{{.ROOT_DIR}}:/app" alpine chown -R $(id -u):$(id -g) /app/bin
         platforms: [linux, darwin]
+      - mkdir -p {{.BIN_DIR}}
+      - mv "bin/{{.APP_NAME}}-windows-{{.DOCKER_ARCH}}.exe" "{{.OUTPUT}}"
       - rm -f *.syso
     vars:
       DOCKER_ARCH: '{{.ARCH | default "amd64"}}'
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS}}_{{.ARCH | default ARCH}}.exe"
+      OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
       # Generate Docker volume mounts: Go module cache + go.mod replace directives
       # Uses wails3 tool docker-mounts for cross-platform compatibility (Windows/Linux/macOS)
       DOCKER_MOUNTS:
@@ -99,6 +112,7 @@ tasks:
     cmds:
       - task: '{{if eq (.FORMAT | default "nsis") "msix"}}create:msix:package{{else}}create:nsis:installer{{end}}'
         vars:
+          OUTPUT: '{{.OUTPUT}}'
           INSTALL_SCOPE: '{{.INSTALL_SCOPE | default "machine"}}'
     vars:
       FORMAT: '{{.FORMAT | default "nsis"}}'
@@ -125,13 +139,15 @@ tasks:
       - wails3 generate webview2bootstrapper -dir "{{.ROOT_DIR}}/build/windows/nsis"
       - |
         {{if eq OS "windows"}}
-        makensis {{if eq .INSTALL_SCOPE "user"}}-DWAILS_INSTALL_SCOPE=user -DREQUEST_EXECUTION_LEVEL=user {{end}}-DARG_WAILS_{{.ARG_FLAG}}_BINARY="{{.ROOT_DIR}}\{{.BIN_DIR}}\{{.APP_NAME}}.exe" project.nsi
+        makensis {{if eq .INSTALL_SCOPE "user"}}-DWAILS_INSTALL_SCOPE=user -DREQUEST_EXECUTION_LEVEL=user {{end}}-DINFO_PRODUCTVERSION="{{.APP_VERSION}}" -DARG_WAILS_{{.ARG_FLAG}}_BINARY="..\..\..\{{fromSlash .OUTPUT}}" project.nsi
         {{else}}
-        makensis {{if eq .INSTALL_SCOPE "user"}}-DWAILS_INSTALL_SCOPE=user -DREQUEST_EXECUTION_LEVEL=user {{end}}-DARG_WAILS_{{.ARG_FLAG}}_BINARY="{{.ROOT_DIR}}/{{.BIN_DIR}}/{{.APP_NAME}}.exe" project.nsi
+        makensis {{if eq .INSTALL_SCOPE "user"}}-DWAILS_INSTALL_SCOPE=user -DREQUEST_EXECUTION_LEVEL=user {{end}}-DINFO_PRODUCTVERSION="{{.APP_VERSION}}" -DARG_WAILS_{{.ARG_FLAG}}_BINARY="{{.ROOT_DIR}}/{{.OUTPUT}}" project.nsi
         {{end}}
     vars:
       ARCH: "{{.ARCH | default ARCH}}"
       ARG_FLAG: '{{if eq .ARCH "amd64"}}AMD64{{else}}ARM64{{end}}'
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS}}_{{.ARCH | default ARCH}}.exe"
+      OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
       INSTALL_SCOPE: '{{.INSTALL_SCOPE | default "machine"}}'
 
   create:msix:package:
@@ -143,14 +159,16 @@ tasks:
         wails3 tool msix \
           --config "{{.ROOT_DIR}}/wails.json" \
           --name "{{.APP_NAME}}" \
-          --executable "{{.ROOT_DIR}}/{{.BIN_DIR}}/{{.APP_NAME}}.exe" \
+          --executable "{{.ROOT_DIR}}/{{.OUTPUT}}" \
           --arch "{{.ARCH}}" \
-          --out "{{.ROOT_DIR}}/{{.BIN_DIR}}/{{.APP_NAME}}-{{.ARCH}}.msix" \
+          --out "{{.ROOT_DIR}}/{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS}}_{{.ARCH}}.msix" \
           {{if .CERT_PATH}}--cert "{{.CERT_PATH}}"{{end}} \
           {{if .PUBLISHER}}--publisher "{{.PUBLISHER}}"{{end}} \
           {{if .USE_MSIX_TOOL}}--use-msix-tool{{else}}--use-makeappx{{end}}
     vars:
       ARCH: "{{.ARCH | default ARCH}}"
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS}}_{{.ARCH | default ARCH}}.exe"
+      OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
       CERT_PATH: '{{.CERT_PATH | default ""}}'
       PUBLISHER: '{{.PUBLISHER | default ""}}'
       USE_MSIX_TOOL: '{{.USE_MSIX_TOOL | default "false"}}'
@@ -162,7 +180,10 @@ tasks:
 
   run:
     cmds:
-      - "{{if .OUTPUT}}{{.OUTPUT}}{{else}}{{.BIN_DIR}}/{{.APP_NAME}}.exe{{end}}"
+      - "{{if .OUTPUT}}{{.OUTPUT}}{{else}}{{.DEFAULT_OUTPUT}}{{end}}"
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS}}_{{.ARCH | default ARCH}}.exe"
+      OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
 
   sign:
     summary: Signs the Windows executable
@@ -176,7 +197,10 @@ tasks:
     cmds:
       # Certificate vars are optional: if unset, `wails3 tool sign` falls back to
       # the certificate configured globally via `wails3 setup`.
-      - wails3 tool sign --input "{{.BIN_DIR}}/{{.APP_NAME}}.exe" {{if .SIGN_CERTIFICATE}}--certificate "{{.SIGN_CERTIFICATE}}"{{end}} {{if .SIGN_THUMBPRINT}}--thumbprint "{{.SIGN_THUMBPRINT}}"{{end}} {{if .TIMESTAMP_SERVER}}--timestamp "{{.TIMESTAMP_SERVER}}"{{end}}
+      - wails3 tool sign --input "{{.OUTPUT}}" {{if .SIGN_CERTIFICATE}}--certificate "{{.SIGN_CERTIFICATE}}"{{end}} {{if .SIGN_THUMBPRINT}}--thumbprint "{{.SIGN_THUMBPRINT}}"{{end}} {{if .TIMESTAMP_SERVER}}--timestamp "{{.TIMESTAMP_SERVER}}"{{end}}
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS}}_{{.ARCH | default ARCH}}.exe"
+      OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
 
   sign:installer:
     summary: Signs the NSIS installer

@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"go-walis/internal/core/connection"
 	"go-walis/internal/core/db"
-	sharedDocker "go-walis/internal/shared/docker"
 )
 
 type ExtraService struct {
@@ -22,7 +22,7 @@ func (s *ExtraService) ListDeployTempFilesAt(server db.VpsServer, path string) (
 	if !validDockseaPath {
 		return nil, fmt.Errorf("caminho de deploy inválido")
 	}
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (s *ExtraService) ListDeployTempFilesAt(server db.VpsServer, path string) (
 }
 
 func (s *ExtraService) ListDeployTempFiles(server db.VpsServer) ([]DeployTempFile, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}
@@ -63,7 +63,7 @@ func (s *ExtraService) ListDeployTempFiles(server db.VpsServer) ([]DeployTempFil
 }
 
 func (s *ExtraService) CleanDeployTempFiles(server db.VpsServer) ExtraActionResult {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return ExtraActionResult{Message: err.Error()}
 	}
@@ -80,7 +80,7 @@ func (s *ExtraService) DeleteDeployTempPath(server db.VpsServer, path string) Ex
 	if !valid {
 		return ExtraActionResult{Message: "caminho de deploy inválido"}
 	}
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return ExtraActionResult{Message: err.Error()}
 	}
@@ -99,7 +99,7 @@ func NewExtraService(database *db.DB) *ExtraService {
 
 // ListNginxSites lista os arquivos de configuração do Nginx em sites-available e sites-enabled
 func (s *ExtraService) ListNginxSites(server db.VpsServer) (NginxSitesResult, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return NginxSitesResult{}, fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}
@@ -110,7 +110,7 @@ func (s *ExtraService) ListNginxSites(server db.VpsServer) (NginxSitesResult, er
 
 // ReadNginxSite lê o conteúdo de um arquivo de configuração do Nginx
 func (s *ExtraService) ReadNginxSite(server db.VpsServer, filename string, directory string) (string, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return "", fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}
@@ -121,7 +121,7 @@ func (s *ExtraService) ReadNginxSite(server db.VpsServer, filename string, direc
 
 // SaveNginxSite salva o conteúdo de um arquivo em /etc/nginx/sites-available
 func (s *ExtraService) SaveNginxSite(server db.VpsServer, filename string, content string) ExtraActionResult {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return ExtraActionResult{
 			Success: false,
@@ -135,7 +135,7 @@ func (s *ExtraService) SaveNginxSite(server db.VpsServer, filename string, conte
 
 // EnableNginxSite cria link simbólico de sites-available para sites-enabled
 func (s *ExtraService) EnableNginxSite(server db.VpsServer, filename string) ExtraActionResult {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return ExtraActionResult{
 			Success: false,
@@ -149,7 +149,7 @@ func (s *ExtraService) EnableNginxSite(server db.VpsServer, filename string) Ext
 
 // DeleteNginxSite apaga o arquivo de sites-available ou o link de sites-enabled
 func (s *ExtraService) DeleteNginxSite(server db.VpsServer, filename string, directory string) ExtraActionResult {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return ExtraActionResult{
 			Success: false,
@@ -163,7 +163,7 @@ func (s *ExtraService) DeleteNginxSite(server db.VpsServer, filename string, dir
 
 // TestNginxConfig executa `nginx -t` para validar sintaxe das configurações
 func (s *ExtraService) TestNginxConfig(server db.VpsServer) ExtraActionResult {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return ExtraActionResult{
 			Success: false,
@@ -177,7 +177,7 @@ func (s *ExtraService) TestNginxConfig(server db.VpsServer) ExtraActionResult {
 
 // RestartNginx reinicia ou recarrega o serviço Nginx
 func (s *ExtraService) RestartNginx(server db.VpsServer) ExtraActionResult {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return ExtraActionResult{
 			Success: false,
@@ -190,7 +190,7 @@ func (s *ExtraService) RestartNginx(server db.VpsServer) ExtraActionResult {
 }
 
 func (s *ExtraService) ListNginxLogFiles(server db.VpsServer) ([]NginxLogFile, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return nil, err
 	}
@@ -217,7 +217,7 @@ func (s *ExtraService) ReadNginxLogFile(server db.VpsServer, name string, lines 
 	if lines <= 0 {
 		lines = 150
 	}
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return "", err
 	}
@@ -238,7 +238,7 @@ func (s *ExtraService) ReadNginxLogFile(server db.VpsServer, name string, lines 
 
 // GetNginxLogs obtém os logs mais recentes de access.log e error.log do Nginx
 func (s *ExtraService) GetNginxLogs(server db.VpsServer, lines int) (string, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return "", fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}
@@ -249,7 +249,7 @@ func (s *ExtraService) GetNginxLogs(server db.VpsServer, lines int) (string, err
 
 // ListListeningPorts consulta portas TCP e UDP em escuta no servidor usando ss / netstat / lsof
 func (s *ExtraService) ListListeningPorts(server db.VpsServer) ([]PortEntry, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}

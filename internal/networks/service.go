@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"go-walis/internal/containers"
+	"go-walis/internal/core/connection"
 	"go-walis/internal/core/db"
-	sharedDocker "go-walis/internal/shared/docker"
 )
 
 type NetworkService struct {
@@ -21,7 +21,7 @@ func NewNetworkService(database *db.DB) *NetworkService {
 
 // ListNetworks obtém a lista de redes da VPS
 func (s *NetworkService) ListNetworks(server db.VpsServer) ([]DockerNetwork, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}
@@ -32,7 +32,7 @@ func (s *NetworkService) ListNetworks(server db.VpsServer) ([]DockerNetwork, err
 
 // ListNetworkContainers lista containers da VPS para seleção nos modais de conexão
 func (s *NetworkService) ListNetworkContainers(server db.VpsServer) ([]containers.Container, error) {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao conectar no servidor: %w", err)
 	}
@@ -51,7 +51,7 @@ func (s *NetworkService) CreateNetwork(server db.VpsServer, req NetworkCreateReq
 		}
 	}
 
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return NetworkActionResult{
 			Success: false,
@@ -82,7 +82,7 @@ func (s *NetworkService) DeleteNetworks(server db.VpsServer, names []string) Net
 		}
 	}
 
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return NetworkActionResult{
 			Success: false,
@@ -125,7 +125,7 @@ func (s *NetworkService) DeleteNetworks(server db.VpsServer, names []string) Net
 
 // PruneNetworks remove redes não utilizadas
 func (s *NetworkService) PruneNetworks(server db.VpsServer) NetworkActionResult {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return NetworkActionResult{
 			Success: false,
@@ -152,7 +152,7 @@ func (s *NetworkService) PruneNetworks(server db.VpsServer) NetworkActionResult 
 
 // ConnectContainer conecta um container a uma rede
 func (s *NetworkService) ConnectContainer(server db.VpsServer, networkName, containerName string) NetworkActionResult {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return NetworkActionResult{
 			Success: false,
@@ -176,7 +176,7 @@ func (s *NetworkService) ConnectContainer(server db.VpsServer, networkName, cont
 
 // DisconnectContainer desconecta um container de uma rede
 func (s *NetworkService) DisconnectContainer(server db.VpsServer, networkName, containerName string) NetworkActionResult {
-	client, err := sharedDocker.NewClient(server)
+	client, err := connection.GetClient(server)
 	if err != nil {
 		return NetworkActionResult{
 			Success: false,

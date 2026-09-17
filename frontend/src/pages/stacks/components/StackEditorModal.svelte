@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { Button } from "$shared/components/buttons";
+  import { ButtonOrange, ButtonGreen, ButtonBlue } from "$shared/components/buttons";
   import CodeEditor from "$shared/components/CodeEditor.svelte";
 
   let {
@@ -31,7 +31,7 @@
     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
     <div
-      class="bg-white dark:bg-[#0b1d2e] border border-slate-200 dark:border-slate-800 rounded-2xl w-190 max-w-full h-[88vh] flex flex-col p-6 shadow-2xl animate-scaleIn text-slate-800 dark:text-slate-200"
+      class="bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl w-190 max-w-full h-[88vh] flex flex-col p-6 shadow-2xl animate-scaleIn text-slate-800 dark:text-slate-200"
     >
       <div
         class="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-slate-800"
@@ -126,9 +126,9 @@
                 placeholder={t("stacks.placeholder_folder_path")}
                 bind:value={editorFolderPath}
               />
-              <Button variant="primary" size="sm" onclick={onOpenFolderBrowser}>
+              <ButtonBlue size="sm" onclick={onOpenFolderBrowser}>
                 {t("stacks.browse_folder_btn")}
-              </Button>
+              </ButtonBlue>
             </div>
 
             <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-1">
@@ -160,10 +160,10 @@
       <div
         class="flex gap-3 justify-end pt-4 border-t border-slate-200 dark:border-slate-800 shrink-0"
       >
-        <Button variant="neutral" onclick={() => (show = false)}>
+        <ButtonOrange onclick={() => (show = false)}>
           {t("common.cancel")}
-        </Button>
-        <Button variant="success"
+        </ButtonOrange>
+        <ButtonGreen
           disabled={!editorName.trim() ||
             !editorProjectName.trim() ||
             (editorSourceType === "editor" && !editorYaml.trim()) ||
@@ -171,7 +171,7 @@
           onclick={onSave}
         >
           {t("common.save")}
-        </Button>
+        </ButtonGreen>
       </div>
     </div>
   </div>

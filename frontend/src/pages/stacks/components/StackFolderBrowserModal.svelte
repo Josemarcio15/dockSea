@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { Button } from "$shared/components/buttons";
+  import { ButtonOrange, ButtonGreen } from "$shared/components/buttons";
 
   let {
     show = $bindable(false),
@@ -30,7 +30,7 @@
     class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
     <div
-      class="bg-white dark:bg-[#0b1d2e] border border-slate-200 dark:border-slate-800 rounded-2xl w-160 max-w-full max-h-[85vh] flex flex-col p-6 shadow-2xl animate-scaleIn text-slate-800 dark:text-slate-200 gap-4"
+      class="bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl w-160 max-w-full max-h-[85vh] flex flex-col p-6 shadow-2xl animate-scaleIn text-slate-800 dark:text-slate-200 gap-4"
     >
       <div class="flex justify-between items-center pb-3 border-b border-slate-200 dark:border-slate-800">
         <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -50,9 +50,9 @@
         <span class="text-slate-400">Path:</span>
         <span class="truncate flex-1 font-bold">{currentPath || "/"}</span>
         {#if parentPath}
-          <Button variant="neutral" size="xs" onclick={() => onNavigate(parentPath || "")}>
+          <ButtonOrange size="xs" onclick={() => onNavigate(parentPath || "")}>
             {t("stacks.folder_up_btn")}
-          </Button>
+          </ButtonOrange>
         {/if}
       </div>
 
@@ -94,12 +94,12 @@
 
       <!-- Footer Action -->
       <div class="flex gap-2.5 justify-end items-center pt-3 border-t border-slate-200 dark:border-slate-800 shrink-0">
-        <Button variant="neutral" size="sm" onclick={() => (show = false)}>
+        <ButtonOrange size="sm" onclick={() => (show = false)}>
           {t("common.cancel")}
-        </Button>
-        <Button variant="success" size="sm" onclick={onSelect}>
+        </ButtonOrange>
+        <ButtonGreen size="sm" onclick={onSelect}>
           Selecionar Esta Pasta
-        </Button>
+        </ButtonGreen>
       </div>
     </div>
   </div>

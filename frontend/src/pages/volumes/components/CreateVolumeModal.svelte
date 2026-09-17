@@ -1,7 +1,7 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import FormModal from "$shared/components/FormModal.svelte";
-  import { Button } from "$shared/components/buttons";
+  import { ButtonRed, Button } from "$shared/components/buttons";
 
   let {
     show = $bindable(false),
@@ -104,12 +104,12 @@
           class="flex-1 px-3 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900/40 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
           bind:value={entry.value}
         />
-        <Button variant="danger"
+        <ButtonRed
           size="xs"
           onclick={() => onRemoveLabel(i)}
         >
           ✕
-        </Button>
+        </ButtonRed>
       </div>
     {/each}
   </div>

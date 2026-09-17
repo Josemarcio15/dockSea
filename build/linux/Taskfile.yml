@@ -10,6 +10,10 @@ vars:
   #
   # Password is stored securely in system keychain. Run: wails3 setup signing
 
+  APP_VERSION:
+    sh: 'awk ''$1 == "version:" && $2 != "\"3\"" { gsub(/"/, "", $2); print $2; exit }'' build/config.yml'
+  DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
+
   # Docker image for cross-compilation (used when building on non-Linux or no CC available)
   CROSS_IMAGE: wails-cross
 
@@ -30,7 +34,7 @@ tasks:
           OBFUSCATED: "{{.OBFUSCATED}}"
           GARBLE_ARGS: "{{.GARBLE_ARGS}}"
     vars:
-      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}"
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
       OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
       # Determine target architecture (defaults to host ARCH if not specified)
       TARGET_ARCH: "{{.ARCH | default ARCH}}"
@@ -60,7 +64,7 @@ tasks:
       - '{{if eq .OBFUSCATED "true"}}garble {{.GARBLE_ARGS}} build{{else}}go build{{end}} {{.BUILD_FLAGS}} -o {{.OUTPUT}}'
     vars:
       BUILD_FLAGS: '{{if eq .DEV "true"}}{{if or .EXTRA_TAGS (eq .OBFUSCATED "true")}}-tags {{if eq .OBFUSCATED "true"}}wails_obfuscated{{if .EXTRA_TAGS}},{{end}}{{end}}{{.EXTRA_TAGS}} {{end}}-buildvcs=false -gcflags=all="-l"{{else}}-tags production{{if eq .OBFUSCATED "true"}},wails_obfuscated{{end}}{{if .EXTRA_TAGS}},{{.EXTRA_TAGS}}{{end}} -trimpath -buildvcs=false -ldflags="-w -s"{{end}}'
-      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}"
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
       OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
     env:
       GOOS: linux
@@ -92,7 +96,7 @@ tasks:
       - mv "bin/{{.APP_NAME}}-linux-{{.DOCKER_ARCH}}" "{{.OUTPUT}}"
     vars:
       DOCKER_ARCH: '{{.ARCH | default "amd64"}}'
-      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}"
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
       OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
       # Generate Docker volume mounts: Go module cache + go.mod replace directives
       # Uses wails3 tool docker-mounts for cross-platform compatibility (Windows/Linux/macOS)
@@ -121,7 +125,8 @@ tasks:
       - wails3 generate appimage -binary "{{.APP_NAME}}" -icon {{.ICON}} -desktopfile {{.DESKTOP_FILE}} -outputdir {{.OUTPUT_DIR}} -builddir {{.ROOT_DIR}}/build/linux/appimage/build
     vars:
       APP_NAME: "{{.APP_NAME}}"
-      APP_BINARY: "../../../bin/{{.APP_NAME}}"
+      APP_BINARY: "../../../{{.OUTPUT | default .DEFAULT_OUTPUT}}"
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
       ICON: "{{.APP_NAME}}.png"
       DESKTOP_FILE: "../{{.APP_NAME}}.desktop"
       OUTPUT_DIR: "../../../bin"
@@ -131,39 +136,66 @@ tasks:
     deps:
       - task: build
     cmds:
+      - cp "{{.OUTPUT | default .DEFAULT_OUTPUT}}" "{{.BIN_DIR}}/{{.APP_NAME}}"
       - task: generate:dotdesktop
       - task: generate:deb
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
 
   create:rpm:
     summary: Creates a rpm package
     deps:
       - task: build
     cmds:
+      - cp "{{.OUTPUT | default .DEFAULT_OUTPUT}}" "{{.BIN_DIR}}/{{.APP_NAME}}"
       - task: generate:dotdesktop
       - task: generate:rpm
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
 
   create:aur:
     summary: Creates a arch linux packager package
     deps:
       - task: build
     cmds:
+      - cp "{{.OUTPUT | default .DEFAULT_OUTPUT}}" "{{.BIN_DIR}}/{{.APP_NAME}}"
       - task: generate:dotdesktop
       - task: generate:aur
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
 
   generate:deb:
     summary: Creates a deb package
     cmds:
       - wails3 tool package -name "{{.APP_NAME}}" -format deb -config ./build/linux/nfpm/nfpm.yaml -out {{.ROOT_DIR}}/bin
+      - |
+        if [ -f "{{.BIN_DIR}}/{{.APP_NAME}}.deb" ]; then
+          mv "{{.BIN_DIR}}/{{.APP_NAME}}.deb" "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}.deb"
+        fi
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
 
   generate:rpm:
     summary: Creates a rpm package
     cmds:
       - wails3 tool package -name "{{.APP_NAME}}" -format rpm -config ./build/linux/nfpm/nfpm.yaml -out {{.ROOT_DIR}}/bin
+      - |
+        if [ -f "{{.BIN_DIR}}/{{.APP_NAME}}.rpm" ]; then
+          mv "{{.BIN_DIR}}/{{.APP_NAME}}.rpm" "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}.rpm"
+        fi
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
 
   generate:aur:
     summary: Creates a arch linux packager package
     cmds:
       - wails3 tool package -name "{{.APP_NAME}}" -format archlinux -config ./build/linux/nfpm/nfpm.yaml -out {{.ROOT_DIR}}/bin
+      - |
+        if [ -f "{{.BIN_DIR}}/{{.APP_NAME}}.pkg.tar.zst" ]; then
+          mv "{{.BIN_DIR}}/{{.APP_NAME}}.pkg.tar.zst" "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}.pkg.tar.zst"
+        fi
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
 
   generate:dotdesktop:
     summary: Generates `.desktop` files
@@ -188,7 +220,10 @@ tasks:
 
   run:
     cmds:
-      - "{{if .OUTPUT}}{{.OUTPUT}}{{else}}{{.BIN_DIR}}/{{.APP_NAME}}{{end}}"
+      - "{{if .OUTPUT}}{{.OUTPUT}}{{else}}{{.DEFAULT_OUTPUT}}{{end}}"
+    vars:
+      DEFAULT_OUTPUT: "{{.BIN_DIR}}/{{.APP_NAME}}_{{.APP_VERSION}}_{{.GOOS | default OS}}_{{.TARGET_ARCH | default ARCH}}"
+      OUTPUT: "{{ .OUTPUT | default .DEFAULT_OUTPUT }}"
 
   sign:deb:
     summary: Signs the DEB package

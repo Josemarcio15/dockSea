@@ -1,7 +1,6 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import PageTitle from "$shared/components/PageTitle.svelte";
-
+  import { useRefreshKey } from "$shared/stores/refresh.svelte";
   import StatusBanner from "$shared/components/StatusBanner.svelte";
   import { createConfigStore } from "./store.svelte";
 
@@ -9,7 +8,7 @@
   import VpsModal from "./VpsModal.svelte";
   import DiagnosticModal from "./DiagnosticModal.svelte";
   import ConfirmDialog from "$shared/components/ConfirmDialog.svelte";
-  import { Button } from "$shared/components/buttons";
+  import { ButtonPurple } from "$shared/components/buttons";
   import type { VpsFormData, VpsServer } from "./types";
 
   let { data } = $props();
@@ -23,6 +22,7 @@
 
   // Load SQLite servers upon opening the screen
   $effect(() => {
+    useRefreshKey();
     void store.load();
   });
 
@@ -63,7 +63,15 @@
 <div class="space-y-8">
   <!-- Top Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <PageTitle title={t("sidebar.configs")} />
+    <div
+      class="inline-flex items-center px-5 py-2.5 rounded-2xl bg-linear-to-br from-violet-100 to-fuchsia-100 dark:from-violet-950/40 dark:to-fuchsia-950/40 border border-violet-200/50 dark:border-violet-800/50 self-start shadow-sm"
+    >
+      <h1
+        class="text-2xl font-bold bg-linear-to-r from-violet-600 to-fuchsia-500 bg-clip-text text-transparent m-0 flex items-center gap-2"
+      >
+        {t("sidebar.configs")}
+      </h1>
+    </div>
   </div>
 
   <!-- Status Alerts -->
@@ -72,30 +80,33 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
     <!-- VPS Servers List (col-span-2) -->
     <div
-      class="lg:col-span-2 bg-white dark:bg-[#0b1d2e] border border-slate-200/70 dark:border-slate-800/80 p-6 rounded-2xl shadow-sm space-y-6"
+      class="relative lg:col-span-2 rounded-[24px] bg-gradient-to-b from-slate-900/90 to-[#090d16]/95 dark:from-[#111726]/90 dark:to-[#070b13]/95 border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-6 space-y-6 text-slate-100 overflow-hidden"
     >
+      <!-- Glow highlight top -->
+      <div class="absolute -top-12 -left-12 w-32 h-32 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>
+
       <div
-        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        class="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div>
           <h2
-            class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2"
+            class="text-lg font-extrabold text-white flex items-center gap-2 tracking-tight"
           >
             {t("config.servers_title")}
           </h2>
-          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">
+          <p class="text-xs text-slate-400 mt-1">
             {t("config.servers_desc")}
           </p>
         </div>
 
-        <Button variant="primary" onclick={openCreateModal}>
+        <ButtonPurple onclick={openCreateModal}>
           <span class="text-sm font-normal">+</span>
           {t("config.add_server_btn")}
-        </Button>
+        </ButtonPurple>
       </div>
 
       <!-- Servers List (Rows) -->
-      <div class="flex flex-col gap-3">
+      <div class="relative flex flex-col gap-3">
         {#each data.servers as server (server.id)}
           <VpsCard
             {server}
@@ -107,7 +118,7 @@
           />
         {:else}
           <div
-            class="text-center py-12 border border-dashed border-slate-200 dark:border-slate-800 rounded-3xl bg-slate-50/30 italic text-slate-500"
+            class="text-center py-12 border border-dashed border-white/10 rounded-3xl bg-white/[0.02] italic text-slate-400"
           >
             {t("config.empty_servers")}
           </div>
@@ -119,26 +130,29 @@
     <div class="space-y-6">
       <!-- Language Card -->
       <div
-        class="bg-white dark:bg-[#0b1d2e] border border-slate-200/70 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-4"
+        class="relative rounded-[22px] bg-gradient-to-b from-slate-900/90 to-[#090d16]/95 dark:from-[#111726]/90 dark:to-[#070b13]/95 border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 space-y-4 text-slate-100 overflow-hidden"
       >
+        <!-- Glow highlight top -->
+        <div class="absolute -top-12 -left-12 w-28 h-28 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>
+
         <h3
-          class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-2"
+          class="relative text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2"
         >
           {t("config.lang_tab")}
         </h3>
 
-        <div class="flex flex-col gap-2">
+        <div class="relative flex flex-col gap-2">
           <button
             type="button"
-            class="w-full flex items-center justify-between p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer {activeLocale ===
+            class="w-full flex items-center justify-between p-3.5 rounded-2xl border text-sm font-semibold transition-all cursor-pointer {activeLocale ===
             'pt-BR'
-              ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/10 text-violet-900 dark:text-violet-300 font-bold shadow-xs'
-              : 'border-slate-300 dark:border-slate-800 bg-white dark:bg-transparent hover:bg-slate-100 dark:hover:bg-slate-900/30 text-slate-800 dark:text-slate-300'}"
+              ? 'border-violet-400/40 bg-violet-500/15 text-white font-bold shadow-[0_0_12px_rgba(124,58,237,0.2)]'
+              : 'border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] text-slate-300'}"
             onclick={() => doChangeLocale("pt-BR")}
           >
             <span>{t("config.lang_pt_br")}</span>
             {#if activeLocale === "pt-BR"}
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-violet-600 dark:text-violet-400" viewBox="0 0 20 20" fill="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-violet-400" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-8 8a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 1.414-1.414L8 12.586l7.293-7.293a1 1 0 0 1 1.414 0Z" clip-rule="evenodd" />
               </svg>
             {/if}
@@ -146,15 +160,15 @@
 
           <button
             type="button"
-            class="w-full flex items-center justify-between p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer {activeLocale ===
+            class="w-full flex items-center justify-between p-3.5 rounded-2xl border text-sm font-semibold transition-all cursor-pointer {activeLocale ===
             'en-US'
-              ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/10 text-violet-900 dark:text-violet-300 font-bold shadow-xs'
-              : 'border-slate-300 dark:border-slate-800 bg-white dark:bg-transparent hover:bg-slate-100 dark:hover:bg-slate-900/30 text-slate-800 dark:text-slate-300'}"
+              ? 'border-violet-400/40 bg-violet-500/15 text-white font-bold shadow-[0_0_12px_rgba(124,58,237,0.2)]'
+              : 'border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] text-slate-300'}"
             onclick={() => doChangeLocale("en-US")}
           >
             <span>{t("config.lang_en_us")}</span>
             {#if activeLocale === "en-US"}
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-violet-600 dark:text-violet-400" viewBox="0 0 20 20" fill="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-violet-400" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-8 8a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 1.414-1.414L8 12.586l7.293-7.293a1 1 0 0 1 1.414 0Z" clip-rule="evenodd" />
               </svg>
             {/if}
@@ -164,33 +178,38 @@
 
       <!-- Local Database & Maintenance Card -->
       <div
-        class="bg-white dark:bg-[#0b1d2e] border border-slate-200/70 dark:border-slate-800/80 p-5 rounded-2xl shadow-sm space-y-4"
+        class="relative rounded-[22px] bg-gradient-to-b from-slate-900/90 to-[#090d16]/95 dark:from-[#111726]/90 dark:to-[#070b13]/95 border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 space-y-4 text-slate-100 overflow-hidden"
       >
+        <!-- Glow highlight top -->
+        <div class="absolute -top-12 -left-12 w-28 h-28 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>
+
         <h3
-          class="text-sm font-bold text-slate-900 dark:text-slate-200 uppercase tracking-wider flex items-center gap-2"
+          class="relative text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-          </svg>
+          <div class="w-7 h-7 rounded-lg bg-violet-600/10 border border-violet-500/20 flex items-center justify-center text-violet-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+            </svg>
+          </div>
           {t("config.db_section_title")}
         </h3>
-        <p class="text-xs text-slate-600 dark:text-slate-400">
+        <p class="relative text-xs text-slate-400">
           {t("config.db_section_desc")}
         </p>
 
         {#if store.dbPath}
-          <div class="space-y-1">
-            <span class="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase">{t("config.db_path_label")}</span>
-            <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-[11px] font-mono text-slate-800 dark:text-slate-400 break-all select-all font-semibold">
+          <div class="relative space-y-1">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("config.db_path_label")}</span>
+            <div class="p-3 rounded-xl bg-black/40 border border-white/[0.06] text-[11px] font-mono text-slate-300 break-all select-all font-semibold">
               {store.dbPath}
             </div>
           </div>
         {/if}
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div class="relative grid grid-cols-1 sm:grid-cols-2 gap-2">
           <button
             type="button"
-            class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold bg-violet-600 hover:bg-violet-700 text-white dark:bg-violet-500/10 dark:hover:bg-violet-500/20 dark:text-violet-300 border border-transparent dark:border-violet-500/30 transition-all cursor-pointer disabled:opacity-50 shadow-sm"
+            class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold bg-violet-500/15 hover:bg-violet-500/25 text-violet-300 border border-violet-400/30 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
             disabled={store.isBackingUp || store.isRestoring}
             onclick={store.exportBackup}
           >
@@ -206,7 +225,7 @@
 
           <button
             type="button"
-            class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 transition-all cursor-pointer disabled:opacity-50"
+            class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold bg-blue-500/15 hover:bg-blue-500/25 text-blue-300 border border-blue-400/30 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
             disabled={store.isBackingUp || store.isRestoring}
             onclick={store.restoreBackup}
           >
@@ -222,16 +241,16 @@
         </div>
 
         <!-- Danger Zone -->
-        <div class="pt-3 border-t border-red-500/20 space-y-2">
-          <span class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider flex items-center gap-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div class="relative pt-3 border-t border-red-500/20 space-y-2">
+          <span class="text-[10px] font-bold text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
             </svg>
             {t("config.db_danger_title")}
           </span>
           <button
             type="button"
-            class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 transition-all cursor-pointer disabled:opacity-50"
+            class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 transition-all cursor-pointer disabled:opacity-50"
             disabled={store.isResetting}
             onclick={store.requestResetDb}
           >

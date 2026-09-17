@@ -37,7 +37,7 @@ Unicode true
 
 # The version information for this two must consist of 4 parts (numeric only)
 !ifndef INFO_NUMERIC_VERSION
-    !define INFO_NUMERIC_VERSION "0.0.2.0"
+    !define INFO_NUMERIC_VERSION "0.0.10.0"
 !endif
 VIProductVersion "${INFO_NUMERIC_VERSION}"
 VIFileVersion    "${INFO_NUMERIC_VERSION}"
@@ -75,7 +75,10 @@ ManifestDPIAware true
 #!finalize 'signtool --file "%1"'
 
 Name "${INFO_PRODUCTNAME}"
-OutFile "..\..\..\bin\${INFO_PROJECTNAME}-${ARCH}-installer.exe" # Name of the installer's file.
+!ifndef OUTPUT_FILE
+    !define OUTPUT_FILE "..\..\..\bin\${INFO_PROJECTNAME}_${INFO_PRODUCTVERSION}_windows_${ARCH}-installer.exe"
+!endif
+OutFile "${OUTPUT_FILE}" # Name of the installer's file.
 !if "${WAILS_INSTALL_SCOPE}" == "user"
     InstallDir "$LOCALAPPDATA\Programs\${INFO_PRODUCTNAME}"
 !else

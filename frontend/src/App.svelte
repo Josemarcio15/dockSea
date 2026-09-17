@@ -18,6 +18,7 @@
   import Profiles from "./pages/profiles/Page.svelte";
   import { loadSession, session } from "$session/session.svelte";
   import { navigation, navigate } from "$navigation/navigation.svelte";
+  import { useRefreshKey } from "$shared/stores/refresh.svelte";
 
   let { data = {} }: { data?: any } = $props();
 
@@ -51,7 +52,7 @@
   });
 
   let isDark = $state(true);
-  let appVersion = "0.0.5-alpha";
+  let appVersion = typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "0.0.6-alpha";
   let hasProfile = $state(true);
 
   let darkClass = $derived(isDark ? "dark" : "");
@@ -74,6 +75,11 @@
     } catch (e: any) {
       console.warn("Erro ao buscar servidores/perfis do SQLite no App:", e);
     }
+  });
+
+  $effect(() => {
+    useRefreshKey();
+    loadSession().catch((e) => console.warn("Erro ao recarregar sessão:", e));
   });
 
   $effect(() => {
@@ -256,13 +262,13 @@
 <div class="flex h-screen w-screen font-sans overflow-hidden {darkClass}">
   <StatusBanner />
   <div
-    class="w-60 h-full bg-linear-to-b from-[#0a2c46] via-[#0b2740] to-[#071c30] text-white flex flex-col shadow-2xl shrink-0 overflow-y-auto overflow-x-hidden border-r border-cyan-400/10"
+    class="w-60 h-full bg-linear-to-b from-violet-900 via-violet-800 to-indigo-900 text-white flex flex-col shadow-2xl shrink-0 overflow-y-auto overflow-x-hidden"
   >
     <div
       class="px-6 py-5 text-base font-bold text-white border-b border-white/10 flex items-center gap-3 bg-white/5"
     >
       <div
-        class="w-9 h-9 rounded-xl bg-linear-to-br from-sky-400 to-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-500/30"
+        class="w-9 h-9 rounded-xl bg-linear-to-br from-violet-400 to-fuchsia-400 flex items-center justify-center shadow-lg shadow-violet-500/30"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -296,7 +302,7 @@
     <div class="flex flex-col gap-1 px-3 pt-5">
       <SidebarItem
         icon={iconHome}
-        iconBg="from-sky-400 to-blue-500"
+        iconBg="from-emerald-400 to-teal-400"
         label={t("sidebar.devices")}
         active={navigation.currentRoute === "servers"}
         disabled={!hasProfile}
@@ -304,7 +310,7 @@
       />
       <SidebarItem
         icon={iconContainers}
-        iconBg="from-cyan-400 to-sky-500"
+        iconBg="from-blue-400 to-cyan-400"
         label={t("sidebar.containers")}
         active={navigation.currentRoute === "containers"}
         disabled={!hasProfile}
@@ -312,7 +318,7 @@
       />
       <SidebarItem
         icon={iconImages}
-        iconBg="from-teal-400 to-cyan-500"
+        iconBg="from-amber-400 to-orange-400"
         label={t("sidebar.images")}
         active={navigation.currentRoute === "images"}
         disabled={!hasProfile}
@@ -320,7 +326,7 @@
       />
       <SidebarItem
         icon={iconVolumes}
-        iconBg="from-cyan-400 to-teal-500"
+        iconBg="from-cyan-400 to-teal-400"
         label={t("sidebar.volumes")}
         active={navigation.currentRoute === "volumes"}
         disabled={!hasProfile}
@@ -328,7 +334,7 @@
       />
       <SidebarItem
         icon={iconNetworks}
-        iconBg="from-sky-400 to-cyan-500"
+        iconBg="from-green-400 to-teal-400"
         label={t("sidebar.networks")}
         active={navigation.currentRoute === "networks"}
         disabled={!hasProfile}
@@ -336,7 +342,7 @@
       />
       <SidebarItem
         icon={iconStacks}
-        iconBg="from-blue-400 to-indigo-500"
+        iconBg="from-rose-400 to-pink-400"
         label={t("sidebar.stacks")}
         active={navigation.currentRoute === "stacks"}
         disabled={!hasProfile}
@@ -344,7 +350,7 @@
       />
       <SidebarItem
         icon={iconBuilder}
-        iconBg="from-teal-400 to-emerald-500"
+        iconBg="from-amber-400 to-orange-400"
         label={t("sidebar.builder")}
         active={navigation.currentRoute === "builder"}
         disabled={!hasProfile}
@@ -368,7 +374,7 @@
       />
       <SidebarItem
         icon={iconProfile}
-        iconBg="from-blue-400 to-cyan-500"
+        iconBg="from-fuchsia-400 to-violet-500"
         label={t("sidebar.profiles")}
         active={navigation.currentRoute === "profiles"}
         disabled={false}
@@ -419,9 +425,8 @@
     <div class="flex-1"></div>
 
     <div
-      class="mx-3 mb-2 px-4 py-2 rounded-xl text-[11px] text-cyan-300 font-semibold text-center border border-cyan-400/20 bg-cyan-400/10 flex items-center justify-center gap-1.5"
+      class="mx-3 mb-2 px-4 py-2 rounded-xl text-[11px] text-orange-400 font-semibold text-center border border-orange-500/20 bg-orange-500/10"
     >
-      <span class="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_6px] shadow-amber-400/60"></span>
       {t("version", { version: appVersion })}
     </div>
 

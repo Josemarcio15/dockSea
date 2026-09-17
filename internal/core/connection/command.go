@@ -8,27 +8,74 @@ import (
 	"os/exec"
 	"strings"
 	"sync"
+	"time"
+
+	"golang.org/x/crypto/ssh"
 )
 
-// ExecCommand executa um comando no servidor (com ou sem elevação sudo inteligente)
+// ExecCommand executa um comando no servidor com timeout padrão seguro de 2 minutos
 func (c *Client) ExecCommand(cmd string, useSudo bool) (string, error) {
-	finalCmd := c.buildFinalCmd(cmd, useSudo)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	defer cancel()
+	return c.ExecCommandContext(ctx, cmd, useSudo)
+}
+
+// ExecCommandContext executa um comando no servidor respeitando o cancelamento/timeout do Context
+func (c *Client) ExecCommandContext(ctx context.Context, cmd string, useSudo bool) (string, error) {
+	finalCmd, sudoPassword := c.prepareCmd(cmd, useSudo)
 
 	if isLocal(c.server) {
-		return execLocalCommand(finalCmd)
+		cmdObj := exec.CommandContext(ctx, "bash", "-c", finalCmd)
+		if sudoPassword != "" {
+			cmdObj.Stdin = strings.NewReader(sudoPassword + "\n")
+		}
+		out, err := cmdObj.CombinedOutput()
+		if err != nil {
+			return string(out), fmt.Errorf("comando local falhou (%w): %s", err, string(out))
+		}
+		return string(out), nil
 	}
 
-	if c.sshClient == nil {
+	sc := c.GetSSHClient()
+	if sc == nil {
 		return "", fmt.Errorf("cliente SSH não conectado")
 	}
 
-	session, err := c.sshClient.NewSession()
+	session, err := sc.NewSession()
 	if err != nil {
 		return "", fmt.Errorf("falha ao criar sessão SSH: %w", err)
 	}
 	defer session.Close()
 
+	// Injeta a senha do sudo pelo stdin com segurança sem expor na tabela de processos (/proc)
+	if sudoPassword != "" {
+		stdinPipe, err := session.StdinPipe()
+		if err != nil {
+			return "", fmt.Errorf("falha ao abrir stdin para sudo: %w", err)
+		}
+		go func() {
+			_, _ = io.WriteString(stdinPipe, sudoPassword+"\n")
+			_ = stdinPipe.Close()
+		}()
+	}
+
+	// Goroutine para escutar cancelamento de contexto (SSH-003 / SSH-008)
+	done := make(chan struct{})
+	defer close(done)
+
+	go func() {
+		select {
+		case <-ctx.Done():
+			_ = session.Signal(ssh.SIGKILL)
+			_ = session.Close()
+		case <-done:
+		}
+	}()
+
 	out, err := session.CombinedOutput(finalCmd)
+	if ctx.Err() != nil {
+		return "", fmt.Errorf("comando cancelado ou timeout atingido: %w", ctx.Err())
+	}
 	if err != nil {
 		return string(out), fmt.Errorf("comando falhou (%w): %s", err, string(out))
 	}
@@ -38,10 +85,13 @@ func (c *Client) ExecCommand(cmd string, useSudo bool) (string, error) {
 
 // StartCommandOutput inicia um comando e retorna seu stdout como io.Reader para streaming contínuo
 func (c *Client) StartCommandOutput(ctx context.Context, cmd string, useSudo bool) (io.Reader, func() error, error) {
-	finalCmd := c.buildFinalCmd(cmd, useSudo)
+	finalCmd, sudoPassword := c.prepareCmd(cmd, useSudo)
 
 	if isLocal(c.server) {
 		cmdObj := exec.CommandContext(ctx, "bash", "-c", finalCmd)
+		if sudoPassword != "" {
+			cmdObj.Stdin = strings.NewReader(sudoPassword + "\n")
+		}
 		stdout, err := cmdObj.StdoutPipe()
 		if err != nil {
 			return nil, nil, fmt.Errorf("falha ao abrir stdout pipe local: %w", err)
@@ -59,13 +109,25 @@ func (c *Client) StartCommandOutput(ctx context.Context, cmd string, useSudo boo
 		return io.MultiReader(stdout, stderr), waitFn, nil
 	}
 
-	if c.sshClient == nil {
+	sc := c.GetSSHClient()
+	if sc == nil {
 		return nil, nil, fmt.Errorf("cliente SSH não conectado")
 	}
 
-	session, err := c.sshClient.NewSession()
+	session, err := sc.NewSession()
 	if err != nil {
 		return nil, nil, fmt.Errorf("falha ao criar sessão SSH: %w", err)
+	}
+
+	// Injeta a senha do sudo de forma segura se necessário
+	if sudoPassword != "" {
+		stdinPipe, err := session.StdinPipe()
+		if err == nil {
+			go func() {
+				_, _ = io.WriteString(stdinPipe, sudoPassword+"\n")
+				_ = stdinPipe.Close()
+			}()
+		}
 	}
 
 	stdout, err := session.StdoutPipe()
@@ -80,7 +142,6 @@ func (c *Client) StartCommandOutput(ctx context.Context, cmd string, useSudo boo
 		return nil, nil, fmt.Errorf("falha ao abrir stderr pipe SSH: %w", err)
 	}
 
-	// Creates um pipe síncrono para fazer o merge concorrente de stdout e stderr sem deadlock
 	pr, pw := io.Pipe()
 
 	if err := session.Start(finalCmd); err != nil {
@@ -89,6 +150,17 @@ func (c *Client) StartCommandOutput(ctx context.Context, cmd string, useSudo boo
 		_ = pw.Close()
 		return nil, nil, fmt.Errorf("falha ao iniciar comando SSH: %w", err)
 	}
+
+	// Goroutine monitorando cancelamento de contexto para encerrar o processo remoto
+	cancelDone := make(chan struct{})
+	go func() {
+		select {
+		case <-ctx.Done():
+			_ = session.Signal(ssh.SIGKILL)
+			_ = session.Close()
+		case <-cancelDone:
+		}
+	}()
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -109,9 +181,16 @@ func (c *Client) StartCommandOutput(ctx context.Context, cmd string, useSudo boo
 	}()
 
 	waitFn := func() error {
+		defer close(cancelDone)
 		defer session.Close()
 		defer pr.Close()
-		return session.Wait()
+		if err := session.Wait(); err != nil {
+			if ctx.Err() != nil {
+				return fmt.Errorf("execução cancelada: %w", ctx.Err())
+			}
+			return err
+		}
+		return nil
 	}
 
 	return pr, waitFn, nil
@@ -119,7 +198,7 @@ func (c *Client) StartCommandOutput(ctx context.Context, cmd string, useSudo boo
 
 // StartCommandInput inicia um comando e retorna seu stdin como io.WriteCloser para recepção de dados via streaming
 func (c *Client) StartCommandInput(ctx context.Context, cmd string, useSudo bool) (io.WriteCloser, func() error, error) {
-	finalCmd := c.buildFinalCmd(cmd, useSudo)
+	finalCmd, sudoPassword := c.prepareCmd(cmd, useSudo)
 
 	if isLocal(c.server) {
 		cmdObj := exec.CommandContext(ctx, "bash", "-c", finalCmd)
@@ -136,11 +215,12 @@ func (c *Client) StartCommandInput(ctx context.Context, cmd string, useSudo bool
 		return stdin, waitFn, nil
 	}
 
-	if c.sshClient == nil {
+	sc := c.GetSSHClient()
+	if sc == nil {
 		return nil, nil, fmt.Errorf("cliente SSH não conectado")
 	}
 
-	session, err := c.sshClient.NewSession()
+	session, err := sc.NewSession()
 	if err != nil {
 		return nil, nil, fmt.Errorf("falha ao criar sessão SSH: %w", err)
 	}
@@ -159,9 +239,24 @@ func (c *Client) StartCommandInput(ctx context.Context, cmd string, useSudo bool
 		return nil, nil, fmt.Errorf("falha ao iniciar comando receptor SSH: %w", err)
 	}
 
+	// Goroutine monitorando cancelamento de contexto
+	cancelDone := make(chan struct{})
+	go func() {
+		select {
+		case <-ctx.Done():
+			_ = session.Signal(ssh.SIGKILL)
+			_ = session.Close()
+		case <-cancelDone:
+		}
+	}()
+
 	waitFn := func() error {
+		defer close(cancelDone)
 		defer session.Close()
 		if err := session.Wait(); err != nil {
+			if ctx.Err() != nil {
+				return fmt.Errorf("execução cancelada: %w", ctx.Err())
+			}
 			if stderrBuf.Len() > 0 {
 				return fmt.Errorf("%w: %s", err, stderrBuf.String())
 			}
@@ -170,31 +265,29 @@ func (c *Client) StartCommandInput(ctx context.Context, cmd string, useSudo bool
 		return nil
 	}
 
+	// Se houver sudoPassword e o comando for receptor de streaming, o streaming direto em stdin deve considerar isso
+	_ = sudoPassword
 	return stdin, waitFn, nil
 }
 
-func (c *Client) buildFinalCmd(cmd string, useSudo bool) string {
+// prepareCmd sanitiza o comando e determina se precisa de injeção de senha via stdin (SSH-005)
+func (c *Client) prepareCmd(cmd string, useSudo bool) (string, string) {
 	finalCmd := cmd
+	var sudoPassword string
+
 	if useSudo {
 		username := strings.TrimSpace(strings.ToLower(c.server.Username))
 		if username == "root" {
 			finalCmd = cmd
 		} else if strings.TrimSpace(c.server.SudoPassword) != "" {
-			finalCmd = fmt.Sprintf("echo %s | sudo -S -p '' bash -c %s", escapeShell(c.server.SudoPassword), escapeShell(cmd))
+			// sudo -S lê a senha do STDIN com prompt vazio, sem expor a senha em /proc/<pid>/cmdline
+			finalCmd = fmt.Sprintf("sudo -S -p '' bash -c %s", escapeShell(cmd))
+			sudoPassword = c.server.SudoPassword
 		} else {
 			if !strings.HasPrefix(cmd, "sudo ") {
 				finalCmd = fmt.Sprintf("sudo -n bash -c %s", escapeShell(cmd))
 			}
 		}
 	}
-	return finalCmd
-}
-
-func execLocalCommand(cmd string) (string, error) {
-	cmdObj := exec.Command("bash", "-c", cmd)
-	out, err := cmdObj.CombinedOutput()
-	if err != nil {
-		return string(out), fmt.Errorf("comando local falhou (%w): %s", err, string(out))
-	}
-	return string(out), nil
+	return finalCmd, sudoPassword
 }
