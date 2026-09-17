@@ -1,8 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { onDestroy } from "svelte";
   import { t } from "$shared/stores/locale.svelte";
   import { Events } from "@wailsio/runtime";
-  import { ButtonOrange } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import TerminalLogsView from "$shared/components/TerminalLogsView.svelte";
 
   let {
@@ -313,7 +313,7 @@
           {/if}
         </div>
 
-        <ButtonOrange
+        <Button
           disabled={isRunning}
           onclick={() => {
             closeListeners();
@@ -321,7 +321,7 @@
           }}
         >
           {t("common.close")}
-        </ButtonOrange>
+        </Button>
       </div>
     </div>
   </div>

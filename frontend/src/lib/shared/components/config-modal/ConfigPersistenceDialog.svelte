@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonOrange, ButtonGreen } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     show = $bindable(false),
@@ -25,15 +25,15 @@
         {t("images.config_persistence_warning")}
       </p>
       <div class="flex gap-3 justify-end">
-        <ButtonOrange
+        <Button
           size="sm"
           onclick={() => (show = false)}
         >
           {t("images.config_no")}
-        </ButtonOrange>
-        <ButtonGreen size="sm" onclick={onConfirm}>
+        </Button>
+        <Button size="sm" onclick={onConfirm}>
           {t("images.config_yes")}
-        </ButtonGreen>
+        </Button>
       </div>
     </div>
   </div>

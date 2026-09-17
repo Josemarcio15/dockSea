@@ -1,14 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import ColumnLayoutSwitcher from "$shared/components/ColumnLayoutSwitcher.svelte";
-  import {
-    ButtonPurple,
-    ButtonGreen,
-    ButtonBlue,
-    ButtonYellow,
-    ButtonRed,
-    ButtonPink,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     searchQuery = $bindable(""),
@@ -58,7 +51,7 @@
         class="px-4 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#0b0f19] text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 shadow-2xs transition-all w-60"
         bind:value={searchQuery}
       />
-      <ButtonPink
+      <Button
         size="sm"
         title={t("common.refresh")}
         onclick={onRefresh}
@@ -78,7 +71,7 @@
           </svg>
         {/snippet}
         {t("common.refresh")}
-      </ButtonPink>
+      </Button>
     </div>
   </div>
 
@@ -87,7 +80,7 @@
     class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800/80 p-3.5 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
   >
     <div class="flex items-center gap-2">
-      <ButtonGreen
+      <Button
         size="sm"
         onclick={onToggleAll}
       >
@@ -107,7 +100,7 @@
           </svg>
         {/snippet}
         {allSelected ? t("common.deselect_all") : t("common.select_all")}
-      </ButtonGreen>
+      </Button>
 
       {#if selectedCount > 0}
         <span
@@ -127,8 +120,9 @@
 
     <div class="flex items-center gap-2">
       <!-- Start (Green) -->
-      <ButtonGreen
+      <Button
         size="sm"
+        themeKey="containers.start_btn"
         disabled={selectedCount === 0}
         onclick={onStart}
       >
@@ -147,11 +141,12 @@
           </svg>
         {/snippet}
         {t("containers.start")}
-      </ButtonGreen>
+      </Button>
 
       <!-- Restart (Blue) -->
-      <ButtonBlue
+      <Button
         size="sm"
+        themeKey="containers.restart_btn"
         disabled={selectedCount === 0}
         onclick={onRestart}
       >
@@ -173,11 +168,12 @@
           </svg>
         {/snippet}
         {t("containers.restart")}
-      </ButtonBlue>
+      </Button>
 
       <!-- Stop (Yellow) -->
-      <ButtonYellow
+      <Button
         size="sm"
+        themeKey="containers.stop_btn"
         disabled={selectedCount === 0}
         onclick={onStop}
       >
@@ -192,11 +188,12 @@
           </svg>
         {/snippet}
         {t("containers.stop")}
-      </ButtonYellow>
+      </Button>
 
       <!-- Delete (Red) -->
-      <ButtonRed
+      <Button
         size="sm"
+        themeKey="containers.delete_btn"
         disabled={selectedCount === 0}
         onclick={onRemove}
       >
@@ -217,7 +214,7 @@
           </svg>
         {/snippet}
         {t("containers.delete")}
-      </ButtonRed>
+      </Button>
     </div>
   </div>
 </div>

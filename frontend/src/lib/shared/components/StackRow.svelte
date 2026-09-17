@@ -1,13 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import {
-    ButtonGreen,
-    ButtonYellow,
-    ButtonBlue,
-    ButtonPurple,
-    ButtonRed,
-    ButtonOrange,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import type { StackItem } from "$lib/domains/stacks";
 
   let {
@@ -121,7 +114,7 @@
   <!-- Stack Actions -->
   <div class="flex flex-wrap items-center gap-2 shrink-0 pt-3 xl:pt-0 border-t xl:border-t-0 border-white/[0.08]">
     <!-- Deploy (Green) -->
-    <ButtonGreen size="sm" onclick={on_deploy}>
+    <Button size="sm" themeKey="stacks.deploy_btn" onclick={on_deploy}>
       {#snippet icon()}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -137,10 +130,10 @@
         </svg>
       {/snippet}
       {t("stacks.deploy_btn")}
-    </ButtonGreen>
+    </Button>
 
     <!-- Stop / Remove Container (Yellow / Amber) -->
-    <ButtonYellow size="sm" onclick={on_stop}>
+    <Button size="sm" themeKey="stacks.stop_btn" onclick={on_stop}>
       {#snippet icon()}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -152,10 +145,10 @@
         </svg>
       {/snippet}
       {t("stacks.stop_btn")}
-    </ButtonYellow>
+    </Button>
 
     <!-- Logs (Blue) -->
-    <ButtonBlue size="sm" onclick={on_logs}>
+    <Button size="sm" themeKey="stacks.logs_btn" onclick={on_logs}>
       {#snippet icon()}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -172,10 +165,10 @@
         </svg>
       {/snippet}
       {t("stacks.logs_btn")}
-    </ButtonBlue>
+    </Button>
 
     <!-- Edit (Purple) -->
-    <ButtonPurple size="sm" onclick={on_edit}>
+    <Button size="sm" themeKey="stacks.edit_btn" onclick={on_edit}>
       {#snippet icon()}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -194,10 +187,10 @@
         </svg>
       {/snippet}
       {t("stacks.edit_btn")}
-    </ButtonPurple>
+    </Button>
 
     <!-- Removes from VPS / Down (Orange) -->
-    <ButtonOrange size="sm" onclick={on_remove_remote}>
+    <Button size="sm" themeKey="stacks.remove_remote_btn" onclick={on_remove_remote}>
       {#snippet icon()}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -216,10 +209,10 @@
         </svg>
       {/snippet}
       {t("stacks.remove_remote_btn")}
-    </ButtonOrange>
+    </Button>
 
     <!-- Delete Local Definition (Red / Rose) -->
-    <ButtonRed size="sm" onclick={on_delete_local}>
+    <Button size="sm" themeKey="stacks.delete_local_btn" onclick={on_delete_local}>
       {#snippet icon()}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -237,6 +230,6 @@
         </svg>
       {/snippet}
       {t("stacks.delete_local_btn")}
-    </ButtonRed>
+    </Button>
   </div>
 </div>

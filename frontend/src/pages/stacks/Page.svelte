@@ -1,9 +1,9 @@
-<script lang="ts">
+﻿<script lang="ts">
   import StackRow from "$shared/components/StackRow.svelte";
   import VpsSelectWarning from "$shared/components/VpsSelectWarning.svelte";
   import { t } from "$shared/stores/locale.svelte";
   import { useRefreshKey } from "$shared/stores/refresh.svelte";
-  import { ButtonBlue } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import type { StackItem } from "./types";
   import { defaultYaml, folderName } from "./service";
   import StackModals from "./components/StackModals.svelte";
@@ -193,8 +193,8 @@
           class="px-4 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#0b0f19] text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 shadow-2xs transition-all w-60"
           bind:value={stackStore.searchQuery}
         />
-        <ButtonBlue size="sm" onclick={openCreate}
-          >+ {t("stacks.new_stack")}</ButtonBlue
+        <Button size="sm" onclick={openCreate}
+          >+ {t("stacks.new_stack")}</Button
         >
       </div>
     </div>

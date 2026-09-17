@@ -11,14 +11,32 @@
 @variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  :root {
+    --ds-app-bg: #090d16;
+    --ds-sidebar-from: #4c1d95;
+    --ds-sidebar-via: #5b21b6;
+    --ds-sidebar-to: #312e81;
+    --ds-card-bg: #111827;
+    --ds-card-border: rgba(255, 255, 255, 0.08);
+    --ds-text-primary: #f8fafc;
+    --ds-text-muted: #94a3b8;
+  }
+
   html, body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    background-color: var(--ds-app-bg);
+    color: var(--ds-text-primary);
   }
 
   code, kbd, samp, pre, .font-mono {
     font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  }
+
+  .ds-btn:hover:not(:disabled) {
+    background-color: var(--btn-hover, var(--btn-bg)) !important;
+    color: var(--btn-text-hover, var(--btn-text)) !important;
   }
 }

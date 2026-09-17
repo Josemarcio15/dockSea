@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonGreen, ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import type { DockerNetwork } from "$lib/domains/networks";
   import { isDefaultNetwork as checkIsDefault } from "$lib/domains/networks";
 
@@ -244,12 +244,12 @@
                     </span>
                   {/if}
                 </div>
-                <ButtonRed
+                <Button
                   size="xs"
                   onclick={() => on_disconnect(container.name)}
                 >
                   {t("networks.card_disconnect_btn")}
-                </ButtonRed>
+                </Button>
               </div>
             {/each}
           </div>
@@ -282,20 +282,20 @@
 
       <!-- Actions -->
       <div class="flex gap-2 pt-1 border-t border-white/[0.08]">
-        <ButtonGreen
+        <Button
           size="sm"
           class="flex-1"
           onclick={on_connect}
         >
           {t("networks.connect_title")}
-        </ButtonGreen>
+        </Button>
         {#if !isDefaultNetwork}
-          <ButtonRed
+          <Button
             size="sm"
             onclick={on_delete}
           >
             {t("common.delete")}
-          </ButtonRed>
+          </Button>
         {/if}
       </div>
     </div>

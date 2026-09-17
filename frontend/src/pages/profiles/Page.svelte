@@ -1,8 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   import StatusBanner from "$shared/components/StatusBanner.svelte";
   import { t } from "$shared/stores/locale.svelte";
   import ConfirmDialog from "$shared/components/ConfirmDialog.svelte";
-  import { ButtonBlue } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import ProfileCard from "./components/ProfileCard.svelte";
   import ProfileForm from "./components/ProfileForm.svelte";
   import { createProfilesStore } from "./store.svelte";
@@ -24,9 +24,9 @@
       </h1>
     </div>
 
-    <ButtonBlue size="sm" onclick={store.openCreate}>
+    <Button size="sm" onclick={store.openCreate}>
       {t("profiles.new_profile")}
-    </ButtonBlue>
+    </Button>
   </div>
 
   <!-- Status Alerts -->

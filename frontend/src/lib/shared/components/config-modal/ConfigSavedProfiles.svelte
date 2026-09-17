@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonBlue, ButtonPurple, ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     savedConfigs = [],
@@ -23,9 +23,9 @@
       >
         {t("images.config_saved_profiles")}
       </span>
-      <ButtonBlue size="xs" onclick={onCreateNew}>
+      <Button size="xs" onclick={onCreateNew}>
         + Novo perfil
-      </ButtonBlue>
+      </Button>
     </div>
     <div
       class="flex flex-col gap-2 max-h-[calc(92vh-180px)] overflow-y-auto pr-1"
@@ -54,18 +54,18 @@
               </div>
             {/if}
           </div>
-          <ButtonPurple
+          <Button
             size="xs"
             onclick={() => onSelectProfile(cfg)}
           >
             {t("images.config_load")}
-          </ButtonPurple>
-          <ButtonRed
+          </Button>
+          <Button
             size="xs"
             onclick={() => onDeleteProfile(cfg.id)}
           >
             ✕
-          </ButtonRed>
+          </Button>
         </div>
       {/each}
     </div>
@@ -77,8 +77,8 @@
     <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400"
       >Perfis salvos</span
     >
-    <ButtonBlue size="xs" onclick={onCreateNew}>
+    <Button size="xs" onclick={onCreateNew}>
       + Novo perfil
-    </ButtonBlue>
+    </Button>
   </div>
 {/if}

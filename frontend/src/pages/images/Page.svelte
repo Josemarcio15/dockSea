@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { useRefreshKey, triggerRefresh } from "$shared/stores/refresh.svelte";
   import { notifySuccess, notifyError } from "$shared/stores/notification.svelte";
@@ -14,16 +14,7 @@
   import ImageToolbar from "./components/ImageToolbar.svelte";
   import ImageCard from "./components/ImageCard.svelte";
   import ConfirmDialog from "$shared/components/ConfirmDialog.svelte";
-  import {
-    ButtonBlue,
-    ButtonGreen,
-    ButtonYellow,
-    ButtonPurple,
-    ButtonCyan,
-    ButtonRed,
-    ButtonPink,
-    ButtonOrange,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import { createImagesStore } from "./store.svelte";
   import { viewModeStore } from "$shared/stores/viewMode.svelte";
 
@@ -253,12 +244,12 @@
                   e.key === "Enter" &&
                   imgState.handlePull(imgState.downloadQuery)}
               />
-              <ButtonGreen
+              <Button
                 size="md"
                 onclick={() => imgState.handlePull(imgState.downloadQuery)}
               >
                 {t("images.pull_btn")}
-              </ButtonGreen>
+              </Button>
             </div>
           </div>
 
@@ -271,12 +262,12 @@
             >
               <div class="flex items-center gap-3">
                 {#if imgState.imageHistory && imgState.imageHistory.length > 0}
-                  <ButtonYellow size="xs" onclick={imgState.toggleAllHistory}>
+                  <Button size="xs" onclick={imgState.toggleAllHistory}>
                     {imgState.selectedHistoryIds.length ===
                     imgState.imageHistory.length
                       ? t("common.deselect_all")
                       : t("common.select_all")}
-                  </ButtonYellow>
+                  </Button>
                   {#if imgState.selectedHistoryIds.length > 0}
                     <span
                       class="text-xs font-semibold text-red-500 px-1 animate-pulse"
@@ -294,17 +285,17 @@
 
               <div class="flex items-center gap-2">
                 {#if imgState.selectedHistoryIds.length > 0}
-                  <ButtonRed
+                  <Button
                     size="xs"
                     onclick={imgState.handleDeleteHistorySelected}
                   >
                     {t("common.delete")}
-                  </ButtonRed>
+                  </Button>
                 {/if}
                 {#if imgState.imageHistory && imgState.imageHistory.length > 0}
-                  <ButtonRed size="xs" onclick={imgState.handleClearHistory}>
+                  <Button size="xs" onclick={imgState.handleClearHistory}>
                     {t("images.clear_history")}
-                  </ButtonRed>
+                  </Button>
                 {/if}
               </div>
             </div>
@@ -351,12 +342,12 @@
                         </span>
                       </div>
                     </div>
-                    <ButtonCyan
+                    <Button
                       size="xs"
                       onclick={() => imgState.handlePull(hist.imageName)}
                     >
                       {t("images.repull_btn")}
-                    </ButtonCyan>
+                    </Button>
                   </div>
                 {/each}
               </div>
@@ -448,7 +439,7 @@
                     {t("images.transfer_select_images")}
                   </span>
                   {#if imgState.sourceImages.length > 0}
-                    <ButtonYellow
+                    <Button
                       size="xs"
                       onclick={imgState.toggleAllTransfer}
                     >
@@ -456,7 +447,7 @@
                       imgState.sourceImages.length
                         ? t("common.deselect_all")
                         : t("common.select_all")}
-                    </ButtonYellow>
+                    </Button>
                   {/if}
                 </div>
 
@@ -518,7 +509,7 @@
                         {imgState.selectedTransferIds.length}
                         {t("images.selected_count")}
                       </span>
-                      <ButtonPurple
+                      <Button
                         size="md"
                         disabled={!imgState.transferDestId ||
                           imgState.transferSourceId ===
@@ -530,7 +521,7 @@
                         {imgState.transferInProgress
                           ? t("images.transferring")
                           : t("images.transfer_action_btn")}
-                      </ButtonPurple>
+                      </Button>
                     </div>
                   {/if}
                 {/if}

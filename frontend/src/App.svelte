@@ -19,6 +19,8 @@
   import { loadSession, session } from "$session/session.svelte";
   import { navigation, navigate } from "$navigation/navigation.svelte";
   import { useRefreshKey } from "$shared/stores/refresh.svelte";
+  import ThemeEditorDrawer from "$shared/theme/ThemeEditorDrawer.svelte";
+  import { themeStore } from "$shared/theme/theme.svelte.ts";
 
   let { data = {} }: { data?: any } = $props();
 
@@ -259,10 +261,11 @@
   >
 {/snippet}
 
-<div class="flex h-screen w-screen font-sans overflow-hidden {darkClass}">
+<div class="flex h-screen w-screen font-sans overflow-hidden">
   <StatusBanner />
   <div
-    class="w-60 h-full bg-linear-to-b from-violet-900 via-violet-800 to-indigo-900 text-white flex flex-col shadow-2xl shrink-0 overflow-y-auto overflow-x-hidden"
+    style="background: linear-gradient(to bottom, var(--ds-sidebar-from, #4c1d95), var(--ds-sidebar-via, #5b21b6), var(--ds-sidebar-to, #312e81));"
+    class="w-60 h-full text-white flex flex-col shadow-2xl shrink-0 overflow-y-auto overflow-x-hidden"
   >
     <div
       class="px-6 py-5 text-base font-bold text-white border-b border-white/10 flex items-center gap-3 bg-white/5"
@@ -431,17 +434,19 @@
     </div>
 
     <button
-      class="mx-3 mb-3 px-4 py-3 rounded-xl border border-white/10 flex items-center gap-3 text-sm text-violet-300 hover:text-white hover:bg-white/10 cursor-pointer transition-all duration-200"
-      onclick={toggleTheme}
+      class="mx-3 mb-3 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 flex items-center justify-center gap-2 text-xs font-semibold text-violet-200 hover:text-white cursor-pointer transition-all duration-200 shadow-sm"
+      onclick={() => themeStore.toggleEditor()}
+      title="Personalizar Tema"
     >
-      <span class="text-lg">{isDark ? "☀️" : "🌙"}</span>
-      {isDark ? t("app.mode_light") : t("app.mode_dark")}
+      <span class="text-base">🎨</span>
+      Personalizar Tema
     </button>
   </div>
 
   <!-- Main Content Area where routes (pages) are rendered -->
   <div
-    class="flex-1 p-6 bg-slate-200 dark:from-slate-900 dark:to-indigo-950 dark:bg-gradient-to-br overflow-y-auto"
+    style="background-color: var(--ds-app-bg, #090d16);"
+    class="flex-1 p-6 overflow-y-auto"
   >
     {#if navigation.currentRoute === "servers"}
       <Servers data={appData} {navigate} />
@@ -465,4 +470,7 @@
       <Profiles data={appData} />
     {/if}
   </div>
+
+  <!-- Theme Editor Floating Drawer -->
+  <ThemeEditorDrawer />
 </div>

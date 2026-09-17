@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import CodeEditor from "$shared/components/CodeEditor.svelte";
-  import { ButtonCyan, ButtonBlue, ButtonGreen } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     jsonEditor = $bindable(""),
@@ -37,19 +37,19 @@
       </p>
     </div>
     <div class="flex gap-2 shrink-0">
-      <ButtonCyan size="xs" onclick={onLoadExample}>
+      <Button size="xs" onclick={onLoadExample}>
         Exemplo
-      </ButtonCyan>
-      <ButtonBlue size="xs" onclick={onCopyJson}>
+      </Button>
+      <Button size="xs" onclick={onCopyJson}>
         Copiar
-      </ButtonBlue>
-      <ButtonGreen
+      </Button>
+      <Button
         size="xs"
         disabled={!jsonIsValid || saveDisabled}
         onclick={onSaveProfile}
       >
         Salvar
-      </ButtonGreen>
+      </Button>
     </div>
   </div>
   <CodeEditor

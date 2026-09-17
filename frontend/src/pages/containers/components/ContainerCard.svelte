@@ -1,8 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import type { Container } from "$lib/domains/containers";
   import { statsState } from "$shared/stores/stats.svelte";
-  import { ButtonPurple, ButtonCyan, ButtonPink } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import FormModal from "$shared/components/FormModal.svelte";
 
   let {
@@ -404,8 +404,9 @@
 
       <!-- Container Details & Actions Footer -->
       <div class="pt-2 border-t border-white/[0.08] grid grid-cols-3 gap-2">
-        <ButtonPink
+        <Button
           size="sm"
+          themeKey="containers.view_labels_btn"
           class="w-full whitespace-nowrap"
           onclick={() => (showLabels = true)}
         >
@@ -425,9 +426,10 @@
             </svg>
           {/snippet}
           {t("containers.card_view_labels")}
-        </ButtonPink>
-        <ButtonCyan
+        </Button>
+        <Button
           size="sm"
+          themeKey="containers.view_env_btn"
           class="w-full whitespace-nowrap"
           onclick={() => (showEnv = true)}
         >
@@ -447,9 +449,10 @@
             </svg>
           {/snippet}
           {t("containers.card_view_env")}
-        </ButtonCyan>
-        <ButtonPurple
+        </Button>
+        <Button
           size="sm"
+          themeKey="containers.view_logs_btn"
           class="w-full whitespace-nowrap"
           onclick={() => on_open_logs(container.name)}
         >
@@ -469,7 +472,7 @@
             </svg>
           {/snippet}
           {t("containers.card_view_logs")}
-        </ButtonPurple>
+        </Button>
       </div>
     </div>
   {/if}

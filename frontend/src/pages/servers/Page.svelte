@@ -1,8 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { useRefreshKey } from "$shared/stores/refresh.svelte";
   import StatusBanner from "$shared/components/StatusBanner.svelte";
-  import { ButtonPurple } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import ServerCard from "./components/ServerCard.svelte";
   import { createServersStore } from "./store.svelte";
   import type { Route } from "$navigation/navigation.types";
@@ -27,8 +27,8 @@
         {t("sidebar.devices")}
       </h1>
     </div>
-    <ButtonPurple size="sm" onclick={() => navigate?.("config")}
-      >{t("devices.manage_vps")}</ButtonPurple
+    <Button size="sm" themeKey="servers.manage_vps_btn" onclick={() => navigate?.("config")}
+      >{t("devices.manage_vps")}</Button
     >
   </div>
 
@@ -44,8 +44,8 @@
       <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-md">
         {t("devices.empty_desc")}
       </p>
-      <ButtonPurple onclick={() => navigate?.("config")}
-        >{t("devices.add_first")}</ButtonPurple
+      <Button themeKey="servers.add_first_btn" onclick={() => navigate?.("config")}
+        >{t("devices.add_first")}</Button
       >
     </div>
   {:else}

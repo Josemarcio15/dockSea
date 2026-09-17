@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonOrange, ButtonGreen, ButtonBlue } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import CodeEditor from "$shared/components/CodeEditor.svelte";
 
   let {
@@ -126,9 +126,9 @@
                 placeholder={t("stacks.placeholder_folder_path")}
                 bind:value={editorFolderPath}
               />
-              <ButtonBlue size="sm" onclick={onOpenFolderBrowser}>
+              <Button size="sm" onclick={onOpenFolderBrowser}>
                 {t("stacks.browse_folder_btn")}
-              </ButtonBlue>
+              </Button>
             </div>
 
             <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-1">
@@ -160,10 +160,10 @@
       <div
         class="flex gap-3 justify-end pt-4 border-t border-slate-200 dark:border-slate-800 shrink-0"
       >
-        <ButtonOrange onclick={() => (show = false)}>
+        <Button onclick={() => (show = false)}>
           {t("common.cancel")}
-        </ButtonOrange>
-        <ButtonGreen
+        </Button>
+        <Button
           disabled={!editorName.trim() ||
             !editorProjectName.trim() ||
             (editorSourceType === "editor" && !editorYaml.trim()) ||
@@ -171,7 +171,7 @@
           onclick={onSave}
         >
           {t("common.save")}
-        </ButtonGreen>
+        </Button>
       </div>
     </div>
   </div>

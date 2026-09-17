@@ -1,11 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import {
-    ButtonBlue,
-    ButtonGreen,
-    ButtonPurple,
-    ButtonYellow,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import type { BuilderStore } from "../types";
   let { store, goToImages }: { store: BuilderStore; goToImages: () => void } =
     $props();
@@ -35,12 +30,12 @@
       />
       <span class="text-xs font-mono text-slate-500 select-none">:latest</span>
       {#if store.customTag.trim()}
-        <ButtonYellow
+        <Button
           size="xs"
           onclick={() => (store.customTag = "")}
         >
           Restaurar
-        </ButtonYellow>
+        </Button>
       {/if}
     </div>
 
@@ -52,7 +47,7 @@
     {/if}
 
     <div class="relative flex items-center gap-2 w-full pt-1">
-      <ButtonGreen
+      <Button
         size="md"
         class="flex-1"
         disabled={!store.canBuild}
@@ -60,15 +55,15 @@
         onclick={() => store.build()}
       >
         {t("builder.build_btn")}
-      </ButtonGreen>
+      </Button>
       {#if store.currentPath}
-        <ButtonPurple
+        <Button
           size="md"
           disabled={store.savedPaths.includes(store.currentPath)}
           onclick={() => store.saveCurrentPath()}
         >
           {t("builder.save_path")}
-        </ButtonPurple>
+        </Button>
       {/if}
     </div>
 
@@ -80,9 +75,9 @@
           {t("builder.image_ready", { name: store.builtImage })}
         </p>
       </div>
-      <ButtonBlue size="md" class="w-full" onclick={goToImages}>
+      <Button size="md" class="w-full" onclick={goToImages}>
         {t("builder.transfer_btn")}
-      </ButtonBlue>
+      </Button>
     {/if}
   </div>
 {:else if store.currentPath && !store.loading}

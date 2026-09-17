@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { Button, ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     deployPath = $bindable(),
@@ -41,13 +41,13 @@
         disabled={deployPath === "$HOME/.docksea"}
         onclick={onGoParent}>Voltar</Button
       >
-      <ButtonRed
+      <Button
         size="sm"
         disabled={!selectedDeployPaths.length}
         onclick={onRequestDelete}
       >
         Remover selecionados
-      </ButtonRed>
+      </Button>
     </div>
   </div>
 

@@ -1,7 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import ColumnLayoutSwitcher from "$shared/components/ColumnLayoutSwitcher.svelte";
-  import { ButtonGreen, ButtonYellow, ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     diskUsage = "0 B",
@@ -39,12 +39,12 @@
   <div class="flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center gap-2">
       <!-- Botão Marcar Todos (Verde) -->
-      <ButtonGreen
+      <Button
         size="sm"
         onclick={onToggleAll}
       >
         {allSelected ? t("common.deselect_all") : t("common.select_all")}
-      </ButtonGreen>
+      </Button>
 
       {#if selectedCount > 0}
         <span
@@ -70,20 +70,22 @@
         <span class="font-mono text-sm">{diskUsage}</span>
       </div>
 
-      <ButtonYellow
+      <Button
         size="sm"
+        themeKey="images.prune_btn"
         onclick={onPrune}
       >
         {t("volumes.prune_btn")}
-      </ButtonYellow>
+      </Button>
 
-      <ButtonRed
+      <Button
         size="sm"
+        themeKey="images.delete_btn"
         disabled={selectedCount === 0}
         onclick={onDeleteSelected}
       >
         {t("images.delete_selected")}
-      </ButtonRed>
+      </Button>
     </div>
   </div>
 

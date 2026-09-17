@@ -1,7 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import type { DockerImage } from "$lib/domains/images";
-  import { ButtonBlue } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     img,
@@ -265,12 +265,12 @@
 
   <!-- Ação Sempre Visível (mesmo recolhido) -->
   <div class="pt-2 border-t border-white/[0.08] flex justify-center">
-    <ButtonBlue
+    <Button
       size="sm"
       class="w-full"
       onclick={on_build}
     >
       {t("images.btn_build_container")}
-    </ButtonBlue>
+    </Button>
   </div>
 </div>

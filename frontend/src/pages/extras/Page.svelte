@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { useRefreshKey, triggerRefresh } from "$shared/stores/refresh.svelte";
   import DockerseaLoading from "$shared/components/DockerseaLoading.svelte";
@@ -7,7 +7,7 @@
   import PortsPanel from "$shared/components/PortsPanel.svelte";
   import NginxLogsModal from "$shared/components/NginxLogsModal.svelte";
   import ConfirmDialog from "$shared/components/ConfirmDialog.svelte";
-  import { Button, ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   import ExtrasHeader from "./components/ExtrasHeader.svelte";
   import NginxSitesPanel from "./components/NginxSitesPanel.svelte";
@@ -175,12 +175,12 @@
         <Button size="sm" onclick={() => (showDeleteDialog = false)}>
           {t("common.cancel")}
         </Button>
-        <ButtonRed size="sm" onclick={async () => {
+        <Button size="sm" onclick={async () => {
           showDeleteDialog = false;
           await store.remove();
         }}>
           {t("common.delete")}
-        </ButtonRed>
+        </Button>
       </div>
     </div>
   </div>

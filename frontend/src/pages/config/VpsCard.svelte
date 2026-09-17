@@ -1,11 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import {
-    ButtonBlue,
-    ButtonPurple,
-    EditButtonIcon,
-    TrashButtonIcon,
-  } from "$shared/components/buttons";
+  import { Button, EditButtonIcon, TrashButtonIcon } from "$shared/components/buttons";
 
   let {
     server,
@@ -71,14 +66,14 @@
   <!-- Actions Row -->
   <div class="flex items-center gap-2 self-end sm:self-center shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/[0.08]">
     {#if !isActive}
-      <ButtonPurple size="sm" onclick={() => onSelect(server)}>
+      <Button size="sm" themeKey="config.activate_btn" onclick={() => onSelect(server)}>
         {t("devices.activate")}
-      </ButtonPurple>
+      </Button>
     {/if}
 
-    <ButtonBlue size="sm" onclick={() => onTest(server)}>
+    <Button size="sm" themeKey="config.test_conn_btn" onclick={() => onTest(server)}>
       {t("config.test_conn_btn")}
-    </ButtonBlue>
+    </Button>
 
     <EditButtonIcon
       size="sm"

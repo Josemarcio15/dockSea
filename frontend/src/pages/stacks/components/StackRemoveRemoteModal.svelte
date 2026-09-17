@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonOrange, ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     show = $bindable(false),
@@ -61,12 +61,12 @@
       </div>
 
       <div class="flex gap-2.5 justify-end items-center pt-3 border-t border-slate-200 dark:border-slate-800 shrink-0">
-        <ButtonOrange size="sm" disabled={loading} onclick={() => (show = false)}>
+        <Button size="sm" disabled={loading} onclick={() => (show = false)}>
           {t("common.cancel")}
-        </ButtonOrange>
-        <ButtonRed size="sm" {loading} disabled={loading} onclick={onConfirm}>
+        </Button>
+        <Button size="sm" {loading} disabled={loading} onclick={onConfirm}>
           {loading ? t("stacks.executing") : "Confirmar Remoção na VPS"}
-        </ButtonRed>
+        </Button>
       </div>
     </div>
   </div>

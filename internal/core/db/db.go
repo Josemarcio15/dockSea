@@ -19,6 +19,7 @@ type DB struct {
 	masterConn    *sql.DB
 	appDir        string
 	profilesDir   string
+	themesDir     string
 	activeProfile Profile
 }
 
@@ -36,20 +37,60 @@ func SanitizeProfileName(name string) string {
 	return cleaned
 }
 
-func InitDB() (*DB, error) {
-	configDir, err := os.UserConfigDir()
+func getAppDir() (string, error) {
+	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		configDir = "."
+		configDir, err2 := os.UserConfigDir()
+		if err2 != nil {
+			return ".", nil
+		}
+		return filepath.Join(configDir, "docksea"), nil
+	}
+	return filepath.Join(homeDir, "Documents", "DockSea"), nil
+}
+
+func InitDB() (*DB, error) {
+	appDir, err := getAppDir()
+	if err != nil {
+		return nil, fmt.Errorf("failed to determine app dir: %w", err)
 	}
 
-	appDir := filepath.Join(configDir, "docksea")
 	if err := os.MkdirAll(appDir, 0755); err != nil {
-		return nil, fmt.Errorf("failed to create config dir: %w", err)
+		return nil, fmt.Errorf("failed to create docksea dir in Documents: %w", err)
 	}
 
 	profilesDir := filepath.Join(appDir, "profiles")
 	if err := os.MkdirAll(profilesDir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to create profiles dir: %w", err)
+	}
+
+	themesDir := filepath.Join(appDir, "themes")
+	if err := os.MkdirAll(themesDir, 0755); err != nil {
+		return nil, fmt.Errorf("failed to create themes dir: %w", err)
+	}
+
+	// Migrar dados do antigo UserConfigDir se existir
+	if configDir, err := os.UserConfigDir(); err == nil {
+		oldAppDir := filepath.Join(configDir, "docksea")
+		if oldAppDir != appDir {
+			oldTenants := filepath.Join(oldAppDir, "tenants.db")
+			newTenants := filepath.Join(appDir, "tenants.db")
+			if _, err := os.Stat(oldTenants); err == nil {
+				if _, err := os.Stat(newTenants); os.IsNotExist(err) {
+					_ = copyFile(oldTenants, newTenants)
+				}
+			}
+			oldProfilesDir := filepath.Join(oldAppDir, "profiles")
+			if entries, err := os.ReadDir(oldProfilesDir); err == nil {
+				for _, entry := range entries {
+					oldP := filepath.Join(oldProfilesDir, entry.Name())
+					newP := filepath.Join(profilesDir, entry.Name())
+					if _, err := os.Stat(newP); os.IsNotExist(err) {
+						_ = copyFile(oldP, newP)
+					}
+				}
+			}
+		}
 	}
 
 	// 1. Open master registry DB (profiles catalog)
@@ -68,6 +109,7 @@ func InitDB() (*DB, error) {
 		masterConn:  masterConn,
 		appDir:      appDir,
 		profilesDir: profilesDir,
+		themesDir:   themesDir,
 	}
 
 	// Migrate master table
@@ -114,6 +156,26 @@ func InitDB() (*DB, error) {
 	}
 
 	return d, nil
+}
+
+func copyFile(src, dst string) error {
+	data, err := os.ReadFile(src)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(dst, data, 0644)
+}
+
+func (d *DB) GetThemesDir() string {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	return d.themesDir
+}
+
+func (d *DB) GetAppDir() string {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	return d.appDir
 }
 
 func (d *DB) GetDBPath() string {

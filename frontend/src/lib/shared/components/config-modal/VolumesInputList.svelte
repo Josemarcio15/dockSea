@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonBlue, ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import type { VolumeMapping } from "./types";
   import { getDefaultContainerPath } from "./types";
 
@@ -35,9 +35,9 @@
       class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider"
       >{t("images.config_volumes")}</span
     >
-    <ButtonBlue size="xs" onclick={addVolume}>
+    <Button size="xs" onclick={addVolume}>
       {t("images.config_add_volume")}
-    </ButtonBlue>
+    </Button>
   </div>
   {#each volumes as vol, i}
     <div class="flex gap-2 items-center">
@@ -59,9 +59,9 @@
         bind:value={vol.container}
         oninput={onModified}
       />
-      <ButtonRed size="xs" onclick={() => removeVolume(i)}>
+      <Button size="xs" onclick={() => removeVolume(i)}>
         ✕
-      </ButtonRed>
+      </Button>
     </div>
   {/each}
   <datalist id="volumes-datalist">

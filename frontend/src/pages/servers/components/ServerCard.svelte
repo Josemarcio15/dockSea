@@ -1,10 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import {
-    ButtonPurple,
-    ButtonBlue,
-    ButtonPink,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     server,
@@ -88,14 +84,14 @@
       {/if}
 
       {#if isActive}
-        <ButtonPink
+        <Button
           size="xs"
           title="Atualizar estatísticas de hardware"
           loading={isLoading}
           onclick={onRefresh}
         >
           <span aria-hidden="true">↻</span>
-        </ButtonPink>
+        </Button>
       {/if}
     </div>
   </div>
@@ -189,7 +185,7 @@
     class="flex items-center gap-2.5 border-t border-white/[0.08] pt-3"
   >
     {#if isActive}
-      <ButtonBlue size="sm" class="w-full flex items-center justify-center gap-2" onclick={onViewContainers}>
+      <Button size="sm" themeKey="servers.view_containers_btn" class="w-full flex items-center justify-center gap-2" onclick={onViewContainers}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -207,9 +203,10 @@
           <line x1="12" y1="22.08" x2="12" y2="12" />
         </svg>
         <span>{t("devices.view_containers")}</span>
-      </ButtonBlue>
+      </Button>
     {:else}
-      <ButtonPurple
+      <Button
+        themeKey="servers.connect_btn"
         class="w-full flex items-center justify-center gap-2"
         onclick={onActivate}
       >
@@ -227,7 +224,7 @@
           <line x1="12" y1="2" x2="12" y2="12" />
         </svg>
         <span>{t("devices.activate")}</span>
-      </ButtonPurple>
+      </Button>
     {/if}
   </div>
 </div>

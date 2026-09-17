@@ -1,14 +1,10 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import {
     notifySuccess,
     notifyError,
   } from "$shared/stores/notification.svelte";
-  import {
-    ButtonGreen,
-    ButtonYellow,
-    ButtonPurple,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import { folderNameFromPath } from "../service";
   import type { BuilderFolder, BuilderStore } from "../types";
 
@@ -78,14 +74,14 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <ButtonPurple size="xs" onclick={() => store.browse()}
-          >{t("builder.nav_home")}</ButtonPurple
+        <Button size="xs" onclick={() => store.browse()}
+          >{t("builder.nav_home")}</Button
         >
         {#if store.parentPath}
-          <ButtonYellow
+          <Button
             size="xs"
             onclick={() => store.browse(store.parentPath ?? "")}
-            >{t("builder.nav_up")}</ButtonYellow
+            >{t("builder.nav_up")}</Button
           >
         {/if}
       </div>
@@ -96,9 +92,9 @@
       <div class="relative flex items-center gap-2 flex-wrap pt-2 border-t border-white/[0.08]">
         {#each store.savedPaths as path}
           <div class="relative inline-block group">
-            <ButtonGreen size="xs" onclick={() => store.browse(path)} title={path}>
+            <Button size="xs" onclick={() => store.browse(path)} title={path}>
               <span class="mr-1">📌</span>{folderNameFromPath(path)}
-            </ButtonGreen>
+            </Button>
             <span
               class="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-rose-500 text-white text-[8px] flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer z-10 shadow-xs"
               role="button"

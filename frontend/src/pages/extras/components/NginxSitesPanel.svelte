@@ -1,15 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { notifyWarning } from "$shared/stores/notification.svelte";
-  import {
-    ButtonBlue,
-    ButtonGreen,
-    ButtonYellow,
-    ButtonRed,
-    ButtonIndigo,
-    ButtonFuchsia,
-    ButtonSky,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import NginxEditor from "./NginxEditor.svelte";
 
   let {
@@ -72,24 +64,24 @@
     </div>
 
     <div class="flex flex-wrap items-center gap-2">
-      <ButtonSky
+      <Button
         size="sm"
         loading={busy === "test"}
         onclick={() => onRun("test")}
       >
         {t("extras.test_nginx")}
-      </ButtonSky>
-      <ButtonYellow
+      </Button>
+      <Button
         size="sm"
         loading={busy === "restart"}
         onclick={() => onRun("restart")}
       >
         {t("extras.restart_nginx")}
-      </ButtonYellow>
-      <ButtonFuchsia size="sm" onclick={onViewLogs}>
+      </Button>
+      <Button size="sm" onclick={onViewLogs}>
         {t("extras.view_logs")}
-      </ButtonFuchsia>
-      <ButtonRed
+      </Button>
+      <Button
         size="sm"
         disabled={!site.trim() || !!busy}
         onclick={() =>
@@ -98,10 +90,10 @@
             : notifyWarning(t("extras.select_file_warn"))}
       >
         {t("extras.delete_file")}
-      </ButtonRed>
-      <ButtonBlue size="sm" onclick={onNewSite}>
+      </Button>
+      <Button size="sm" onclick={onNewSite}>
         {t("extras.new_site")}
-      </ButtonBlue>
+      </Button>
     </div>
   </div>
 
@@ -131,19 +123,19 @@
   />
 
   <div class="flex flex-wrap gap-2.5 pt-2">
-    <ButtonIndigo
+    <Button
       size="md"
       loading={busy === "enable"}
       onclick={() => onRun("enable")}
     >
       {t("extras.btn_enable")}
-    </ButtonIndigo>
-    <ButtonGreen
+    </Button>
+    <Button
       size="md"
       loading={busy === "save"}
       onclick={() => onRun("save")}
     >
       {t("extras.btn_save")}
-    </ButtonGreen>
+    </Button>
   </div>
 </section>

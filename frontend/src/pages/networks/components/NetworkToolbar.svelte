@@ -1,12 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import ColumnLayoutSwitcher from "$shared/components/ColumnLayoutSwitcher.svelte";
-  import {
-    ButtonGreen,
-    ButtonYellow,
-    ButtonRed,
-    ButtonPink,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     searchQuery = $bindable(""),
@@ -54,19 +49,19 @@
         class="px-4 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b0f19] text-slate-855 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all w-60"
         bind:value={searchQuery}
       />
-      <ButtonPink
+      <Button
         size="sm"
         title={t("common.refresh")}
         onclick={onRefresh}
       >
         {t("common.refresh")}
-      </ButtonPink>
-      <ButtonGreen
+      </Button>
+      <Button
         size="sm"
         onclick={onNewNetwork}
       >
         {t("networks.new_network")}
-      </ButtonGreen>
+      </Button>
     </div>
   </div>
 
@@ -75,12 +70,12 @@
     class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-[#0b0f19] border border-slate-200/80 dark:border-slate-800/80 p-3.5 rounded-2xl shadow-sm"
   >
     <div class="flex items-center gap-2">
-      <ButtonGreen
+      <Button
         size="sm"
         onclick={onToggleAll}
       >
         {allSelected ? t("common.deselect_all") : t("common.select_all")}
-      </ButtonGreen>
+      </Button>
 
       {#if selectedCount > 0}
         <span
@@ -102,19 +97,21 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <ButtonYellow
+      <Button
         size="sm"
+        themeKey="networks.prune_btn"
         onclick={onPrune}
       >
         {t("networks.prune_btn")}
-      </ButtonYellow>
-      <ButtonRed
+      </Button>
+      <Button
         size="sm"
+        themeKey="networks.delete_btn"
         disabled={selectedCount === 0}
         onclick={onDeleteSelected}
       >
         {t("networks.delete_selected")}
-      </ButtonRed>
+      </Button>
     </div>
   </div>
 </div>

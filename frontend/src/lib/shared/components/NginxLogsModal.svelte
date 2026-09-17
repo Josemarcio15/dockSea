@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { untrack } from "svelte";
-  import { ButtonPink } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import { useRefreshKey } from "$shared/stores/refresh.svelte";
   import * as ExtraService from "$bindings/extras/extraservice.js";
 
@@ -50,9 +50,9 @@
           <p class="text-xs text-slate-400">/var/log/nginx/ — selecione um arquivo</p>
         </div>
         <div class="flex items-center gap-2">
-          <ButtonPink size="xs" onclick={refresh} loading={loading}>
+          <Button size="xs" onclick={refresh} loading={loading}>
             Atualizar
-          </ButtonPink>
+          </Button>
           <button type="button" class="px-2 text-xl text-slate-400 hover:text-white cursor-pointer" onclick={() => (show = false)}>×</button>
         </div>
       </div>

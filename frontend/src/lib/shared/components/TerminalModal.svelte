@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { getLocale, t } from "$shared/stores/locale.svelte";
-  import { ButtonOrange } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import TerminalLogsView from "$shared/components/TerminalLogsView.svelte";
   import { tick } from "svelte";
 
@@ -324,9 +324,9 @@
       <div
         class="flex justify-end px-6 py-4 border-t border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900/50"
       >
-        <ButtonOrange onclick={() => (show = false)}>
+        <Button onclick={() => (show = false)}>
           {t("common.close")}
-        </ButtonOrange>
+        </Button>
       </div>
     </div>
   </div>

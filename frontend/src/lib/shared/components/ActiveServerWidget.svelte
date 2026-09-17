@@ -1,7 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { statsState, subscribeToStats, reconnectStats } from "$shared/stores/stats.svelte";
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let { vps = null }: { vps?: { name: string; id: string } | null } = $props();
 
@@ -99,13 +99,13 @@
       </div>
     </div>
     {#if !isOnline && !isChecking}
-      <ButtonRed
+      <Button
         size="xs"
         class="w-full mt-0.5"
         onclick={reconnectStats}
       >
         {t("app.reconnect")}
-      </ButtonRed>
+      </Button>
     {/if}
   </div>
 {/if}

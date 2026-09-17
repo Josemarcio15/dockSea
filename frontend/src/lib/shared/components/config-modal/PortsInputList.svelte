@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonBlue, ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import type { PortMapping } from "./types";
 
   let {
@@ -28,9 +28,9 @@
       class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider"
       >{t("images.config_ports")}</span
     >
-    <ButtonBlue size="xs" onclick={addPort}>
+    <Button size="xs" onclick={addPort}>
       {t("images.config_add_port")}
-    </ButtonBlue>
+    </Button>
   </div>
   {#each ports as port, i}
     <div class="flex gap-2 items-center">
@@ -49,9 +49,9 @@
         bind:value={port.internal}
         oninput={onModified}
       />
-      <ButtonRed size="xs" onclick={() => removePort(i)}>
+      <Button size="xs" onclick={() => removePort(i)}>
         ✕
-      </ButtonRed>
+      </Button>
     </div>
   {/each}
 </div>

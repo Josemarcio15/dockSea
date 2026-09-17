@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonBlue, ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     commands = $bindable([]),
@@ -27,9 +27,9 @@
       class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider"
       >{t("images.config_command")}</span
     >
-    <ButtonBlue size="xs" onclick={addCommand}>
+    <Button size="xs" onclick={addCommand}>
       {t("images.config_add_command")}
-    </ButtonBlue>
+    </Button>
   </div>
 
   {#each commands as cmd, i}
@@ -41,9 +41,9 @@
         bind:value={commands[i]}
         oninput={onModified}
       />
-      <ButtonRed size="xs" onclick={() => removeCommand(i)}>
+      <Button size="xs" onclick={() => removeCommand(i)}>
         ✕
-      </ButtonRed>
+      </Button>
     </div>
   {/each}
   <span class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 leading-relaxed">

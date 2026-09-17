@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonGreen } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     profileName = $bindable(""),
@@ -36,7 +36,7 @@
       bind:value={profileName}
     />
     {#if profileName.trim()}
-      <ButtonGreen
+      <Button
         size="xs"
         disabled={saveDisabled}
         onclick={onTriggerSave}
@@ -44,7 +44,7 @@
         {loadedProfileId && !isNameChanged
           ? t("images.config_btn_update")
           : t("images.config_btn_create_profile")}
-      </ButtonGreen>
+      </Button>
     {/if}
   </div>
   {#if nameAlreadyExists}

@@ -1,0 +1,86 @@
+{
+  "name": "DockSea Dark Classic",
+  "author": "DockSea Team",
+  "version": "1.0.0",
+  "global": {
+    "appBg": "#090d16",
+    "sidebarFrom": "#4c1d95",
+    "sidebarVia": "#5b21b6",
+    "sidebarTo": "#312e81",
+    "cardBg": "#111827",
+    "cardBorder": "rgba(255, 255, 255, 0.08)",
+    "cardShadow": "0 10px 25px -5px rgba(0, 0, 0, 0.5)",
+    "textPrimary": "#f8fafc",
+    "textMuted": "#94a3b8"
+  },
+  "routes": {
+    "stacks": {
+      "deploy_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "stop_btn": { "bg": "#f59e0b", "hover": "#d97706", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "logs_btn": { "bg": "#2563eb", "hover": "#1d4ed8", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "edit_btn": { "bg": "#9333ea", "hover": "#7e22ce", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "remove_remote_btn": { "bg": "#ea580c", "hover": "#c2410c", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "delete_local_btn": { "bg": "#dc2626", "hover": "#b91c1c", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "new_stack_btn": { "bg": "#2563eb", "hover": "#1d4ed8", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
+    },
+    "containers": {
+      "start_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "stop_btn": { "bg": "#f59e0b", "hover": "#d97706", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "restart_btn": { "bg": "#2563eb", "hover": "#1d4ed8", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "delete_btn": { "bg": "#dc2626", "hover": "#b91c1c", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "select_all_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "refresh_btn": { "bg": "#db2777", "hover": "#be185d", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "view_labels_btn": { "bg": "#db2777", "hover": "#be185d", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "view_env_btn": { "bg": "#0891b2", "hover": "#0e7490", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "view_logs_btn": { "bg": "#9333ea", "hover": "#7e22ce", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
+    },
+    "images": {
+      "select_all_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "pull_btn": { "bg": "#2563eb", "hover": "#1d4ed8", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "prune_btn": { "bg": "#f59e0b", "hover": "#d97706", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "delete_btn": { "bg": "#dc2626", "hover": "#b91c1c", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
+    },
+    "volumes": {
+      "select_all_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "refresh_btn": { "bg": "#db2777", "hover": "#be185d", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "new_volume_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "prune_btn": { "bg": "#f59e0b", "hover": "#d97706", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "delete_btn": { "bg": "#dc2626", "hover": "#b91c1c", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
+    },
+    "networks": {
+      "select_all_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "refresh_btn": { "bg": "#db2777", "hover": "#be185d", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "new_network_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "prune_btn": { "bg": "#f59e0b", "hover": "#d97706", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "delete_btn": { "bg": "#dc2626", "hover": "#b91c1c", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
+    },
+    "servers": {
+      "manage_vps_btn": { "bg": "#9333ea", "hover": "#7e22ce", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "add_first_btn": { "bg": "#9333ea", "hover": "#7e22ce", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "connect_btn": { "bg": "#9333ea", "hover": "#7e22ce", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "view_containers_btn": { "bg": "#2563eb", "hover": "#1d4ed8", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "edit_btn": { "bg": "#4f46e5", "hover": "#4338ca", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
+    },
+    "builder": {
+      "build_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "browse_btn": { "bg": "#f59e0b", "hover": "#d97706", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
+    },
+    "profiles": {
+      "new_profile_btn": { "bg": "#2563eb", "hover": "#1d4ed8", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "save_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "delete_btn": { "bg": "#dc2626", "hover": "#b91c1c", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
+    },
+    "config": {
+      "add_server_btn": { "bg": "#9333ea", "hover": "#7e22ce", "text": "#ffffff", "textHover": "#ffffff", "size": "md" },
+      "activate_btn": { "bg": "#9333ea", "hover": "#7e22ce", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "test_conn_btn": { "bg": "#2563eb", "hover": "#1d4ed8", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "backup_btn": { "bg": "#8b5cf6", "hover": "#7c3aed", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "restore_btn": { "bg": "#3b82f6", "hover": "#2563eb", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "reset_btn": { "bg": "#e11d48", "hover": "#be123c", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
+    },
+    "extras": {
+      "save_btn": { "bg": "#10b981", "hover": "#059669", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" },
+      "reload_btn": { "bg": "#2563eb", "hover": "#1d4ed8", "text": "#ffffff", "textHover": "#ffffff", "size": "sm" }
+    }
+  }
+}

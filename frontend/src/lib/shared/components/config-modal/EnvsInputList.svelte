@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonBlue, ButtonRed } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import type { EnvVar } from "./types";
 
   let {
@@ -28,9 +28,9 @@
       class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider"
       >{t("images.config_envs")}</span
     >
-    <ButtonBlue size="xs" onclick={addEnv}>
+    <Button size="xs" onclick={addEnv}>
       {t("images.config_add_env")}
-    </ButtonBlue>
+    </Button>
   </div>
   {#each envs as env, i}
     <div class="flex gap-2 items-center">
@@ -49,9 +49,9 @@
         bind:value={env.value}
         oninput={onModified}
       />
-      <ButtonRed size="xs" onclick={() => removeEnv(i)}>
+      <Button size="xs" onclick={() => removeEnv(i)}>
         ✕
-      </ButtonRed>
+      </Button>
     </div>
   {/each}
 </div>

@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonOrange, ButtonGreen } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import * as VolumeService from "$bindings/volumes/volumeservice.js";
   import * as NetworkService from "$bindings/networks/networkservice.js";
   import type { VpsServer } from "$bindings/core/db/models.js";
@@ -195,15 +195,15 @@
       <div
         class="flex justify-end gap-3 px-6 py-4 border-t border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900/50"
       >
-        <ButtonOrange onclick={() => (show = false)}>
+        <Button onclick={() => (show = false)}>
           {t("common.cancel")}
-        </ButtonOrange>
-        <ButtonGreen
+        </Button>
+        <Button
           disabled={form.hasEmptyVolume}
           onclick={validateAndSubmit}
         >
           {t("images.config_create_container")}
-        </ButtonGreen>
+        </Button>
       </div>
     </div>
   </div>

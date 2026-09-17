@@ -1,7 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
   import FormModal from "$shared/components/FormModal.svelte";
   import Input from "$shared/components/Input.svelte";
-  import { ButtonYellow, ButtonPink } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
   import { t } from "$shared/stores/locale.svelte";
   import {
     notifySuccess,
@@ -271,9 +271,9 @@
           bind:value={form.sshKeyPath}
         >
           {#snippet trailing()}
-            <ButtonYellow size="sm" onclick={pickSshKey}>
+            <Button size="sm" onclick={pickSshKey}>
               {t("config.select_btn")}
-            </ButtonYellow>
+            </Button>
             <input
               id="modal-file-ssh-key"
               type="file"
@@ -337,7 +337,7 @@
         </p>
       </div>
 
-      <ButtonPink
+      <Button
         size="sm"
         loading={isDetecting}
         disabled={form.connectionType === "ssh" && !form.host.trim()}
@@ -358,7 +358,7 @@
           />
         </svg>
         {t("config.docker_autodetect_btn")}
-      </ButtonPink>
+      </Button>
     </div>
 
     <!-- Socket Selector -->

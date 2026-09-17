@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import { ButtonRed, ButtonYellow, ButtonGreen, ButtonBlue, ButtonOrange } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   let {
     show = $bindable(false),
@@ -82,30 +82,30 @@
 
       <!-- Footer Buttons -->
       <div class="flex gap-2.5 justify-end pt-3 border-t border-slate-100 dark:border-slate-800/80 items-center">
-        <ButtonOrange
+        <Button
           size="sm"
           disabled={loading}
           onclick={handleCancel}
         >
           {cancelText || t("common.cancel")}
-        </ButtonOrange>
+        </Button>
 
         {#if type === "danger"}
-          <ButtonRed size="sm" {loading} onclick={handleConfirm}>
+          <Button size="sm" {loading} onclick={handleConfirm}>
             {confirmText}
-          </ButtonRed>
+          </Button>
         {:else if type === "success"}
-          <ButtonGreen size="sm" {loading} onclick={handleConfirm}>
+          <Button size="sm" {loading} onclick={handleConfirm}>
             {confirmText}
-          </ButtonGreen>
+          </Button>
         {:else if type === "warning"}
-          <ButtonYellow size="sm" {loading} onclick={handleConfirm}>
+          <Button size="sm" {loading} onclick={handleConfirm}>
             {confirmText}
-          </ButtonYellow>
+          </Button>
         {:else}
-          <ButtonBlue size="sm" {loading} onclick={handleConfirm}>
+          <Button size="sm" {loading} onclick={handleConfirm}>
             {confirmText}
-          </ButtonBlue>
+          </Button>
         {/if}
       </div>
     </div>

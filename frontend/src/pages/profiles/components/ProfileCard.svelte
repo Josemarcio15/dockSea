@@ -1,10 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
-  import {
-    ButtonPurple,
-    ButtonRed,
-    EditButtonIcon,
-  } from "$shared/components/buttons";
+  import { Button, EditButtonIcon } from "$shared/components/buttons";
   let { profile, active, canDelete, onSelect, onEdit, onDelete } = $props();
 </script>
 
@@ -58,13 +54,13 @@
     class="flex items-center gap-2 pt-3 border-t border-white/[0.08]"
   >
     {#if !active}
-      <ButtonPurple
+      <Button
         size="sm"
         class="flex-1"
         onclick={onSelect}
       >
         {t("profiles.select_btn")}
-      </ButtonPurple>
+      </Button>
     {/if}
 
     <EditButtonIcon
@@ -76,13 +72,13 @@
     </EditButtonIcon>
 
     {#if canDelete}
-      <ButtonRed
+      <Button
         size="sm"
         title={t("common.delete")}
         onclick={onDelete}
       >
         {t("common.delete")}
-      </ButtonRed>
+      </Button>
     {/if}
   </div>
 </div>

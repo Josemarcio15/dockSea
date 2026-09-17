@@ -1,14 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import type { Snippet } from "svelte";
-  import {
-    ButtonOrange,
-    ButtonGreen,
-    ButtonRed,
-    ButtonYellow,
-    ButtonBlue,
-    Button,
-  } from "$shared/components/buttons";
+  import { Button } from "$shared/components/buttons";
 
   export interface ModalButton {
     label: string;
@@ -68,43 +61,43 @@
         class="flex gap-3 justify-end pt-4 border-t border-slate-200 dark:border-slate-800 shrink-0"
       >
         <!-- Cancel/Close Button -->
-        <ButtonOrange onclick={() => (show = false)}>
+        <Button onclick={() => (show = false)}>
           {cancelLabel || t("common.cancel")}
-        </ButtonOrange>
+        </Button>
 
         {#each buttons as btn}
           {#if btn.variant === "danger"}
-            <ButtonRed
+            <Button
               type={btn.type || "button"}
               disabled={btn.disabled}
               onclick={btn.onclick}
             >
               {btn.label}
-            </ButtonRed>
+            </Button>
           {:else if btn.variant === "warning"}
-            <ButtonYellow
+            <Button
               type={btn.type || "button"}
               disabled={btn.disabled}
               onclick={btn.onclick}
             >
               {btn.label}
-            </ButtonYellow>
+            </Button>
           {:else if btn.variant === "success" || btn.variant === "primary"}
-            <ButtonGreen
+            <Button
               type={btn.type || "button"}
               disabled={btn.disabled}
               onclick={btn.onclick}
             >
               {btn.label}
-            </ButtonGreen>
+            </Button>
           {:else}
-            <ButtonBlue
+            <Button
               type={btn.type || "button"}
               disabled={btn.disabled}
               onclick={btn.onclick}
             >
               {btn.label}
-            </ButtonBlue>
+            </Button>
           {/if}
         {/each}
       </div>

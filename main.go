@@ -15,6 +15,7 @@ import (
 	"go-walis/internal/profiles"
 	"go-walis/internal/servers"
 	"go-walis/internal/stacks"
+	"go-walis/internal/theme"
 	"go-walis/internal/volumes"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -43,6 +44,7 @@ func main() {
 	profileService := profiles.NewService(database)
 	serverService := servers.NewService(database)
 	stackService := stacks.NewStackService(database)
+	themeService := theme.NewThemeService(database.GetThemesDir())
 	volumeService := volumes.NewVolumeService(database)
 
 	app := application.New(application.Options{
@@ -63,6 +65,7 @@ func main() {
 			application.NewService(profileService),
 			application.NewService(serverService),
 			application.NewService(stackService),
+			application.NewService(themeService),
 			application.NewService(volumeService),
 		},
 		Assets: application.AssetOptions{
