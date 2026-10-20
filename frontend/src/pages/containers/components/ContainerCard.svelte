@@ -174,7 +174,7 @@
 </script>
 
 <div
-  class="relative rounded-[22px] bg-gradient-to-b from-slate-900/90 to-[#090d16]/95 dark:from-[#111726]/90 dark:to-[#070b13]/95 border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] hover:border-violet-500/40 hover:shadow-[0_16px_36px_rgba(99,102,241,0.15)] transition-all duration-300 flex flex-col p-4 gap-3.5 group text-slate-100 overflow-hidden w-full"
+  class="relative rounded-[22px] ds-card border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] hover:border-violet-500/40 hover:shadow-[0_16px_36px_rgba(99,102,241,0.15)] transition-all duration-300 flex flex-col p-4 gap-3.5 group text-slate-100 overflow-hidden w-full"
 >
   <!-- Glow highlight top -->
   <div class="absolute -top-12 -left-12 w-32 h-32 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>
@@ -478,17 +478,22 @@
   {/if}
 
   <!-- Environment Variables Modal -->
-  <FormModal bind:show={showEnv} cancelLabel={t("common.close")} title={`${t("containers.card_env_title")} — ${container.name}`}>
+  <FormModal
+    bind:show={showEnv}
+    cancelLabel={t("common.close")}
+    title={`${t("containers.card_env_title")} — ${container.name}`}
+    maxWidthClass="w-[60vw] max-w-none h-[60vh] max-h-none"
+  >
     {#if container.env?.length}
-      <div class="grid grid-cols-[minmax(8rem,0.8fr)_minmax(0,2fr)] overflow-hidden rounded-2xl border border-cyan-500/20 bg-black/40">
-        <div class="bg-cyan-950/40 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-cyan-300">{t("containers.card_env_key")}</div>
-        <div class="bg-cyan-950/40 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-cyan-300">{t("containers.card_env_value")}</div>
+      <div class="grid grid-cols-[minmax(12rem,1fr)_minmax(0,2fr)] overflow-hidden rounded-2xl border border-cyan-500/20 bg-black/40">
+        <div class="bg-cyan-950/40 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-cyan-300">{t("containers.card_env_key")}</div>
+        <div class="bg-cyan-950/40 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-cyan-300">{t("containers.card_env_value")}</div>
         {#each container.env as env}
           {@const separator = env.indexOf("=")}
           {@const key = separator >= 0 ? env.slice(0, separator) : env}
           {@const value = separator >= 0 ? env.slice(separator + 1) : ""}
-          <code class="block break-all border-t border-white/5 bg-white/[0.02] px-3 py-2 text-xs font-semibold text-orange-400">{key}</code>
-          <code class="block break-all border-t border-white/5 bg-white/[0.02] px-3 py-2 text-xs text-slate-300">{value}</code>
+          <code class="block break-all border-t border-white/5 bg-white/[0.02] px-4 py-2.5 text-xs font-semibold text-orange-400 select-all">{key}</code>
+          <code class="block break-all border-t border-white/5 bg-white/[0.02] px-4 py-2.5 text-xs text-slate-300 select-all">{value}</code>
         {/each}
       </div>
     {:else}
@@ -497,7 +502,12 @@
   </FormModal>
 
   <!-- Labels Modal -->
-  <FormModal bind:show={showLabels} cancelLabel={t("common.close")} title={`${t("containers.card_labels_title")} — ${container.name}`}>
+  <FormModal
+    bind:show={showLabels}
+    cancelLabel={t("common.close")}
+    title={`${t("containers.card_labels_title")} — ${container.name}`}
+    maxWidthClass="w-[60vw] max-w-none h-[60vh] max-h-none"
+  >
     {#if labels.length}
       <div class="grid grid-cols-[minmax(8rem,1fr)_minmax(0,2fr)] overflow-hidden rounded-2xl border border-pink-500/20 bg-black/40">
         <div class="bg-pink-950/40 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-pink-300">{t("containers.card_env_key")}</div>

@@ -363,6 +363,40 @@ class ThemeStore {
     }
   }
 
+  async saveThemeDirectly(destinationPath: string, jsonString: string): Promise<boolean> {
+    try {
+      if (typeof (ThemeWails as any).ExportThemeToFile === "function") {
+        await (ThemeWails as any).ExportThemeToFile(destinationPath, jsonString);
+        return true;
+      }
+      // Fallback para Wails SaveTheme se não for caminho absoluto
+      const baseName = destinationPath.replace(/^.*[\\\/]/, "").replace(/\.json$/i, "");
+      await ThemeWails.SaveTheme(baseName, jsonString);
+      await this.refreshDiskThemes();
+      return true;
+    } catch (e) {
+      console.error("Falha ao salvar tema em arquivo:", e);
+      return false;
+    }
+  }
+
+  async importThemeFromFilePath(sourcePath: string): Promise<boolean> {
+    try {
+      if (typeof (ThemeWails as any).ImportThemeFromFile === "function") {
+        const themeName = await (ThemeWails as any).ImportThemeFromFile(sourcePath);
+        if (themeName) {
+          await this.refreshDiskThemes();
+          await this.applyTheme(themeName);
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      console.error("Falha ao importar tema do arquivo:", e);
+      return false;
+    }
+  }
+
   toggleEditor() {
     if (this.isEditorOpen) {
       this.closeEditor();

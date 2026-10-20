@@ -109,3 +109,51 @@ func (s *ThemeService) DeleteTheme(name string) error {
 	}
 	return nil
 }
+
+// ExportThemeToFile copia ou grava o JSON do tema para um arquivo escolhido pelo usuário
+func (s *ThemeService) ExportThemeToFile(destinationPath string, jsonContent string) error {
+	if strings.TrimSpace(destinationPath) == "" {
+		return fmt.Errorf("caminho de destino é obrigatório")
+	}
+
+	dir := filepath.Dir(destinationPath)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return fmt.Errorf("falha ao criar pasta de destino: %w", err)
+	}
+
+	if err := os.WriteFile(destinationPath, []byte(jsonContent), 0644); err != nil {
+		return fmt.Errorf("falha ao exportar tema: %w", err)
+	}
+	return nil
+}
+
+// ImportThemeFromFile lê um arquivo de tema .json selecionado pelo usuário e o salva na pasta de temas
+func (s *ThemeService) ImportThemeFromFile(sourcePath string) (string, error) {
+	if strings.TrimSpace(sourcePath) == "" {
+		return "", fmt.Errorf("caminho de origem é obrigatório")
+	}
+
+	data, err := os.ReadFile(sourcePath)
+	if err != nil {
+		return "", fmt.Errorf("falha ao ler arquivo de tema: %w", err)
+	}
+
+	baseName := filepath.Base(sourcePath)
+	themeName := strings.TrimSuffix(baseName, filepath.Ext(baseName))
+	cleanName := strings.TrimSpace(themeName)
+
+	if cleanName == "" {
+		cleanName = "tema_importado"
+	}
+
+	if s.IsPredefinedTheme(cleanName) {
+		cleanName += "_importado"
+	}
+
+	if err := s.SaveTheme(cleanName, string(data)); err != nil {
+		return "", err
+	}
+
+	return cleanName, nil
+}
+

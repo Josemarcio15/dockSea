@@ -39,4 +39,9 @@
     background-color: var(--btn-hover, var(--btn-bg)) !important;
     color: var(--btn-text-hover, var(--btn-text)) !important;
   }
+
+  .ds-card {
+    background-color: var(--ds-card-bg, #111827);
+  }
 }
+

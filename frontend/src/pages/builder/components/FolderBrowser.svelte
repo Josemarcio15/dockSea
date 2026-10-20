@@ -44,7 +44,7 @@
 
 <div class="space-y-4">
   <div
-    class="relative rounded-[22px] bg-gradient-to-b from-slate-900/90 to-[#090d16]/95 dark:from-[#111726]/90 dark:to-[#070b13]/95 border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 space-y-4 text-slate-100 overflow-hidden"
+    class="relative rounded-[22px] ds-card border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 space-y-4 text-slate-100 overflow-hidden"
   >
     <!-- Glow highlight top -->
     <div class="absolute -top-12 -left-12 w-32 h-32 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>

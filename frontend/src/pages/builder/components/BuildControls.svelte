@@ -8,7 +8,7 @@
 
 {#if store.hasDockerfile}
   <div
-    class="relative rounded-[22px] bg-gradient-to-b from-slate-900/90 to-[#090d16]/95 dark:from-[#111726]/90 dark:to-[#070b13]/95 border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 flex flex-col gap-3.5 text-slate-100 overflow-hidden mt-4"
+    class="relative rounded-[22px] ds-card border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 flex flex-col gap-3.5 text-slate-100 overflow-hidden mt-4"
   >
     <!-- Glow highlight top -->
     <div class="absolute -top-12 -left-12 w-28 h-28 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>

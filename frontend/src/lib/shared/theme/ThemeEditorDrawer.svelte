@@ -32,18 +32,22 @@
   let currentRoute = $derived(navigation.currentRoute || "stacks");
   let activeEditorRoute = $derived(selectedRouteOverride || currentRoute);
 
-  const routeTitles = $derived<Record<string, string>>({
-    servers: t("sidebar.devices"),
-    containers: t("sidebar.containers"),
-    images: t("sidebar.images"),
-    volumes: t("sidebar.volumes"),
-    networks: t("sidebar.networks"),
-    stacks: t("sidebar.stacks"),
-    builder: t("sidebar.builder"),
-    extras: t("extras.title"),
-    profiles: t("sidebar.profiles"),
-    config: t("sidebar.configs"),
-  });
+  const routeOptions = $derived([
+    { id: "stacks", name: t("sidebar.stacks") },
+    { id: "containers", name: t("sidebar.containers") },
+    { id: "images", name: t("sidebar.images") },
+    { id: "volumes", name: t("sidebar.volumes") },
+    { id: "networks", name: t("sidebar.networks") },
+    { id: "servers", name: t("sidebar.devices") },
+    { id: "builder", name: t("sidebar.builder") },
+    { id: "config", name: t("sidebar.configs") },
+    { id: "profiles", name: t("sidebar.profiles") },
+    { id: "extras", name: t("extras.title") || "Extras" },
+    { id: "common", name: t("theme_editor.section_common") || "Geral / Common" },
+    { id: "sidebar", name: t("theme_editor.section_sidebar") || "Menu / Sidebar" },
+    { id: "theme_editor", name: t("theme_editor.title") || "Theme Editor" },
+    { id: "all", name: t("theme_editor.category_all") || "Todas as Seções" },
+  ]);
 
   // Helper uniforme para buscar o alias traduzido do botão baseado na rota e chave
   function getButtonAlias(route: string, key: string): string {
@@ -130,15 +134,11 @@
   const filteredTexts = $derived.by(() => {
     const query = searchQuery.toLowerCase().trim();
     return allFlattenedTexts.filter((item) => {
-      // Filtro por Categoria / Rota
-      if (textCategory === "current") {
+      // Filtro pela rota/seção selecionada
+      if (activeEditorRoute !== "all") {
         const route = activeEditorRoute;
         const prefix = route === "servers" ? "devices" : route;
         if (!item.key.startsWith(prefix + ".") && !item.key.startsWith(route + ".")) {
-          return false;
-        }
-      } else if (textCategory !== "all") {
-        if (!item.key.startsWith(textCategory + ".") && item.key !== textCategory) {
           return false;
         }
       }
@@ -220,27 +220,96 @@
     }
   }
 
-  function handleConfirmCopy() {
-    if (!newCopyName.trim()) {
-      alert(t("theme_editor.alert_enter_name"));
-      return;
+  // --- Drag and Drop State ---
+  let posX = $state<number | null>(null);
+  let posY = $state<number | null>(null);
+  let isDragging = $state(false);
+  let isMinimized = $state(false);
+  let dragOffset = { x: 0, y: 0 };
+
+  function handleMouseDown(e: MouseEvent) {
+    // Ignorar se clicar em botão ou input dentro do header
+    const target = e.target as HTMLElement;
+    if (target.closest("button") || target.closest("input")) return;
+
+    const drawerEl = document.getElementById("theme-editor-floating-window");
+    if (!drawerEl) return;
+
+    const rect = drawerEl.getBoundingClientRect();
+    dragOffset = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
+    isDragging = true;
+
+    if (posX === null || posY === null) {
+      posX = rect.left;
+      posY = rect.top;
     }
-    const ok = themeStore.startEditNewCopy(newCopyName.trim());
-    if (ok) {
-      newCopyName = "";
-    }
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  }
+
+  function handleMouseMove(e: MouseEvent) {
+    if (!isDragging) return;
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const drawerEl = document.getElementById("theme-editor-floating-window");
+    const drawerWidth = drawerEl ? drawerEl.offsetWidth : 420;
+
+    let newX = e.clientX - dragOffset.x;
+    let newY = e.clientY - dragOffset.y;
+
+    // Limites da tela
+    newX = Math.max(10, Math.min(newX, windowWidth - drawerWidth - 10));
+    newY = Math.max(10, Math.min(newY, windowHeight - 60));
+
+    posX = newX;
+    posY = newY;
+  }
+
+  function handleMouseUp() {
+    isDragging = false;
+    window.removeEventListener("mousemove", handleMouseMove);
+    window.removeEventListener("mouseup", handleMouseUp);
+  }
+
+  function resetPosition() {
+    posX = null;
+    posY = null;
   }
 </script>
 
 {#if themeStore.isEditorOpen}
   <div
-    class="fixed bottom-5 right-5 z-50 w-[420px] max-w-[95vw] h-[60vh] min-h-[460px] max-h-[85vh] bg-slate-900/95 border border-slate-700/80 backdrop-blur-xl rounded-2xl shadow-2xl flex flex-col overflow-hidden text-slate-200 font-sans animate-in fade-in zoom-in-95 duration-200"
+    id="theme-editor-floating-window"
+    style={posX !== null && posY !== null ? `left: ${posX}px; top: ${posY}px; right: auto; bottom: auto;` : ""}
+    class="fixed {posX === null || posY === null ? 'bottom-5 right-5' : ''} z-50 w-[420px] max-w-[95vw] {isMinimized ? 'h-auto' : 'h-[60vh] min-h-[460px] max-h-[85vh]'} bg-slate-900/95 border border-slate-700/80 backdrop-blur-xl rounded-2xl shadow-2xl flex flex-col overflow-hidden text-slate-200 font-sans transition-shadow {isDragging ? 'select-none ring-2 ring-violet-500/50 shadow-violet-500/20' : ''}"
   >
-    <!-- Header -->
-    <div class="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-950/50 shrink-0">
+    <!-- Header com suporte para arrastar -->
+    <div
+      role="toolbar"
+      tabindex="0"
+      onmousedown={handleMouseDown}
+      class="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-950/60 shrink-0 cursor-grab active:cursor-grabbing select-none transition-colors hover:bg-slate-950/80"
+      title="Clique e arraste para reposicionar a janela"
+    >
       <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-1.5 text-slate-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="12" r="1" />
+            <circle cx="9" cy="5" r="1" />
+            <circle cx="9" cy="19" r="1" />
+            <circle cx="15" cy="12" r="1" />
+            <circle cx="15" cy="5" r="1" />
+            <circle cx="15" cy="19" r="1" />
+          </svg>
+        </div>
         <div>
-          <h3 class="text-sm font-bold text-white tracking-wide">{t("theme_editor.title")}</h3>
+          <h3 class="text-sm font-bold text-white tracking-wide flex items-center gap-2">
+            {t("theme_editor.title")}
+          </h3>
           <p class="text-[10px] text-slate-400">
             {#if themeStore.editorStep === "select"}
               {t("theme_editor.step_select")}
@@ -252,15 +321,43 @@
           </p>
         </div>
       </div>
-      <button
-        onclick={() => themeStore.cancelDraft()}
-        class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors text-xs"
-        title={t("common.close")}
-      >
-        ✕
-      </button>
+
+      <div class="flex items-center gap-1.5">
+        <!-- Botão Redefinir Posição (se arrastado) -->
+        {#if posX !== null || posY !== null}
+          <button
+            type="button"
+            onclick={resetPosition}
+            class="w-7 h-7 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors text-xs"
+            title="Redefinir para o canto original"
+          >
+            ↺
+          </button>
+        {/if}
+
+        <!-- Botão Minimizar / Expandir -->
+        <button
+          type="button"
+          onclick={() => (isMinimized = !isMinimized)}
+          class="w-7 h-7 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors text-xs"
+          title={isMinimized ? "Expandir janela" : "Minimizar janela"}
+        >
+          {isMinimized ? "□" : "—"}
+        </button>
+
+        <!-- Botão Fechar -->
+        <button
+          type="button"
+          onclick={() => themeStore.cancelDraft()}
+          class="w-7 h-7 rounded-lg bg-slate-800/80 hover:bg-rose-900/60 text-slate-300 hover:text-rose-200 flex items-center justify-center transition-colors text-xs"
+          title={t("common.close")}
+        >
+          ✕
+        </button>
+      </div>
     </div>
 
+    {#if !isMinimized}
     <!-- ETAPA 1: SELEÇÃO DE TEMA -->
     {#if themeStore.editorStep === "select"}
       <div class="p-5 flex-1 overflow-y-auto space-y-4 text-xs">
@@ -393,7 +490,7 @@
     <!-- ETAPA 3: EDIÇÃO COM ABAS: TELA ATUAL | TEXTOS | FUNDO | JSON -->
     {:else if themeStore.editorStep === "edit"}
       <!-- Barra de Busca Global (Acima das Abas) -->
-      <div class="px-3 pt-2.5 pb-1 bg-slate-950/40 border-b border-slate-800/80 shrink-0">
+      <div class="px-3 pt-2.5 pb-2 bg-slate-950/40 border-b border-slate-800/80 shrink-0 space-y-2">
         <div class="relative flex items-center">
           <span class="absolute left-2.5 text-slate-400 text-xs pointer-events-none">🔍</span>
           <input
@@ -413,6 +510,32 @@
             </button>
           {/if}
         </div>
+
+        <!-- Seletor Universal de Rota / Seção (compartilhado entre todas as abas) -->
+        <div class="flex items-center justify-between gap-2 bg-slate-900/80 px-2.5 py-1.5 rounded-xl border border-slate-700/70 shadow-inner">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 shrink-0">
+            {t("theme_editor.section_label") || "Seção"}:
+          </span>
+          <select
+            value={activeEditorRoute}
+            onchange={(e) => (selectedRouteOverride = e.currentTarget.value)}
+            class="flex-1 bg-slate-950 border border-slate-700/80 font-bold text-sky-400 rounded-lg px-2 py-1 text-xs focus:outline-none cursor-pointer"
+          >
+            {#each routeOptions as opt}
+              <option value={opt.id}>{opt.name}</option>
+            {/each}
+          </select>
+          {#if selectedRouteOverride && selectedRouteOverride !== currentRoute}
+            <button
+              type="button"
+              onclick={() => (selectedRouteOverride = "")}
+              class="text-[10px] bg-slate-800 hover:bg-slate-700 text-sky-300 px-1.5 py-0.5 rounded cursor-pointer shrink-0 transition-colors"
+              title="Voltar para a tela atual em que você está navegando"
+            >
+              Tela Atual
+            </button>
+          {/if}
+        </div>
       </div>
 
       <!-- Navegação de Abas -->
@@ -424,7 +547,7 @@
             : 'border-transparent text-slate-400 hover:text-slate-200'}"
         >
           {t("theme_editor.tab_current_screen")}
-          {#if searchQuery && currentRouteButtons.length > 0}
+          {#if currentRouteButtons.length > 0}
             <span class="ml-1 text-[9px] bg-sky-500/20 text-sky-300 px-1.5 py-0.2 rounded-full font-mono">{currentRouteButtons.length}</span>
           {/if}
         </button>
@@ -435,7 +558,7 @@
             : 'border-transparent text-slate-400 hover:text-slate-200'}"
         >
           {t("theme_editor.tab_texts")}
-          {#if searchQuery && filteredTexts.length > 0}
+          {#if filteredTexts.length > 0}
             <span class="ml-1 text-[9px] bg-sky-500/20 text-sky-300 px-1.5 py-0.2 rounded-full font-mono">{filteredTexts.length}</span>
           {/if}
         </button>
@@ -457,33 +580,11 @@
         </button>
       </div>
 
-      <!-- Conteúdo da Aba -->
+      <!-- Conteúdo da Aba (Único scroll principal) -->
       <div class="p-4 flex-1 overflow-y-auto text-xs space-y-3">
         <!-- ABA 1: BOTÕES DA ROTA / TELA ATUAL -->
         {#if activeTab === "route"}
-          <div>
-            <div class="flex items-center justify-between mb-2 gap-2">
-              <select
-                value={activeEditorRoute}
-                onchange={(e) => (selectedRouteOverride = e.currentTarget.value)}
-                class="bg-slate-900 border border-slate-700 font-bold text-sky-400 rounded-lg px-2 py-1 text-xs focus:outline-none cursor-pointer"
-              >
-                <option value="stacks">{routeTitles.stacks || "Stacks"}</option>
-                <option value="containers">{routeTitles.containers || "Containers"}</option>
-                <option value="images">{routeTitles.images || "Images"}</option>
-                <option value="volumes">{routeTitles.volumes || "Volumes"}</option>
-                <option value="networks">{routeTitles.networks || "Networks"}</option>
-                <option value="servers">{routeTitles.servers || "Servers"}</option>
-                <option value="builder">{routeTitles.builder || "Builder"}</option>
-                <option value="config">{routeTitles.config || "Config"}</option>
-                <option value="profiles">{routeTitles.profiles || "Profiles"}</option>
-                <option value="extras">{routeTitles.extras || "Extras"}</option>
-              </select>
-              <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400 shrink-0">
-                {t("theme_editor.buttons_count", { count: currentRouteButtons.length })}
-              </span>
-            </div>
-
+          <div class="space-y-3">
             {#if currentRouteButtons.length > 0}
               <div class="space-y-2.5">
                 {#each currentRouteButtons as btn}
@@ -609,36 +710,9 @@
         <!-- ABA 2: TEXTOS / LABELS DO JSON DE TRADUÇÃO -->
         {:else if activeTab === "text"}
           <div class="space-y-3">
-            <!-- Barra de Filtro de Categoria -->
-            <div class="flex items-center justify-between gap-2 bg-slate-950/40 p-2 rounded-xl border border-slate-800/80">
-              <select
-                bind:value={textCategory}
-                class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-slate-300 focus:outline-none cursor-pointer"
-              >
-                <option value="current">{t("theme_editor.category_current", { route: activeEditorRoute })}</option>
-                <option value="all">{t("theme_editor.category_all")}</option>
-                <option value="common">common</option>
-                <option value="sidebar">sidebar</option>
-                <option value="containers">containers</option>
-                <option value="images">images</option>
-                <option value="volumes">volumes</option>
-                <option value="networks">networks</option>
-                <option value="stacks">stacks</option>
-                <option value="builder">builder</option>
-                <option value="devices">devices / servers</option>
-                <option value="config">config</option>
-                <option value="profiles">profiles</option>
-                <option value="extras">extras</option>
-                <option value="theme_editor">theme_editor</option>
-              </select>
-              <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400 shrink-0">
-                {t("theme_editor.texts_count", { count: filteredTexts.length })}
-              </span>
-            </div>
-
-            <!-- Lista de Textos -->
+            <!-- Lista de Textos com scroll unificado -->
             {#if filteredTexts.length > 0}
-              <div class="space-y-2.5 max-h-[50vh] overflow-y-auto pr-1">
+              <div class="space-y-2.5">
                 {#each filteredTexts as item (item.key)}
                   {@const textStyle = themeStore.editingTheme.texts?.[item.key] || {}}
                   <div class="flex flex-col bg-slate-800/50 p-2.5 rounded-xl border border-slate-700/50 gap-2">
@@ -880,6 +954,7 @@
           </Button>
         </div>
       </div>
+    {/if}
     {/if}
   </div>
 {/if}

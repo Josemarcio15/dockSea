@@ -301,3 +301,47 @@ export async function updateLocaleTranslationKey(
   }
   return false;
 }
+
+/**
+ * Exporta a tradução do locale especificado para um arquivo no disco
+ */
+export async function exportLocaleToFile(
+  destinationPath: string,
+  localeKey?: string,
+): Promise<boolean> {
+  const loc = localeKey || currentLocale;
+  const contentObj = translations[loc] || translations["pt-BR"] || {};
+  const jsonStr = JSON.stringify(contentObj, null, 2);
+
+  try {
+    if (typeof (LocaleWails as any).ExportLocaleToFile === "function") {
+      await (LocaleWails as any).ExportLocaleToFile(destinationPath, jsonStr);
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error("[Locale] Falha ao exportar tradução:", err);
+    throw err;
+  }
+}
+
+/**
+ * Importa um arquivo .json externo de traduções para a pasta de locales e ativa
+ */
+export async function importLocaleFromFile(sourcePath: string): Promise<string> {
+  try {
+    if (typeof (LocaleWails as any).ImportLocaleFromFile === "function") {
+      const localeName = await (LocaleWails as any).ImportLocaleFromFile(sourcePath);
+      if (localeName) {
+        await initLocalesFromDisk();
+        setLocale(localeName);
+        return localeName;
+      }
+    }
+    throw new Error("Serviço de importação de traduções indisponível");
+  } catch (err) {
+    console.error("[Locale] Falha ao importar arquivo de tradução:", err);
+    throw err;
+  }
+}
+

@@ -1,6 +1,14 @@
-import { getLocale, setLocale, t } from "$shared/stores/locale.svelte";
+import {
+  getLocale,
+  setLocale,
+  t,
+  getLocalesDirectory,
+  exportLocaleToFile,
+  importLocaleFromFile,
+} from "$shared/stores/locale.svelte";
 import { notifySuccess, notifyError } from "$shared/stores/notification.svelte";
 import { Dialogs } from "@wailsio/runtime";
+import { themeStore } from "$shared/theme/theme.svelte";
 import * as api from "./api";
 import { dockerDetectionPayload, serverPayload } from "./service";
 import type { DiagnosticResult, VpsFormData, VpsServer } from "./types";
@@ -216,6 +224,150 @@ export function createConfigStore(getData: () => any) {
     }
   }
 
+  let isExportingTheme = $state(false);
+  let isImportingTheme = $state(false);
+
+  async function exportThemeBackup() {
+    isExportingTheme = true;
+    try {
+      const activeName = themeStore.activeThemeName || "theme";
+      const defaultFilename = `${activeName}.json`;
+
+      const selected = await (Dialogs.SaveFile as any)({
+        Title: t("config.theme_backup_export_title"),
+        Filename: defaultFilename,
+        Filters: [
+          {
+            DisplayName: "Theme JSON (*.json)",
+            Pattern: "*.json",
+          },
+        ],
+      });
+
+      if (!selected || typeof selected !== "string") {
+        return;
+      }
+
+      const jsonStr = JSON.stringify(themeStore.currentTheme, null, 2);
+      const ok = await themeStore.saveThemeDirectly(selected, jsonStr);
+      if (ok) {
+        notifySuccess(t("config.theme_backup_export_success", { name: activeName }));
+      }
+    } catch (error: any) {
+      notifyError(error?.message || String(error));
+    } finally {
+      isExportingTheme = false;
+    }
+  }
+
+  async function importThemeBackup() {
+    isImportingTheme = true;
+    try {
+      const selected = await Dialogs.OpenFile({
+        Title: t("config.theme_backup_open_title"),
+        CanChooseFiles: true,
+        CanChooseDirectories: false,
+        AllowsMultipleSelection: false,
+        Filters: [
+          {
+            DisplayName: "Theme JSON (*.json)",
+            Pattern: "*.json",
+          },
+        ],
+      });
+
+      if (!selected) {
+        return;
+      }
+
+      const filePath = Array.isArray(selected) ? selected[0] : selected;
+      if (!filePath || typeof filePath !== "string") {
+        return;
+      }
+
+      const success = await themeStore.importThemeFromFilePath(filePath);
+      if (success) {
+        notifySuccess(t("config.theme_backup_import_success", { name: themeStore.activeThemeName }));
+      } else {
+        notifyError(t("config.theme_backup_import_invalid"));
+      }
+    } catch (error: any) {
+      notifyError(error?.message || String(error));
+    } finally {
+      isImportingTheme = false;
+    }
+  }
+
+  let isExportingLocale = $state(false);
+  let isImportingLocale = $state(false);
+
+  async function exportLocaleBackup() {
+    isExportingLocale = true;
+    try {
+      const activeLoc = getData().activeProfile?.locale || getLocale() || "pt-BR";
+      const defaultFilename = `${activeLoc}.json`;
+
+      const selected = await (Dialogs.SaveFile as any)({
+        Title: t("config.locale_backup_export_title"),
+        Filename: defaultFilename,
+        Filters: [
+          {
+            DisplayName: "Locale JSON (*.json)",
+            Pattern: "*.json",
+          },
+        ],
+      });
+
+      if (!selected || typeof selected !== "string") {
+        return;
+      }
+
+      await exportLocaleToFile(selected, activeLoc);
+      notifySuccess(t("config.locale_backup_export_success", { name: activeLoc }));
+    } catch (error: any) {
+      notifyError(error?.message || String(error));
+    } finally {
+      isExportingLocale = false;
+    }
+  }
+
+  async function importLocaleBackup() {
+    isImportingLocale = true;
+    try {
+      const selected = await Dialogs.OpenFile({
+        Title: t("config.locale_backup_open_title"),
+        CanChooseFiles: true,
+        CanChooseDirectories: false,
+        AllowsMultipleSelection: false,
+        Filters: [
+          {
+            DisplayName: "Locale JSON (*.json)",
+            Pattern: "*.json",
+          },
+        ],
+      });
+
+      if (!selected) {
+        return;
+      }
+
+      const filePath = Array.isArray(selected) ? selected[0] : selected;
+      if (!filePath || typeof filePath !== "string") {
+        return;
+      }
+
+      const newLocaleName = await importLocaleFromFile(filePath);
+      if (newLocaleName) {
+        changeLocale(newLocaleName);
+        notifySuccess(t("config.locale_backup_import_success", { name: newLocaleName }));
+      }
+    } catch (error: any) {
+      notifyError(error?.message || String(error));
+    } finally {
+      isImportingLocale = false;
+    }
+  }
+
   function requestResetDb() {
     showResetConfirm = true;
   }
@@ -286,6 +438,27 @@ export function createConfigStore(getData: () => any) {
     get isResetting() {
       return isResetting;
     },
+    get isExportingTheme() {
+      return isExportingTheme;
+    },
+    get isImportingTheme() {
+      return isImportingTheme;
+    },
+    get isExportingLocale() {
+      return isExportingLocale;
+    },
+    get isImportingLocale() {
+      return isImportingLocale;
+    },
+    get themePath() {
+      return themeStore.themesDirectoryPath;
+    },
+    get localesPath() {
+      return getLocalesDirectory();
+    },
+    get activeThemeName() {
+      return themeStore.activeThemeName;
+    },
     get dbPath() {
       return dbPath;
     },
@@ -304,6 +477,10 @@ export function createConfigStore(getData: () => any) {
     changeLocale,
     exportBackup,
     restoreBackup,
+    exportThemeBackup,
+    importThemeBackup,
+    exportLocaleBackup,
+    importLocaleBackup,
     requestResetDb,
     confirmResetDb,
   };

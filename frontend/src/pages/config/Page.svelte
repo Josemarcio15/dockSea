@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import { useRefreshKey } from "$shared/stores/refresh.svelte";
   import StatusBanner from "$shared/components/StatusBanner.svelte";
@@ -80,7 +80,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
     <!-- VPS Servers List (col-span-2) -->
     <div
-      class="relative lg:col-span-2 rounded-[24px] bg-gradient-to-b from-slate-900/90 to-[#090d16]/95 dark:from-[#111726]/90 dark:to-[#070b13]/95 border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-6 space-y-6 text-slate-100 overflow-hidden"
+      class="relative lg:col-span-2 rounded-[24px] ds-card border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-6 space-y-6 text-slate-100 overflow-hidden"
     >
       <!-- Glow highlight top -->
       <div class="absolute -top-12 -left-12 w-32 h-32 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>
@@ -130,7 +130,7 @@
     <div class="space-y-6">
       <!-- Language Card -->
       <div
-        class="relative rounded-[22px] bg-gradient-to-b from-slate-900/90 to-[#090d16]/95 dark:from-[#111726]/90 dark:to-[#070b13]/95 border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 space-y-4 text-slate-100 overflow-hidden"
+        class="relative rounded-[22px] ds-card border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 space-y-4 text-slate-100 overflow-hidden"
       >
         <!-- Glow highlight top -->
         <div class="absolute -top-12 -left-12 w-28 h-28 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>
@@ -178,7 +178,7 @@
 
       <!-- Local Database & Maintenance Card -->
       <div
-        class="relative rounded-[22px] bg-gradient-to-b from-slate-900/90 to-[#090d16]/95 dark:from-[#111726]/90 dark:to-[#070b13]/95 border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 space-y-4 text-slate-100 overflow-hidden"
+        class="relative rounded-[22px] ds-card border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 space-y-4 text-slate-100 overflow-hidden"
       >
         <!-- Glow highlight top -->
         <div class="absolute -top-12 -left-12 w-28 h-28 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>
@@ -266,6 +266,140 @@
               {/if}
             {/snippet}
             {store.isResetting ? t("config.db_resetting") : t("config.db_reset_btn")}
+          </Button>
+        </div>
+      </div>
+
+      <!-- Themes Backup Card -->
+      <div
+        class="relative rounded-[22px] ds-card border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 space-y-4 text-slate-100 overflow-hidden"
+      >
+        <!-- Glow highlight top -->
+        <div class="absolute -top-12 -left-12 w-28 h-28 bg-indigo-600/15 rounded-full blur-2xl pointer-events-none"></div>
+
+        <h3
+          class="relative text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2"
+        >
+          <div class="w-7 h-7 rounded-lg bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.74 3.74 0 0 0 3.25-1.875m0 0A3.75 3.75 0 0 1 13.25 21h4.625c.621 0 1.125-.504 1.125-1.125V14.25m-6.75 4.875-1.5-1.5" />
+            </svg>
+          </div>
+          {t("config.theme_backup_title")}
+        </h3>
+        <p class="relative text-xs text-slate-400">
+          {t("config.theme_backup_desc")}
+        </p>
+
+        {#if store.themePath}
+          <div class="relative space-y-1">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("config.theme_backup_path_label")}</span>
+            <div class="p-3 rounded-xl bg-black/40 border border-white/[0.06] text-[11px] font-mono text-slate-300 break-all select-all font-semibold">
+              {store.themePath}
+            </div>
+          </div>
+        {/if}
+
+        <div class="relative grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <Button
+            themeKey="config.export_theme_btn"
+            disabled={store.isExportingTheme || store.isImportingTheme}
+            onclick={store.exportThemeBackup}
+          >
+            {#snippet icon()}
+              {#if store.isExportingTheme}
+                <span class="animate-spin text-sm mr-1">↻</span>
+              {:else}
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+              {/if}
+            {/snippet}
+            {store.isExportingTheme ? t("config.db_exporting") : t("config.theme_backup_export_btn")}
+          </Button>
+
+          <Button
+            themeKey="config.import_theme_btn"
+            disabled={store.isExportingTheme || store.isImportingTheme}
+            onclick={store.importThemeBackup}
+          >
+            {#snippet icon()}
+              {#if store.isImportingTheme}
+                <span class="animate-spin text-sm mr-1">↻</span>
+              {:else}
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                </svg>
+              {/if}
+            {/snippet}
+            {store.isImportingTheme ? t("config.db_importing") : t("config.theme_backup_import_btn")}
+          </Button>
+        </div>
+      </div>
+
+      <!-- Languages & Translations Backup Card -->
+      <div
+        class="relative rounded-[22px] ds-card border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 space-y-4 text-slate-100 overflow-hidden"
+      >
+        <!-- Glow highlight top -->
+        <div class="absolute -top-12 -left-12 w-28 h-28 bg-emerald-600/15 rounded-full blur-2xl pointer-events-none"></div>
+
+        <h3
+          class="relative text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2"
+        >
+          <div class="w-7 h-7 rounded-lg bg-emerald-600/10 border border-emerald-500/20 flex items-center justify-center text-emerald-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802" />
+            </svg>
+          </div>
+          {t("config.locale_backup_title")}
+        </h3>
+        <p class="relative text-xs text-slate-400">
+          {t("config.locale_backup_desc")}
+        </p>
+
+        {#if store.localesPath}
+          <div class="relative space-y-1">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("config.locale_backup_path_label")}</span>
+            <div class="p-3 rounded-xl bg-black/40 border border-white/[0.06] text-[11px] font-mono text-slate-300 break-all select-all font-semibold">
+              {store.localesPath}
+            </div>
+          </div>
+        {/if}
+
+        <div class="relative grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <Button
+            themeKey="config.export_locale_btn"
+            disabled={store.isExportingLocale || store.isImportingLocale}
+            onclick={store.exportLocaleBackup}
+          >
+            {#snippet icon()}
+              {#if store.isExportingLocale}
+                <span class="animate-spin text-sm mr-1">↻</span>
+              {:else}
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+              {/if}
+            {/snippet}
+            {store.isExportingLocale ? t("config.db_exporting") : t("config.locale_backup_export_btn")}
+          </Button>
+
+          <Button
+            themeKey="config.import_locale_btn"
+            disabled={store.isExportingLocale || store.isImportingLocale}
+            onclick={store.importLocaleBackup}
+          >
+            {#snippet icon()}
+              {#if store.isImportingLocale}
+                <span class="animate-spin text-sm mr-1">↻</span>
+              {:else}
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                </svg>
+              {/if}
+            {/snippet}
+            {store.isImportingLocale ? t("config.db_importing") : t("config.locale_backup_import_btn")}
           </Button>
         </div>
       </div>

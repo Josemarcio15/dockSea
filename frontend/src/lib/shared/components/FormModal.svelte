@@ -12,27 +12,41 @@
     type?: "button" | "submit";
   }
 
+  function portal(node: HTMLElement) {
+    document.body.appendChild(node);
+    return {
+      destroy() {
+        if (node.parentNode) {
+          node.parentNode.removeChild(node);
+        }
+      },
+    };
+  }
+
   let {
     show = $bindable(false),
     title = "",
     cancelLabel = "",
     buttons = [],
+    maxWidthClass = "w-125 max-w-full max-h-[90vh]",
     children,
   }: {
     show: boolean;
     title: string;
     cancelLabel?: string;
     buttons?: ModalButton[];
+    maxWidthClass?: string;
     children: Snippet;
   } = $props();
 </script>
 
 {#if show}
   <div
+    use:portal
     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
   >
     <div
-      class="bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl w-125 max-w-full max-h-[90vh] flex flex-col p-6 shadow-2xl animate-scaleIn text-slate-800 dark:text-slate-200"
+      class="bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl {maxWidthClass} flex flex-col p-6 shadow-2xl animate-scaleIn text-slate-800 dark:text-slate-200"
     >
       <!-- Header -->
       <div

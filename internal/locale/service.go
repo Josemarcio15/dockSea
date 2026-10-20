@@ -174,3 +174,47 @@ func (s *LocaleService) SaveLocale(name string, jsonContent string) error {
 
 	return nil
 }
+
+// ExportLocaleToFile salva o JSON de tradução para um arquivo de destino escolhido pelo usuário
+func (s *LocaleService) ExportLocaleToFile(destinationPath string, jsonContent string) error {
+	if strings.TrimSpace(destinationPath) == "" {
+		return fmt.Errorf("caminho de destino é obrigatório")
+	}
+
+	dir := filepath.Dir(destinationPath)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return fmt.Errorf("falha ao criar pasta de destino: %w", err)
+	}
+
+	if err := os.WriteFile(destinationPath, []byte(jsonContent), 0644); err != nil {
+		return fmt.Errorf("falha ao exportar tradução: %w", err)
+	}
+	return nil
+}
+
+// ImportLocaleFromFile lê um arquivo .json selecionado pelo usuário e o importa para a pasta de locales
+func (s *LocaleService) ImportLocaleFromFile(sourcePath string) (string, error) {
+	if strings.TrimSpace(sourcePath) == "" {
+		return "", fmt.Errorf("caminho de origem é obrigatório")
+	}
+
+	data, err := os.ReadFile(sourcePath)
+	if err != nil {
+		return "", fmt.Errorf("falha ao ler arquivo de tradução: %w", err)
+	}
+
+	baseName := filepath.Base(sourcePath)
+	localeName := strings.TrimSuffix(baseName, filepath.Ext(baseName))
+	cleanName := strings.TrimSpace(localeName)
+
+	if cleanName == "" {
+		cleanName = "custom-locale"
+	}
+
+	if err := s.SaveLocale(cleanName, string(data)); err != nil {
+		return "", err
+	}
+
+	return cleanName, nil
+}
+
