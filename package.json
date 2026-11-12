@@ -1,0 +1,9 @@
+{
+  "name": "docksea",
+  "private": true,
+  "version": "0.0.12-alpha",
+  "type": "module",
+  "scripts": {
+    "release": "node ./scripts/release.mjs"
+  }
+}
