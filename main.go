@@ -3,6 +3,8 @@ package main
 import (
 	"embed"
 	"log"
+	"os"
+	"runtime"
 
 	"go-walis/internal/builder"
 	"go-walis/internal/config"
@@ -29,6 +31,13 @@ var appIcon []byte
 var assets embed.FS
 
 func main() {
+	// Workaround: o compositor Wayland do LordOS não repassa o tamanho da janela
+	// corretamente para o WebKitGTK (WebView fica cortado). Força XWayland nele.
+	if runtime.GOOS == "linux" && os.Getenv("XDG_CURRENT_DESKTOP") == "LordOS" {
+		os.Setenv("GDK_BACKEND", "x11")
+		os.Unsetenv("WAYLAND_DISPLAY")
+	}
+
 	database, err := db.InitDB()
 	if err != nil {
 		log.Fatalf("Erro ao inicializar banco SQLite: %v", err)
