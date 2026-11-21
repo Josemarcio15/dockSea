@@ -6,7 +6,7 @@
 name: "DockSea"
 arch: ${GOARCH}
 platform: "linux"
-version: "0.0.15-alpha"
+version: "0.0.16-alpha"
 section: "default"
 priority: "extra"
 maintainer: "Samabe <contato@samabe.dev>"

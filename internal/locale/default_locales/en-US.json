@@ -874,5 +874,29 @@
     "btn_cancel": "Cancel",
     "btn_apply": "Apply",
     "btn_save": "Save"
+  },
+  "updater": {
+    "title": "DockSea Update",
+    "section_title": "Updates",
+    "section_desc": "Check for and install new DockSea versions.",
+    "check_btn": "Check for updates",
+    "checking": "Checking for updates...",
+    "current": "Current version",
+    "latest": "Latest version",
+    "available": "New version {version} available!",
+    "up_to_date": "You are on the latest version.",
+    "unsupported": "Automatic update is only available on Debian/Ubuntu-based Linux. Download it from the release page.",
+    "notes": "Release notes",
+    "install_btn": "Download and install",
+    "installing": "Downloading and installing...",
+    "installing_hint": "The system will ask for your administrator password.",
+    "restart_btn": "Restart now",
+    "success": "Update installed! Restart DockSea to use the new version.",
+    "cancelled": "Authentication cancelled. Nothing was changed.",
+    "fallback_title": "Automatic install failed",
+    "fallback_saved": "The package was saved. Install it manually with:",
+    "view_release": "View release",
+    "retry": "Try again",
+    "close": "Close"
   }
 }

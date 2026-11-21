@@ -19,6 +19,7 @@ import (
 	"go-walis/internal/servers"
 	"go-walis/internal/stacks"
 	"go-walis/internal/theme"
+	"go-walis/internal/updater"
 	"go-walis/internal/volumes"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -26,6 +27,9 @@ import (
 
 //go:embed build/appicon.png
 var appIcon []byte
+
+//go:embed VERSION
+var appVersion string
 
 //go:embed all:frontend/dist
 var assets embed.FS
@@ -57,6 +61,7 @@ func main() {
 	themeService := theme.NewThemeService(database.GetThemesDir())
 	localeService := locale.NewLocaleService(database.GetLocalesDir())
 	volumeService := volumes.NewVolumeService(database)
+	updaterService := updater.NewUpdaterService(appVersion)
 
 	app := application.New(application.Options{
 		Name:        "DockSea",
@@ -78,6 +83,7 @@ func main() {
 			application.NewService(serverService),
 			application.NewService(stackService),
 			application.NewService(themeService),
+			application.NewService(updaterService),
 			application.NewService(volumeService),
 		},
 		Assets: application.AssetOptions{

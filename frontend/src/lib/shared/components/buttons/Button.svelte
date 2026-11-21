@@ -4,7 +4,7 @@
 
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import { themeStore } from "$shared/theme/theme.svelte.ts";
+  import { themeStore } from "$shared/theme/theme.svelte";
 
   let {
     type = "button",
@@ -62,7 +62,7 @@
 
   // Cor de fundo calculada
   let activeBg = $derived.by(() => {
-    if (routeConfig?.color) return routeConfig.color;
+    if (routeConfig?.bg) return routeConfig.bg;
     if (color) return color;
     return "#2563eb";
   });

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { themeStore, isPredefinedThemeName } from "./theme.svelte.ts";
+  import { themeStore, isPredefinedThemeName } from "./theme.svelte";
   import { defaultTheme } from "./defaultTheme";
   import { navigation } from "$navigation/navigation.svelte";
   import {
@@ -194,6 +194,17 @@
     a.download = `${themeStore.editingThemeName || "theme"}.json`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  function handleConfirmCopy() {
+    if (!newCopyName.trim()) {
+      alert(t("theme_editor.alert_enter_name"));
+      return;
+    }
+    const ok = themeStore.startEditNewCopy(newCopyName.trim());
+    if (ok) {
+      newCopyName = "";
+    }
   }
 
   function handleCopyJson() {

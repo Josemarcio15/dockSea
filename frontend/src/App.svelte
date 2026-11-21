@@ -20,7 +20,7 @@
   import { navigation, navigate } from "$navigation/navigation.svelte";
   import { useRefreshKey } from "$shared/stores/refresh.svelte";
   import ThemeEditorDrawer from "$shared/theme/ThemeEditorDrawer.svelte";
-  import { themeStore } from "$shared/theme/theme.svelte.ts";
+  import { themeStore } from "$shared/theme/theme.svelte";
 
   let { data = {} }: { data?: any } = $props();
 

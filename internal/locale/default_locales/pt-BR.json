@@ -874,5 +874,29 @@
     "btn_cancel": "Cancelar",
     "btn_apply": "Aplicar",
     "btn_save": "Salvar"
+  },
+  "updater": {
+    "title": "Atualização do DockSea",
+    "section_title": "Atualizações",
+    "section_desc": "Verifique e instale novas versões do DockSea.",
+    "check_btn": "Verificar atualizações",
+    "checking": "Verificando atualizações...",
+    "current": "Versão atual",
+    "latest": "Última versão",
+    "available": "Nova versão {version} disponível!",
+    "up_to_date": "Você já está na versão mais recente.",
+    "unsupported": "Atualização automática disponível apenas em Linux baseado em Debian/Ubuntu. Baixe pela página da release.",
+    "notes": "Notas da versão",
+    "install_btn": "Baixar e instalar",
+    "installing": "Baixando e instalando...",
+    "installing_hint": "O sistema vai pedir sua senha de administrador.",
+    "restart_btn": "Reiniciar agora",
+    "success": "Atualização instalada! Reinicie o DockSea para usar a nova versão.",
+    "cancelled": "Autenticação cancelada. Nada foi alterado.",
+    "fallback_title": "Não foi possível instalar automaticamente",
+    "fallback_saved": "O pacote foi salvo. Instale manualmente com:",
+    "view_release": "Ver release",
+    "retry": "Tentar novamente",
+    "close": "Fechar"
   }
 }

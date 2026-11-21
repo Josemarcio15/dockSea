@@ -1,7 +1,7 @@
 <script lang="ts">
   import { t } from "$shared/stores/locale.svelte";
   import FormModal from "$shared/components/FormModal.svelte";
-  import { themeStore } from "$shared/theme/theme.svelte.ts";
+  import { themeStore } from "$shared/theme/theme.svelte";
 
   let {
     show = $bindable(false),
@@ -34,7 +34,7 @@
       label: t("common.save"),
       variant: "primary",
       themeKey: "profiles.save_btn",
-      onclick: onSave,
+      onclick: () => onSave?.(),
       disabled: !name.trim(),
     },
   ]}

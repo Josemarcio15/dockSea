@@ -7,11 +7,14 @@
   import VpsCard from "./VpsCard.svelte";
   import VpsModal from "./VpsModal.svelte";
   import DiagnosticModal from "./DiagnosticModal.svelte";
+  import UpdateModal from "./UpdateModal.svelte";
   import ConfirmDialog from "$shared/components/ConfirmDialog.svelte";
   import { Button } from "$shared/components/buttons";
   import type { VpsFormData, VpsServer } from "./types";
 
   let { data } = $props();
+
+  let showUpdateModal = $state(false);
 
   const store = createConfigStore(() => data);
   const formData = $derived(store.form);
@@ -128,6 +131,20 @@
 
     <!-- General Settings (col-span-1) -->
     <div class="space-y-6">
+      <!-- Update Card -->
+      <div
+        class="relative rounded-[22px] ds-card border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 space-y-4 text-slate-100 overflow-hidden"
+      >
+        <div class="absolute -top-12 -left-12 w-28 h-28 bg-violet-600/15 rounded-full blur-2xl pointer-events-none"></div>
+        <h3 class="relative text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+          {t("updater.section_title")}
+        </h3>
+        <p class="relative text-xs text-slate-400">{t("updater.section_desc")}</p>
+        <Button themeKey="config.update_btn" class="relative w-full" onclick={() => (showUpdateModal = true)}>
+          {t("updater.check_btn")}
+        </Button>
+      </div>
+
       <!-- Language Card -->
       <div
         class="relative rounded-[22px] ds-card border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.45)] p-5 space-y-4 text-slate-100 overflow-hidden"
@@ -443,3 +460,5 @@
   type="danger"
   onConfirm={store.confirmResetDb}
 />
+
+<UpdateModal bind:show={showUpdateModal} />
