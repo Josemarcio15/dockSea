@@ -10,6 +10,18 @@ DockSea is a modern, agentless Docker manager for local environments and multipl
 [![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind%20v4-38B2AC.svg)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+## ⚡ Quick Install
+
+### Linux (Debian / Ubuntu / Pop!_OS / Mint)
+```bash
+curl -fsSL https://raw.githubusercontent.com/Josemarcio15/dockSea/dev/install.sh | bash
+```
+
+### Windows (PowerShell)
+```powershell
+irm https://raw.githubusercontent.com/Josemarcio15/dockSea/dev/install.ps1 | iex
+```
+
 ## Overview
 
 DockSea connects to Docker hosts through the local Unix socket or an SSH tunnel to the remote host's Docker socket. Remote servers do not require DockSea, a Docker agent, or an additional listening port. This makes it suitable for privately managed VPS infrastructure running on providers such as AWS, Hetzner, DigitalOcean, Contabo, Linode, or Oracle Cloud.
